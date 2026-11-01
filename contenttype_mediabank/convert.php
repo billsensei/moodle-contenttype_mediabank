@@ -57,8 +57,12 @@ $PAGE->set_heading(format_string($course->fullname, true, ['context' => $coursec
 if ($links && $confirm && data_submitted()) {
     require_sesskey();
     $count = \contenttype_mediabank\usage::detach_in_course($content, $courseid);
-    redirect($returnurl, get_string('convertdone', 'contenttype_mediabank', $count), null,
-        \core\output\notification::NOTIFY_SUCCESS);
+    redirect(
+        $returnurl,
+        get_string('convertdone', 'contenttype_mediabank', $count),
+        null,
+        \core\output\notification::NOTIFY_SUCCESS
+    );
 }
 
 echo $OUTPUT->header();
@@ -67,10 +71,21 @@ if (!$links) {
     echo $OUTPUT->continue_button($returnurl);
 } else {
     echo $OUTPUT->confirm(
-        get_string('convertconfirm', 'contenttype_mediabank',
-            ['name' => s($content->get_name()), 'course' => format_string($course->shortname, true, ['context' => $coursecontext]), 'links' => $links]),
-        new single_button(new moodle_url($PAGE->url, ['confirm' => 1]), get_string('convertbutton', 'contenttype_mediabank'),
-            'post', single_button::BUTTON_PRIMARY),
+        get_string(
+            'convertconfirm',
+            'contenttype_mediabank',
+            [
+                'name' => s($content->get_name()),
+                'course' => format_string($course->shortname, true, ['context' => $coursecontext]),
+                'links' => $links,
+            ]
+        ),
+        new single_button(
+            new moodle_url($PAGE->url, ['confirm' => 1]),
+            get_string('convertbutton', 'contenttype_mediabank'),
+            'post',
+            single_button::BUTTON_PRIMARY
+        ),
         $returnurl
     );
 }

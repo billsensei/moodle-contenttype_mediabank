@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * List the media bank items that nothing links to, largest first, to help clear space.
@@ -67,8 +68,13 @@ foreach ($items as $item) {
         cli_writeln(implode(',', [$item->get_id(), '"' . $name . '"', $size,
             date('Y-m-d', $item->get_content()->timecreated)]));
     } else {
-        cli_writeln(sprintf('%6d  %10s  %s  %s', $item->get_id(), display_size($size),
-            userdate($item->get_content()->timecreated, '%Y-%m-%d'), local_mediabank_safe_name($item->get_name(), false)));
+        cli_writeln(sprintf(
+            '%6d  %10s  %s  %s',
+            $item->get_id(),
+            display_size($size),
+            userdate($item->get_content()->timecreated, '%Y-%m-%d'),
+            local_mediabank_safe_name($item->get_name(), false)
+        ));
     }
 }
 if (!$options['csv']) {

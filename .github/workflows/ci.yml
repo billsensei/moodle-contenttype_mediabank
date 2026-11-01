@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        plugin: [contenttype_mediabank, local_mediabank]
+        plugin: [contenttype_mediabank, local_mediabank, filter_mediabank]
         php: ['8.3', '8.4']
         moodle-branch: ['MOODLE_500_STABLE', 'MOODLE_501_STABLE', 'MOODLE_502_STABLE', 'MOODLE_503_STABLE']
         database: [pgsql, mariadb]
@@ -68,10 +68,10 @@ jobs:
 
       - name: Install moodle-plugin-ci
         run: |
-          # local_mediabank depends on contenttype_mediabank, so it is installed as an extra plugin.
+          # local_mediabank and filter_mediabank depend on contenttype_mediabank, so it is installed as an extra plugin.
           mkdir -p extra && cp -r ./repo/contenttype_mediabank extra/
           moodle-plugin-ci install --plugin ./repo/${{ matrix.plugin }} --db-host=127.0.0.1 \
-            ${{ matrix.plugin == 'local_mediabank' && '--extra-plugins=./extra' || '' }}
+            ${{ matrix.plugin != 'contenttype_mediabank' && '--extra-plugins=./extra' || '' }}
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}

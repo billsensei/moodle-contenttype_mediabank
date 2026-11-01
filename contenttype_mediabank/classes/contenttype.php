@@ -293,7 +293,8 @@ class contenttype extends \core_contentbank\contenttype {
             }
             $label = $cm->get_module_type_name() . ': ' . $cm->get_formatted_name();
             $label = $cm->get_url() ? \html_writer::link($cm->get_url(), $label) : $label;
-            $rows[] = \html_writer::tag('li', $label . ($links > 1 ? ' ' . get_string('usagelinks', 'contenttype_mediabank', $links) : ''));
+            $count = $links > 1 ? ' ' . get_string('usagelinks', 'contenttype_mediabank', $links) : '';
+            $rows[] = \html_writer::tag('li', $label . $count);
         }
         if ($unseen) {
             $rows[] = \html_writer::tag('li', get_string('usageelsewhere', 'contenttype_mediabank', $unseen));

@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Report of media bank items that nothing links to. Read-only.
@@ -72,11 +73,16 @@ foreach ($items as $item) {
         userdate($item->get_content()->timecreated, get_string('strftimedatefullshort', 'langconfig')),
     ];
 }
-echo html_writer::tag('p', get_string('unlinkedsummary', 'local_mediabank',
-    ['count' => count($items), 'size' => display_size($total)]));
+echo html_writer::tag('p', get_string(
+    'unlinkedsummary',
+    'local_mediabank',
+    ['count' => count($items), 'size' => display_size($total)]
+));
 if (count($items) > $limit) {
-    echo $OUTPUT->notification(get_string('unlinkedlimit', 'local_mediabank', $limit),
-        \core\output\notification::NOTIFY_WARNING);
+    echo $OUTPUT->notification(
+        get_string('unlinkedlimit', 'local_mediabank', $limit),
+        \core\output\notification::NOTIFY_WARNING
+    );
 }
 echo html_writer::table($table);
 echo $OUTPUT->footer();

@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 // NOTE: Behat requires this file name and the behat_ class name, so the usual lowercase test naming does not apply.
 
@@ -58,6 +59,7 @@ class behat_contenttype_mediabank extends behat_base {
     public function i_visit_the_media_bank_convert_page_for_a_missing_item(string $shortname): void {
         global $DB;
         $courseid = $DB->get_field('course', 'id', ['shortname' => $shortname], MUST_EXIST);
-        $this->getSession()->visit($this->locate_path("/contentbank/contenttype/mediabank/convert.php?id=99999&courseid=$courseid"));
+        $path = "/contentbank/contenttype/mediabank/convert.php?id=99999&courseid=$courseid";
+        $this->getSession()->visit($this->locate_path($path));
     }
 }
