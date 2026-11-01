@@ -50,11 +50,22 @@ final class text_filter_test extends \advanced_testcase {
     }
 
     /**
+     * Run the filter's pre-clean stage on some HTML.
+     *
+     * @param text_filter $filter The filter.
+     * @param string $html The HTML.
+     * @return string
+     */
+    protected function apply(text_filter $filter, string $html): string {
+        return $filter->filter_stage_pre_clean($html, ['originalformat' => FORMAT_HTML]);
+    }
+
+    /**
      * A picture with no alt gets the item's text alternative.
      */
     public function test_missing_alt_is_filled(): void {
         [$filter, $url] = $this->setup_link('A red dot');
-        $out = $filter->filter('<p><img src="' . $url . '" class="x"></p>', ['originalformat' => FORMAT_HTML]);
+        $out = $this->apply($filter, '<p><img src="' . $url . '" class="x"></p>');
         $this->assertStringContainsString('alt="A red dot"', $out);
         $this->assertStringContainsString('class="x"', $out);
     }
@@ -65,7 +76,7 @@ final class text_filter_test extends \advanced_testcase {
     public function test_empty_and_filename_alt_are_replaced(): void {
         [$filter, $url] = $this->setup_link('A red dot');
         foreach (['alt=""', "alt='pic.png'", 'alt="PIC"'] as $attribute) {
-            $out = $filter->filter('<img ' . $attribute . ' src="' . $url . '" />', ['originalformat' => FORMAT_HTML]);
+            $out = $this->apply($filter, '<img ' . $attribute . ' src="' . $url . '" />');
             $this->assertStringContainsString('alt="A red dot"', $out, $attribute);
             $this->assertStringNotContainsString($attribute === 'alt=""' ? 'alt="" ' : $attribute, $out);
         }
@@ -77,9 +88,9 @@ final class text_filter_test extends \advanced_testcase {
     public function test_teacher_alt_and_decorative_are_kept(): void {
         [$filter, $url] = $this->setup_link('A red dot');
         $mine = '<img alt="My own words" src="' . $url . '">';
-        $this->assertSame($mine, $filter->filter($mine, ['originalformat' => FORMAT_HTML]));
+        $this->assertSame($mine, $this->apply($filter, $mine));
         $decorative = '<img alt="" role="presentation" src="' . $url . '">';
-        $this->assertSame($decorative, $filter->filter($decorative, ['originalformat' => FORMAT_HTML]));
+        $this->assertSame($decorative, $this->apply($filter, $decorative));
     }
 
     /**
@@ -95,9 +106,9 @@ final class text_filter_test extends \advanced_testcase {
         $plainurl = \moodle_url::make_pluginfile_url($context->id, 'mod_label', 'intro', 0, '/', $plain->get_filename());
         $plainurl = $plainurl->out(false);
         foreach (['<img src="' . $plainurl . '">', '<img src="https://example.com/a.png">', '<img src="' . $url . '">'] as $html) {
-            $this->assertSame($html, $filter->filter($html, ['originalformat' => FORMAT_HTML]));
+            $this->assertSame($html, $this->apply($filter, $html));
         }
-        $this->assertSame('plain text', $filter->filter('plain text', ['originalformat' => FORMAT_HTML]));
+        $this->assertSame('plain text', $this->apply($filter, 'plain text'));
     }
 
     /**
@@ -106,7 +117,7 @@ final class text_filter_test extends \advanced_testcase {
     public function test_attribute_lookalikes_inside_other_values_are_ignored(): void {
         [$filter, $url] = $this->setup_link('A red dot');
         $trap = '<img title="alt=\'\' onerror=x" src="' . $url . '">';
-        $out = $filter->filter($trap, ['originalformat' => FORMAT_HTML]);
+        $out = $this->apply($filter, $trap);
         // The real alt is added as a new attribute and the title is untouched, so onerror stays inside the title value.
         $this->assertStringContainsString('title="alt=\'\' onerror=x"', $out);
         $this->assertStringContainsString(' alt="A red dot"', $out);
@@ -117,7 +128,7 @@ final class text_filter_test extends \advanced_testcase {
         $this->assertSame("alt='' onerror=x", $image->getAttribute('title'));
 
         // The same with the lookalike in a data attribute that comes after the real, empty alt.
-        $out = $filter->filter('<img alt="" data-x="alt=\'z\'" src="' . $url . '">', ['originalformat' => FORMAT_HTML]);
+        $out = $this->apply($filter, '<img alt="" data-x="alt=\'z\'" src="' . $url . '">');
         $this->assertStringContainsString('data-x="alt=\'z\'"', $out);
         $this->assertStringContainsString('alt="A red dot"', $out);
     }
@@ -128,19 +139,78 @@ final class text_filter_test extends \advanced_testcase {
     public function test_attribute_parsing(): void {
         [$filter, $url] = $this->setup_link('A red dot');
         $options = ['originalformat' => FORMAT_HTML];
-        $this->assertStringContainsString('alt="A red dot"', $filter->filter("<img src='$url' alt=''>", $options));
-        $this->assertStringContainsString('alt="A red dot"', $filter->filter("<img src=$url alt=>", $options));
-        $out = $filter->filter('<img title="a > b" src="' . $url . '">', $options);
+        $this->assertStringContainsString('alt="A red dot"', $this->apply($filter, "<img src='$url' alt=''>"));
+        $this->assertStringContainsString('alt="A red dot"', $this->apply($filter, "<img src=$url alt=>"));
+        $out = $this->apply($filter, '<img title="a > b" src="' . $url . '">');
         $this->assertStringContainsString('title="a > b"', $out);
         $this->assertStringContainsString('alt="A red dot"', $out);
         // The first alt is the one a browser uses, and it is the teacher's.
         $kept = '<img alt="Mine" alt="" src="' . $url . '">';
-        $this->assertSame($kept, $filter->filter($kept, $options));
+        $this->assertSame($kept, $this->apply($filter, $kept));
         // An uppercase attribute name is still an attribute name.
-        $this->assertStringContainsString('alt="A red dot"', $filter->filter('<IMG SRC="' . $url . '" ALT="">', $options));
+        $this->assertStringContainsString('alt="A red dot"', $this->apply($filter, '<IMG SRC="' . $url . '" ALT="">'));
         // A tag that never ends, or has an unfinished quote, is left alone.
         $broken = '<img src="' . $url . '" title="open';
-        $this->assertSame($broken, $filter->filter($broken, $options));
+        $this->assertSame($broken, $this->apply($filter, $broken));
+    }
+
+    /**
+     * White space is the HTML set, not PCRE's: a vertical tab does not separate an attribute from its value.
+     *
+     * By the HTML rules the input here already has a real onerror attribute. The filter must read it that way, change
+     * nothing but add the one alt, and the cleaner must then remove the attribute.
+     */
+    public function test_vertical_tab_is_not_white_space(): void {
+        [$filter, $url, $course] = $this->setup_link('A red dot');
+        $html = "<img title=\x0b\"alt='' onerror=x\" src=\"$url\">";
+        $out = $this->apply($filter, $html);
+        $this->assertSame($html, str_replace(' alt="A red dot"', '', $out));
+        $this->assertSame(1, substr_count($out, 'alt="A red dot"'));
+        filter_set_global_state('mediabank', TEXTFILTER_ON);
+        $cleaned = format_text($html, FORMAT_HTML, ['context' => \context_course::instance($course->id), 'noclean' => false]);
+        $dom = new \DOMDocument();
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $cleaned);
+        $this->assertFalse($dom->getElementsByTagName('img')->item(0)->hasAttribute('onerror'));
+    }
+
+    /**
+     * A quote that does not follow "=" is part of an attribute name, as in a browser, and does not hide the real alt.
+     */
+    public function test_stray_quote_does_not_swallow_attributes(): void {
+        [$filter, $url] = $this->setup_link('A red dot');
+        $out = $this->apply($filter, '<img a"b src="' . $url . '" alt=""> <b title="x">');
+        $this->assertStringContainsString('alt="A red dot"', $out);
+        $this->assertStringContainsString('<b title="x">', $out);
+    }
+
+    /**
+     * Only the pre-clean stage changes anything, so for untrusted text the cleaner sees what the filter produced.
+     */
+    public function test_only_the_pre_clean_stage_changes_text(): void {
+        [$filter, $url] = $this->setup_link('A red dot');
+        $html = '<img src="' . $url . '">';
+        $this->assertSame($html, $filter->filter($html, []));
+        $this->assertSame($html, $filter->filter_stage_post_clean($html, []));
+        $this->assertSame($html, $filter->filter_stage_string($html, []));
+        $this->assertNotSame($html, $filter->filter_stage_pre_clean($html, []));
+    }
+
+    /**
+     * Whatever the filter does to a hostile tag, untrusted text is cleaned afterwards, so no script attribute survives.
+     */
+    public function test_untrusted_text_is_cleaned_after_the_filter(): void {
+        [, $url, $course] = $this->setup_link('A red dot');
+        filter_set_global_state('mediabank', TEXTFILTER_ON);
+        $context = \context_course::instance($course->id);
+        $html = '<img title="alt=\'\' onerror=x" src="' . s($url) . '"><img a"b onerror=y src="' . s($url) . '" alt="">';
+        $out = format_text($html, FORMAT_HTML, ['context' => $context, 'noclean' => false, 'trusted' => false]);
+        $dom = new \DOMDocument();
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $out);
+        foreach ($dom->getElementsByTagName('img') as $image) {
+            $this->assertFalse($image->hasAttribute('onerror'));
+            $this->assertSame('A red dot', $image->getAttribute('alt'));
+        }
+        $this->assertSame(2, $dom->getElementsByTagName('img')->length);
     }
 
     /**
@@ -148,7 +218,7 @@ final class text_filter_test extends \advanced_testcase {
      */
     public function test_alt_is_escaped(): void {
         [$filter, $url] = $this->setup_link('"><script>alert(1)</script>');
-        $out = $filter->filter('<img src="' . $url . '">', ['originalformat' => FORMAT_HTML]);
+        $out = $this->apply($filter, '<img src="' . $url . '">');
         $this->assertStringNotContainsString('<script>', $out);
         $this->assertStringContainsString('&lt;script&gt;', $out);
     }
@@ -178,7 +248,7 @@ final class text_filter_test extends \advanced_testcase {
         $this->assertSame(1, $items);
         alt_text::reset_cache();
         $html = '<img src="' . $url . '">';
-        $this->assertSame($html, $filter->filter($html, ['originalformat' => FORMAT_HTML]));
+        $this->assertSame($html, $this->apply($filter, $html));
     }
 
     /**

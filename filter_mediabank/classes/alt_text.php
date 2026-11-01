@@ -34,21 +34,59 @@ class alt_text {
         self::$cache = [];
     }
 
+    /** @var string The characters HTML treats as white space inside a tag. Not PCRE's \s, which also has a vertical tab. */
+    protected const SPACE = "\t\n\f\r ";
+
+    /**
+     * Give every media bank picture in a piece of HTML its text alternative.
+     *
+     * The text is walked once, and each <img> tag is read the way a browser's tokenizer reads it. A tag that does not
+     * end is left as it is, together with everything after it.
+     *
+     * @param string $text HTML.
+     * @return string The HTML, changed where a picture needed it.
+     */
+    public static function apply_to_text(string $text): string {
+        $out = '';
+        $pos = 0;
+        $length = strlen($text);
+        while (($found = stripos($text, '<img', $pos)) !== false) {
+            $after = $text[$found + 4] ?? '';
+            if ($after === '' || !str_contains(self::SPACE . '/>', $after)) {
+                // Something like <image or <imgx, not an img tag.
+                $out .= substr($text, $pos, $found + 4 - $pos);
+                $pos = $found + 4;
+                continue;
+            }
+            $parsed = self::parse_tag($text, $found + 4);
+            if ($parsed === null) {
+                break;
+            }
+            $out .= substr($text, $pos, $found - $pos) . self::apply_to_tag(substr($text, $found, $parsed['end'] - $found));
+            $pos = $parsed['end'];
+        }
+        return $out . ($pos < $length ? substr($text, $pos) : '');
+    }
+
     /**
      * Change one <img> tag if it points at a media bank link and has no real text alternative.
      *
-     * The tag is split into attributes first, respecting quotes, so only an attribute that is really called src, alt or
-     * role is looked at. Text that merely looks like `alt='...'` inside another attribute's value is never touched.
+     * Only an attribute that is really called src, alt or role is looked at. Text that merely looks like `alt='...'` inside
+     * another attribute's value is never touched.
      *
      * @param string $tag The whole tag, from < to >.
      * @return string The tag, changed or not.
      */
     public static function apply_to_tag(string $tag): string {
-        $attributes = self::attributes($tag);
+        $parsed = self::parse_tag($tag, 4);
+        if ($parsed === null || $parsed['end'] !== strlen($tag)) {
+            return $tag;
+        }
+        $attributes = $parsed['attributes'];
         if (!isset($attributes['src']) || $attributes['src']['value'] === null) {
             return $tag;
         }
-        $role = strtolower(trim((string) ($attributes['role']['value'] ?? '')));
+        $role = strtolower(trim((string) ($attributes['role']['value'] ?? ''), self::SPACE));
         if ($role === 'presentation' || $role === 'none') {
             return $tag;
         }
@@ -72,44 +110,72 @@ class alt_text {
     }
 
     /**
-     * Split an <img> tag into its attributes.
+     * Read the attributes of a start tag the way the HTML tokenizer does, from just after "<img" to the closing ">".
      *
-     * Names are lower-cased. A name that is repeated keeps its first use, as a browser does. Values may be double-quoted,
-     * single-quoted or bare. The value is the raw text, still with its entities.
+     * A quote only starts a value straight after "=". Anywhere else it is an ordinary character of a name. Names are
+     * lower-cased and a repeated name keeps its first use, as in a browser. Values are raw, with their entities.
      *
-     * @param string $tag The whole tag, from < to >.
-     * @return array[] Name => ['value' => string|null, 'start' => int, 'end' => int] with the position in the tag.
+     * @param string $text The text holding the tag.
+     * @param int $pos Where to start, just after "<img".
+     * @return array|null ['attributes' => name => ['value' => string|null, 'start' => int, 'end' => int], 'end' => the
+     *      position after ">"], or null if the text ends before the tag does.
      */
-    protected static function attributes(string $tag): array {
+    protected static function parse_tag(string $text, int $pos): ?array {
+        $length = strlen($text);
         $attributes = [];
-        $length = strlen($tag);
-        $pos = 4; // After "<img".
-        while ($pos < $length) {
-            if (preg_match('/\G[\s\/]+/', $tag, $skip, 0, $pos)) {
-                $pos += strlen($skip[0]);
-                continue;
+        while (true) {
+            // Before an attribute name.
+            while ($pos < $length && ($text[$pos] === '/' || str_contains(self::SPACE, $text[$pos]))) {
+                $pos++;
             }
-            if ($tag[$pos] === '>') {
-                break;
+            if ($pos >= $length) {
+                return null;
             }
-            if (!preg_match('/\G[^\s=\/>"\']+/', $tag, $name, 0, $pos)) {
-                $pos++; // A stray quote or equals sign.
-                continue;
+            if ($text[$pos] === '>') {
+                return ['attributes' => $attributes, 'end' => $pos + 1];
             }
-            $start = $pos;
-            $pos += strlen($name[0]);
+            // The attribute name. Its first character counts whatever it is, even "=".
+            $start = $pos++;
+            while ($pos < $length && !str_contains(self::SPACE . '/>=', $text[$pos])) {
+                $pos++;
+            }
+            $name = strtolower(substr($text, $start, $pos - $start));
             $value = null;
-            $valuepattern = '/\G\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'=<>\x60]+))/';
-            if (preg_match($valuepattern, $tag, $match, PREG_UNMATCHED_AS_NULL, $pos)) {
-                $value = $match[1] ?? $match[2] ?? $match[3] ?? '';
-                $pos += strlen($match[0]);
+            $end = $pos;
+            $look = $pos;
+            while ($look < $length && str_contains(self::SPACE, $text[$look])) {
+                $look++;
             }
-            $key = strtolower($name[0]);
-            if (!isset($attributes[$key])) {
-                $attributes[$key] = ['value' => $value, 'start' => $start, 'end' => $pos];
+            if ($look < $length && $text[$look] === '=') {
+                $look++;
+                while ($look < $length && str_contains(self::SPACE, $text[$look])) {
+                    $look++;
+                }
+                if ($look >= $length) {
+                    return null;
+                }
+                $quote = $text[$look];
+                if ($quote === '"' || $quote === "'") {
+                    $close = strpos($text, $quote, $look + 1);
+                    if ($close === false) {
+                        return null;
+                    }
+                    $value = substr($text, $look + 1, $close - $look - 1);
+                    $pos = $close + 1;
+                } else {
+                    $close = $look;
+                    while ($close < $length && $text[$close] !== '>' && !str_contains(self::SPACE, $text[$close])) {
+                        $close++;
+                    }
+                    $value = substr($text, $look, $close - $look);
+                    $pos = $close;
+                }
+                $end = $pos;
+            }
+            if (!isset($attributes[$name])) {
+                $attributes[$name] = ['value' => $value, 'start' => $start, 'end' => $end];
             }
         }
-        return $attributes;
     }
 
     /**

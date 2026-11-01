@@ -29,12 +29,26 @@ namespace filter_mediabank;
 class text_filter extends \core_filters\text_filter {
     #[\Override]
     public function filter($text, array $options = []) {
-        if (!is_string($text) || stripos($text, '<img') === false || strpos($text, 'pluginfile.php') === false) {
+        // Everything is done before Moodle cleans the HTML, in filter_stage_pre_clean(), so that for text that is not trusted
+        // the cleaner checks what this filter produced. Doing nothing here keeps the filter out of the stage after cleaning.
+        return $text;
+    }
+
+    #[\Override]
+    public function filter_stage_pre_clean(string $text, array $options): string {
+        if (stripos($text, '<img') === false || strpos($text, 'pluginfile.php') === false) {
             return $text;
         }
-        // A tag ends at the first ">" that is not inside a quoted value. Quoted values are length-limited so that a stray
-        // quote in a large text cannot make the search slow.
-        $pattern = '/<img\b(?:[^>"\']|"[^"]{0,4096}"|\'[^\']{0,4096}\')*>/i';
-        return preg_replace_callback($pattern, fn(array $match) => alt_text::apply_to_tag($match[0]), $text);
+        return alt_text::apply_to_text($text);
+    }
+
+    #[\Override]
+    public function filter_stage_post_clean(string $text, array $options): string {
+        return $text;
+    }
+
+    #[\Override]
+    public function filter_stage_string(string $text, array $options): string {
+        return $text;
     }
 }
