@@ -32,28 +32,30 @@ $course = get_course($courseid);
 require_login($course);
 require_capability('moodle/course:manageactivities', context_course::instance($course->id));
 
+// A missing item and one that is not a media bank item look the same as an item this course does not link to, so the
+// page cannot be used to find out which ids exist.
+$content = null;
 try {
-    $content = (new \core_contentbank\contentbank())->get_content_from_id($id);
+    $found = (new \core_contentbank\contentbank())->get_content_from_id($id);
+    $content = $found->get_content_type() === 'contenttype_mediabank' ? $found : null;
 } catch (\dml_missing_record_exception $e) {
-    throw new \moodle_exception('invalidrecord', 'error');
-}
-if ($content->get_content_type() !== 'contenttype_mediabank') {
-    throw new \moodle_exception('invalidrecord', 'error');
+    $content = null;
 }
 
-$returnurl = new moodle_url('/contentbank/view.php', ['id' => $id, 'contextid' => $content->get_contextid()]);
+$returnurl = $content ? new moodle_url('/contentbank/view.php', ['id' => $id, 'contextid' => $content->get_contextid()])
+    : new moodle_url('/course/view.php', ['id' => $courseid]);
 $PAGE->set_url(new moodle_url('/contentbank/contenttype/mediabank/convert.php', ['id' => $id, 'courseid' => $courseid]));
 $PAGE->set_context(context_course::instance($course->id));
 $PAGE->set_title(get_string('convertcourse', 'contenttype_mediabank'));
 $PAGE->set_heading(format_string($course->fullname));
 
-if ($confirm && confirm_sesskey()) {
+if ($content && $confirm && confirm_sesskey()) {
     $count = \contenttype_mediabank\usage::detach_in_course($content, $courseid);
     redirect($returnurl, get_string('convertdone', 'contenttype_mediabank', $count), null,
         \core\output\notification::NOTIFY_SUCCESS);
 }
 
-$links = count(\contenttype_mediabank\usage::get_links_in_course($content, $courseid));
+$links = $content ? count(\contenttype_mediabank\usage::get_links_in_course($content, $courseid)) : 0;
 echo $OUTPUT->header();
 if (!$links) {
     echo $OUTPUT->notification(get_string('convertnolinks', 'contenttype_mediabank'), \core\output\notification::NOTIFY_INFO);
