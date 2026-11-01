@@ -32,6 +32,9 @@ class text_filter extends \core_filters\text_filter {
         if (!is_string($text) || stripos($text, '<img') === false || strpos($text, 'pluginfile.php') === false) {
             return $text;
         }
-        return preg_replace_callback('/<img\b[^>]*>/i', fn(array $match) => alt_text::apply_to_tag($match[0]), $text);
+        // A tag ends at the first ">" that is not inside a quoted value. Quoted values are length-limited so that a stray
+        // quote in a large text cannot make the search slow.
+        $pattern = '/<img\b(?:[^>"\']|"[^"]{0,4096}"|\'[^\']{0,4096}\')*>/i';
+        return preg_replace_callback($pattern, fn(array $match) => alt_text::apply_to_tag($match[0]), $text);
     }
 }

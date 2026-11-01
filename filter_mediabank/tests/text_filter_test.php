@@ -101,6 +101,49 @@ final class text_filter_test extends \advanced_testcase {
     }
 
     /**
+     * Text that only looks like an alt attribute inside another attribute's value is never rewritten.
+     */
+    public function test_attribute_lookalikes_inside_other_values_are_ignored(): void {
+        [$filter, $url] = $this->setup_link('A red dot');
+        $trap = '<img title="alt=\'\' onerror=x" src="' . $url . '">';
+        $out = $filter->filter($trap, ['originalformat' => FORMAT_HTML]);
+        // The real alt is added as a new attribute and the title is untouched, so onerror stays inside the title value.
+        $this->assertStringContainsString('title="alt=\'\' onerror=x"', $out);
+        $this->assertStringContainsString(' alt="A red dot"', $out);
+        $dom = new \DOMDocument();
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $out);
+        $image = $dom->getElementsByTagName('img')->item(0);
+        $this->assertFalse($image->hasAttribute('onerror'));
+        $this->assertSame("alt='' onerror=x", $image->getAttribute('title'));
+
+        // The same with the lookalike in a data attribute that comes after the real, empty alt.
+        $out = $filter->filter('<img alt="" data-x="alt=\'z\'" src="' . $url . '">', ['originalformat' => FORMAT_HTML]);
+        $this->assertStringContainsString('data-x="alt=\'z\'"', $out);
+        $this->assertStringContainsString('alt="A red dot"', $out);
+    }
+
+    /**
+     * Quoting styles, a ">" inside a value, and a repeated alt.
+     */
+    public function test_attribute_parsing(): void {
+        [$filter, $url] = $this->setup_link('A red dot');
+        $options = ['originalformat' => FORMAT_HTML];
+        $this->assertStringContainsString('alt="A red dot"', $filter->filter("<img src='$url' alt=''>", $options));
+        $this->assertStringContainsString('alt="A red dot"', $filter->filter("<img src=$url alt=>", $options));
+        $out = $filter->filter('<img title="a > b" src="' . $url . '">', $options);
+        $this->assertStringContainsString('title="a > b"', $out);
+        $this->assertStringContainsString('alt="A red dot"', $out);
+        // The first alt is the one a browser uses, and it is the teacher's.
+        $kept = '<img alt="Mine" alt="" src="' . $url . '">';
+        $this->assertSame($kept, $filter->filter($kept, $options));
+        // An uppercase attribute name is still an attribute name.
+        $this->assertStringContainsString('alt="A red dot"', $filter->filter('<IMG SRC="' . $url . '" ALT="">', $options));
+        // A tag that never ends, or has an unfinished quote, is left alone.
+        $broken = '<img src="' . $url . '" title="open';
+        $this->assertSame($broken, $filter->filter($broken, $options));
+    }
+
+    /**
      * The text alternative is escaped.
      */
     public function test_alt_is_escaped(): void {

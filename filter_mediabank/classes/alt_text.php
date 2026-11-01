@@ -37,24 +37,24 @@ class alt_text {
     /**
      * Change one <img> tag if it points at a media bank link and has no real text alternative.
      *
+     * The tag is split into attributes first, respecting quotes, so only an attribute that is really called src, alt or
+     * role is looked at. Text that merely looks like `alt='...'` inside another attribute's value is never touched.
+     *
      * @param string $tag The whole tag, from < to >.
      * @return string The tag, changed or not.
      */
     public static function apply_to_tag(string $tag): string {
-        if (!preg_match('/\bsrc\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i', $tag, $src)) {
+        $attributes = self::attributes($tag);
+        if (!isset($attributes['src']) || $attributes['src']['value'] === null) {
             return $tag;
         }
-        $url = html_entity_decode($src[1] !== '' ? $src[1] : ($src[2] ?? ''), ENT_QUOTES | ENT_HTML5);
-        if (preg_match('/\brole\s*=\s*(?:"(?:presentation|none)"|\'(?:presentation|none)\')/i', $tag)) {
+        $role = strtolower(trim((string) ($attributes['role']['value'] ?? '')));
+        if ($role === 'presentation' || $role === 'none') {
             return $tag;
         }
-        $hasalt = preg_match('/\balt\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i', $tag, $alt, PREG_OFFSET_CAPTURE);
-        $current = '';
-        if ($hasalt) {
-            $current = html_entity_decode($alt[1][0] !== '' ? $alt[1][0] : ($alt[2][0] ?? ''), ENT_QUOTES | ENT_HTML5);
-        }
-        $filename = self::filename_of($url);
-        if (!self::is_missing($current, $filename)) {
+        $url = html_entity_decode($attributes['src']['value'], ENT_QUOTES | ENT_HTML5);
+        $current = html_entity_decode((string) ($attributes['alt']['value'] ?? ''), ENT_QUOTES | ENT_HTML5);
+        if (!self::is_missing($current, self::filename_of($url))) {
             return $tag;
         }
         $bankalt = self::find_alt($url);
@@ -62,10 +62,54 @@ class alt_text {
             return $tag;
         }
         $attribute = 'alt="' . s($bankalt) . '"';
-        if ($hasalt) {
-            return substr_replace($tag, $attribute, $alt[0][1], strlen($alt[0][0]));
+        if (isset($attributes['alt'])) {
+            $alt = $attributes['alt'];
+            return substr_replace($tag, $attribute, $alt['start'], $alt['end'] - $alt['start']);
         }
-        return preg_replace('/\s*\/?>$/', ' ' . $attribute . '$0', $tag, 1);
+        // Add it after the last attribute, or after the tag name when there is none.
+        $last = array_reduce($attributes, fn($carry, $attr) => max($carry, $attr['end']), 4);
+        return substr_replace($tag, ' ' . $attribute, $last, 0);
+    }
+
+    /**
+     * Split an <img> tag into its attributes.
+     *
+     * Names are lower-cased. A name that is repeated keeps its first use, as a browser does. Values may be double-quoted,
+     * single-quoted or bare. The value is the raw text, still with its entities.
+     *
+     * @param string $tag The whole tag, from < to >.
+     * @return array[] Name => ['value' => string|null, 'start' => int, 'end' => int] with the position in the tag.
+     */
+    protected static function attributes(string $tag): array {
+        $attributes = [];
+        $length = strlen($tag);
+        $pos = 4; // After "<img".
+        while ($pos < $length) {
+            if (preg_match('/\G[\s\/]+/', $tag, $skip, 0, $pos)) {
+                $pos += strlen($skip[0]);
+                continue;
+            }
+            if ($tag[$pos] === '>') {
+                break;
+            }
+            if (!preg_match('/\G[^\s=\/>"\']+/', $tag, $name, 0, $pos)) {
+                $pos++; // A stray quote or equals sign.
+                continue;
+            }
+            $start = $pos;
+            $pos += strlen($name[0]);
+            $value = null;
+            $valuepattern = '/\G\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'=<>\x60]+))/';
+            if (preg_match($valuepattern, $tag, $match, PREG_UNMATCHED_AS_NULL, $pos)) {
+                $value = $match[1] ?? $match[2] ?? $match[3] ?? '';
+                $pos += strlen($match[0]);
+            }
+            $key = strtolower($name[0]);
+            if (!isset($attributes[$key])) {
+                $attributes[$key] = ['value' => $value, 'start' => $start, 'end' => $pos];
+            }
+        }
+        return $attributes;
     }
 
     /**
