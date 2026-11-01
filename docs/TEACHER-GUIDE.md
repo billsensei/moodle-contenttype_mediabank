@@ -69,7 +69,7 @@ Only the **File** resource has been tested with this choice. Other activities th
 
 Click an item's name in the Content bank. You see the preview, then:
 
-**Where this item is used** lists the courses that link to it, with the number of links in each, for example *"Course 1: 1 link(s)"*. Courses you are not allowed to see are counted but not named.
+**Where this item is used** lists the courses that link to it, with the number of links in each, for example *"Course 1: 1 link(s)"*. Courses you are not allowed to see are counted but not named. Under each course are the activities that hold the links, such as *Page: Week one*, each with a link to open it. A link in the course summary or a block is counted as *"Elsewhere in the course"*, and so is a link in an activity you cannot see.
 
 Next to a course where you can edit activities there is a **Convert to copies** button. It asks you to confirm, then turns that course's links to the item into independent copies. The course keeps the file as it is now and no longer follows a replacement of the item. Other courses are not changed.
 

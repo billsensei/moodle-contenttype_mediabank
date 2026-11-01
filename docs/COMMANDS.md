@@ -320,3 +320,7 @@ Test: `usage_test::test_unlinked_items_are_found` (6 tests, 28 assertions in usa
 ## Convert one course's links (2026-11-02, unreleased)
 Teacher feature 1 of the roadmap. `usage::detach_in_course()` (shares `convert()` with `detach_all()`), `convert.php` (confirm page, POST + sesskey, `moodle/course:manageactivities` in the course), button in `contenttype::render_usage()`. Event `links_converted` gained `other['courseid']`.
 Tests: `usage_test::test_detach_in_course_only_touches_that_course`; contenttype suite 121 tests, 521 assertions OK (`--fail-on-warning`, 5.3); local suite 7 tests OK. NOT tested: the page in a browser, other Moodle versions, phpcs.
+
+## Where-used page names the activities (2026-11-02, unreleased)
+Teacher feature 3 of the roadmap. `usage::get_places()` groups links per course into activities (by cmid) and "elsewhere"; `contenttype::render_places()` names an activity only if `cm->uservisible` and not being deleted, else counts it under "Elsewhere in the course, or in an activity you cannot see".
+Test: `usage_test::test_places_name_visible_activities` (admin sees both pages; a student does not see the hidden page). usage_test 8 tests, 45 assertions on 5.3. NOT tested: in a browser, other Moodle versions, phpcs.

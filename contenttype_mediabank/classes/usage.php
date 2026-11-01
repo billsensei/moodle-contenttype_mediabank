@@ -95,6 +95,36 @@ class usage {
     }
 
     /**
+     * Where inside each course the links sit: which activities hold them, and how many are elsewhere in the course.
+     *
+     * Only ids and counts, no names, so nothing here depends on who is looking. A caller that shows the names has to check
+     * what the viewer may see.
+     *
+     * @param \core_contentbank\content $content The item.
+     * @return array[] Course id => ['activities' => cmid => links, 'elsewhere' => links not in an activity]. Links outside
+     *      any course are not included.
+     */
+    public static function get_places(\core_contentbank\content $content): array {
+        $places = [];
+        foreach (self::get_links($content) as $link) {
+            $context = \context::instance_by_id($link->get_contextid(), IGNORE_MISSING);
+            $coursecontext = $context ? $context->get_course_context(false) : false;
+            if (!$coursecontext) {
+                continue;
+            }
+            $courseid = (int) $coursecontext->instanceid;
+            $places[$courseid] ??= ['activities' => [], 'elsewhere' => 0];
+            if ($context->contextlevel == CONTEXT_MODULE) {
+                $cmid = (int) $context->instanceid;
+                $places[$courseid]['activities'][$cmid] = ($places[$courseid]['activities'][$cmid] ?? 0) + 1;
+            } else {
+                $places[$courseid]['elsewhere']++;
+            }
+        }
+        return $places;
+    }
+
+    /**
      * The items that nothing links to.
      *
      * An item counts as unlinked when no file alias points at it. Copies made from it are independent files and are not

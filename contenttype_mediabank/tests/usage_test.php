@@ -195,4 +195,42 @@ final class usage_test extends \advanced_testcase {
         $this->assertStringNotContainsString('Chemistry 101', $html);
         $this->assertStringContainsString('Courses you cannot see', $html);
     }
+
+    /**
+     * The links are grouped by activity, and the item page names and links an activity only to someone who can see it.
+     */
+    public function test_places_name_visible_activities(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $shown = $this->getDataGenerator()->create_module('page', ['course' => $course->id, 'name' => 'Week one page']);
+        $hidden = $this->getDataGenerator()->create_module('page', [
+            'course' => $course->id,
+            'name' => 'Secret page',
+            'visible' => 0,
+        ]);
+        $item = link_helper::create_item('pic.png', media_samples::get('png'));
+        link_helper::create_link($item, \context_module::instance($shown->cmid), 'mod_page', 'content');
+        link_helper::create_link($item, \context_module::instance($shown->cmid), 'mod_page', 'intro');
+        link_helper::create_link($item, \context_module::instance($hidden->cmid), 'mod_page', 'content');
+        link_helper::create_link($item, \context_course::instance($course->id), 'course', 'summary');
+
+        $places = usage::get_places($item);
+        $this->assertSame(2, $places[$course->id]['activities'][$shown->cmid]);
+        $this->assertSame(1, $places[$course->id]['activities'][$hidden->cmid]);
+        $this->assertSame(1, $places[$course->id]['elsewhere']);
+
+        $html = $item->get_content_type_instance()->get_view_content($item);
+        $this->assertStringContainsString('Week one page', $html);
+        $this->assertStringContainsString('Secret page', $html);
+        $this->assertStringContainsString('/mod/page/view.php?id=' . $shown->cmid, $html);
+
+        // A student sees the visible page by name. The hidden page is only counted, with the link in the course summary.
+        $this->setUser($student);
+        $html = $item->get_content_type_instance()->get_view_content($item);
+        $this->assertStringContainsString('Week one page', $html);
+        $this->assertStringNotContainsString('Secret page', $html);
+        $this->assertStringContainsString('you cannot see: 2 link(s)', $html);
+    }
 }

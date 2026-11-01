@@ -227,6 +227,7 @@ class contenttype extends \core_contentbank\contenttype {
      */
     protected function render_usage(\core_contentbank\content $content): string {
         $courses = usage::get_courses($content);
+        $places = usage::get_places($content);
         $heading = \html_writer::tag('h3', get_string('usageheading', 'contenttype_mediabank'), ['class' => 'h5 mt-3']);
         if (!$courses) {
             return $heading . \html_writer::tag('p', get_string('usagenone', 'contenttype_mediabank'));
@@ -250,7 +251,7 @@ class contenttype extends \core_contentbank\contenttype {
                         'title' => get_string('convertcourse', 'contenttype_mediabank'),
                     ]);
                 }
-                $items[] = \html_writer::tag('li', $text);
+                $items[] = \html_writer::tag('li', $text . $this->render_places($content, $course, $places[$course->id] ?? null));
             } else {
                 $hidden += $course->links;
             }
@@ -263,6 +264,39 @@ class contenttype extends \core_contentbank\contenttype {
         }
         return $heading . \html_writer::tag('ul', implode('', $items))
             . \html_writer::tag('p', get_string('usagedeletenote', 'contenttype_mediabank'), ['class' => 'text-muted']);
+    }
+
+    /**
+     * The activities in one course that hold links to the item, as a list with a link to each.
+     *
+     * An activity the viewer cannot see is not named; it is counted with the other places.
+     *
+     * @param \core_contentbank\content $content The item.
+     * @param \stdClass $course The course record.
+     * @param array|null $place This course's entry from {@see usage::get_places()}.
+     * @return string HTML, empty when there is nothing to list.
+     */
+    protected function render_places(\core_contentbank\content $content, \stdClass $course, ?array $place): string {
+        if (!$place) {
+            return '';
+        }
+        $modinfo = get_fast_modinfo($course->id);
+        $rows = [];
+        $unseen = $place['elsewhere'];
+        foreach ($place['activities'] as $cmid => $links) {
+            $cm = $modinfo->cms[$cmid] ?? null;
+            if (!$cm || !$cm->uservisible || $cm->deletioninprogress) {
+                $unseen += $links;
+                continue;
+            }
+            $label = $cm->get_module_type_name() . ': ' . $cm->get_formatted_name();
+            $label = $cm->get_url() ? \html_writer::link($cm->get_url(), $label) : $label;
+            $rows[] = \html_writer::tag('li', $label . ($links > 1 ? ' ' . get_string('usagelinks', 'contenttype_mediabank', $links) : ''));
+        }
+        if ($unseen) {
+            $rows[] = \html_writer::tag('li', get_string('usageelsewhere', 'contenttype_mediabank', $unseen));
+        }
+        return $rows ? \html_writer::tag('ul', implode('', $rows)) : '';
     }
 
     #[\Override]

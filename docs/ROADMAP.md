@@ -25,7 +25,7 @@ Not decided. Each needs a design check against how Moodle works.
 
 - **Convert just my course's link to a copy.** Built, unreleased: a button in *Where this item is used*. Not yet tried by hand in a browser with a real link, and there is no Behat scenario because the test steps cannot create a link without the file picker.
 - **Carry alt text, transcripts and captions with the file.** Today a course gets the bare file. Moodle gives a plugin no standard way to attach these to a file alias, so this is a hard one.
-- **A clearer "where is this used" page,** with links to the activities and not only the course names.
+- **A clearer "where is this used" page.** Built, unreleased: activities are named and linked under each course. Not yet seen in a browser, and the `get_usage` web service still returns courses only.
 - **Translations.** The plugins ship English only. Language packs are welcome: see [TRANSLATING.md](TRANSLATING.md).
 
 ## 3. Ideas for administrators
