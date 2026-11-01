@@ -2,7 +2,7 @@
 
 ## Unreleased
 - *Where this item is used* names the activities in each course that hold links, with a link to each. Hidden or deleted activities are counted, not named. New `usage::get_places()` (ids and counts only). The `get_usage` web service is unchanged.
-- New **Convert to copies** button next to each course in *Where this item is used*, for people with `moodle/course:manageactivities` in that course. New `usage::detach_in_course()` and `usage::get_links_in_course()`; `links_converted` now records the course in `other['courseid']` (0 = all courses). New page `convert.php`. It answers the same for a missing item, a non-media-bank item and an item the course does not link to, so it cannot be used to find out which item ids exist (security audit).
+- New **Convert to copies** button next to each course in *Where this item is used*, for people with `moodle/course:manageactivities` in that course. New `usage::detach_in_course()` and `usage::get_links_in_course()`; `links_converted` now records the course in `other['courseid']` (0 = all courses). New page `convert.php`. It answers the same for a missing item, a non-media-bank item and an item the course does not link to, so it cannot be used to find out which item ids exist (security audit). Only a POST with a valid session key converts; a wrong key is an error. Names use the course context.
 - New `usage::find_unlinked(minage)`: the items nothing links to, largest first. Used by the new `local_mediabank` command `cli/unlinked.php`. No setting, no table.
 
 ## 0.11.1 (2026-10-30)

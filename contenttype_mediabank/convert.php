@@ -48,11 +48,14 @@ $returnurl = $links
     ? new moodle_url('/contentbank/view.php', ['id' => $id, 'contextid' => $content->get_contextid()])
     : new moodle_url('/course/view.php', ['id' => $courseid]);
 $PAGE->set_url(new moodle_url('/contentbank/contenttype/mediabank/convert.php', ['id' => $id, 'courseid' => $courseid]));
-$PAGE->set_context(context_course::instance($course->id));
+$coursecontext = context_course::instance($course->id);
+$PAGE->set_context($coursecontext);
 $PAGE->set_title(get_string('convertcourse', 'contenttype_mediabank'));
-$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_heading(format_string($course->fullname, true, ['context' => $coursecontext]));
 
-if ($links && $confirm && confirm_sesskey()) {
+// Only a POST changes anything, and a wrong session key is an error, not a silent second prompt.
+if ($links && $confirm && data_submitted()) {
+    require_sesskey();
     $count = \contenttype_mediabank\usage::detach_in_course($content, $courseid);
     redirect($returnurl, get_string('convertdone', 'contenttype_mediabank', $count), null,
         \core\output\notification::NOTIFY_SUCCESS);
@@ -65,7 +68,7 @@ if (!$links) {
 } else {
     echo $OUTPUT->confirm(
         get_string('convertconfirm', 'contenttype_mediabank',
-            ['name' => s($content->get_name()), 'course' => format_string($course->shortname), 'links' => $links]),
+            ['name' => s($content->get_name()), 'course' => format_string($course->shortname, true, ['context' => $coursecontext]), 'links' => $links]),
         new single_button(new moodle_url($PAGE->url, ['confirm' => 1]), get_string('convertbutton', 'contenttype_mediabank'),
             'post', single_button::BUTTON_PRIMARY),
         $returnurl
