@@ -280,11 +280,13 @@ class contenttype extends \core_contentbank\contenttype {
         if (!$place) {
             return '';
         }
-        $modinfo = get_fast_modinfo($course->id);
+        // Seeing the course in a list is not enough: names are only for someone who may enter the course.
+        $canenter = can_access_course($course);
+        $modinfo = $canenter ? get_fast_modinfo($course->id) : null;
         $rows = [];
         $unseen = $place['elsewhere'];
         foreach ($place['activities'] as $cmid => $links) {
-            $cm = $modinfo->cms[$cmid] ?? null;
+            $cm = $modinfo ? ($modinfo->cms[$cmid] ?? null) : null;
             if (!$cm || !$cm->uservisible || $cm->deletioninprogress) {
                 $unseen += $links;
                 continue;

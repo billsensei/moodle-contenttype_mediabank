@@ -232,5 +232,12 @@ final class usage_test extends \advanced_testcase {
         $this->assertStringContainsString('Week one page', $html);
         $this->assertStringNotContainsString('Secret page', $html);
         $this->assertStringContainsString('you cannot see: 2 link(s)', $html);
+
+        // Someone who can see the course in the catalogue but cannot enter it learns no activity names.
+        $this->setUser($this->getDataGenerator()->create_user());
+        $html = $item->get_content_type_instance()->get_view_content($item);
+        $this->assertStringContainsString($course->fullname, $html);
+        $this->assertStringNotContainsString('Week one page', $html);
+        $this->assertStringContainsString('you cannot see: 4 link(s)', $html);
     }
 }
