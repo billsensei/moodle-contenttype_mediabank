@@ -39,6 +39,21 @@ if ($unrecognised || $options['help'] || (int) $options['days'] < 0) {
     exit($options['help'] ? 0 : 1);
 }
 
+/**
+ * Make an item name safe to print: no control characters, and in CSV no leading character a spreadsheet reads as a formula.
+ *
+ * @param string $name The item name.
+ * @param bool $csv True when the name goes into a CSV file.
+ * @return string
+ */
+function local_mediabank_safe_name(string $name, bool $csv): string {
+    $name = preg_replace('/[\x00-\x08\x0a-\x1f\x7f]/', ' ', $name);
+    if ($csv && preg_match('/^[=+\-@\t\r]/', $name)) {
+        $name = "'" . $name;
+    }
+    return $name;
+}
+
 $items = \contenttype_mediabank\usage::find_unlinked((int) $options['days'] * DAYSECS);
 $total = 0;
 if ($options['csv']) {
@@ -48,11 +63,12 @@ foreach ($items as $item) {
     $size = $item->get_file()->get_filesize();
     $total += $size;
     if ($options['csv']) {
-        cli_writeln(implode(',', [$item->get_id(), '"' . str_replace('"', '""', $item->get_name()) . '"', $size,
+        $name = str_replace('"', '""', local_mediabank_safe_name($item->get_name(), true));
+        cli_writeln(implode(',', [$item->get_id(), '"' . $name . '"', $size,
             date('Y-m-d', $item->get_content()->timecreated)]));
     } else {
         cli_writeln(sprintf('%6d  %10s  %s  %s', $item->get_id(), display_size($size),
-            userdate($item->get_content()->timecreated, '%Y-%m-%d'), $item->get_name()));
+            userdate($item->get_content()->timecreated, '%Y-%m-%d'), local_mediabank_safe_name($item->get_name(), false)));
     }
 }
 if (!$options['csv']) {

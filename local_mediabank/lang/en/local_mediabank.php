@@ -26,3 +26,13 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Media bank';
 $string['privacy:metadata'] = 'The media bank local plugin does not store any personal data.';
+$string['show'] = 'Show';
+$string['unlinkedlimit'] = 'Only the largest {$a} items are listed. Use the command-line report for the full list.';
+$string['unlinkedname'] = 'Item';
+$string['unlinkednone'] = 'Every item is linked from somewhere, or none is old enough.';
+$string['unlinkedolderthan'] = 'Only items uploaded at least this many days ago';
+$string['unlinkedreport'] = 'Media bank: items nobody links to';
+$string['unlinkedreport_intro'] = 'These media bank items are not linked from any course or activity. A copy made from an item is independent and does not count as a link. Nothing here is changed or deleted by this page: open an item to delete it from the content bank.';
+$string['unlinkedsize'] = 'Size';
+$string['unlinkedsummary'] = '{$a->count} item(s) with no links, {$a->size} in all.';
+$string['unlinkeduploaded'] = 'Uploaded';

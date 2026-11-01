@@ -2,6 +2,8 @@
 
 ## Unreleased
 - New command `php local/mediabank/cli/unlinked.php [--days=N] [--csv]`: list the items that nothing links to, largest first, with the total size. Read-only. `--days` skips recent uploads. Needs the matching change in contenttype_mediabank.
+- New page Site administration > Reports > Media bank: items nobody links to (`unlinked.php`, `settings.php`, 2 Behat scenarios). Read-only; shows the largest 500 items; optional minimum age in days.
+- The command's CSV output prefixes a name starting with = + - @ or tab with an apostrophe, and control characters are replaced with a space (found by a security review).
 
 ## 0.3.1 (2026-10-30)
 Hardening only. The same code was put in the 0.3.0 zip attached to the v0.11.0 release on 2026-10-30 without a new version number (it was still 2026102904), so an install made before then does not have it and Moodle did not offer an upgrade. This release carries it under a new number (2026103000): install it over any 0.3.0 and Moodle upgrades.
