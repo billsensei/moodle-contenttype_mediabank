@@ -31,7 +31,7 @@ Not decided. Each needs a design check against how Moodle works.
 ## 3. Ideas for administrators
 
 - **Listing in the Moodle plugins directory,** so sites can install and update from Moodle itself. The listing text and checklist are ready in [PLUGIN-DIRECTORY.md](PLUGIN-DIRECTORY.md); submitting waits on the stable-release work above.
-- **A report of items nobody links to,** to help clear space.
+- **A report of items nobody links to,** to help clear space. A command-line version is built (`cli/unlinked.php`, unreleased); a page in the admin menu is not.
 
 ## 4. Video, audio and files
 

@@ -55,6 +55,31 @@ final class usage_test extends \advanced_testcase {
     }
 
     /**
+     * Items nothing links to are found, largest first, and a minimum age hides new ones.
+     */
+    public function test_unlinked_items_are_found(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        $linked = link_helper::create_item('linked.png', media_samples::get('png'));
+        $small = link_helper::create_item('small.txt.png', media_samples::get('png'));
+        link_helper::create_link($linked, \context_course::instance($course->id));
+
+        $found = usage::find_unlinked();
+        $this->assertSame([$small->get_id()], array_keys($found));
+
+        // A draft link does not count as use.
+        link_helper::create_link($small, \context_user::instance(get_admin()->id), 'user', 'draft');
+        $this->assertCount(1, usage::find_unlinked());
+
+        // Too new for a one-day minimum; old enough once the record is back-dated.
+        $this->assertCount(0, usage::find_unlinked(DAYSECS));
+        $DB->set_field('contentbank_content', 'timecreated', time() - 2 * DAYSECS, ['id' => $small->get_id()]);
+        $this->assertCount(1, usage::find_unlinked(DAYSECS));
+    }
+
+    /**
      * An item with links cannot be deleted by hand, and can again once the links are converted.
      */
     public function test_linked_item_cannot_be_deleted_by_hand(): void {

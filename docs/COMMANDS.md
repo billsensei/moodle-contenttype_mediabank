@@ -312,3 +312,7 @@ Test traps met:
 - A control was used for each rule: with the rule removed, the test for it fails.
 Real files: 67 SVG files that declare `ASCII` as their encoding were refused by the first encoding rule, so the list of accepted encodings was widened; about 97% of ordinary editor-made SVG files now pass.
 Four automated security reviews each found real problems, all fixed before release and listed in `contenttype_mediabank/CHANGES.md` (0.11.0). The last was a regular expression that gave up and was read as "nothing found"; every refusing search now treats failure as a match. The check has had **no manual review**.
+
+## Report of items nobody links to (2026-11-01, unreleased)
+Roadmap item "a report of items nobody links to". Built as `usage::find_unlinked(int $minage)` in contenttype_mediabank and `local_mediabank/cli/unlinked.php [--days=N] [--csv]`. Read-only; one `search_references_count` per item, so it is slow on very large banks (same cost class as `find_unprepared`). A copy is independent and does not count as a link; a draft link does not count either.
+Test: `usage_test::test_unlinked_items_are_found` (6 tests, 28 assertions in usage_test on 5.3). Not yet run on 4.5-5.2 or through the CLI against a real site. No admin-menu page yet.

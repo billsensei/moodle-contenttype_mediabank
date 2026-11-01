@@ -8,7 +8,7 @@ and the bundle zip attached.
 
 ## Unreleased
 
-Nothing yet.
+- `local_mediabank`: new command `php local/mediabank/cli/unlinked.php [--days=N] [--csv]` lists the items that nothing links to, largest first, to help clear space. It only reads. Uses the new `usage::find_unlinked()` in `contenttype_mediabank`.
 
 ## [0.11.1] - 2026-10-30
 

@@ -95,6 +95,41 @@ class usage {
     }
 
     /**
+     * The items that nothing links to.
+     *
+     * An item counts as unlinked when no file alias points at it. Copies made from it are independent files and are not
+     * counted. Newest items are skipped when a minimum age is given, so a file uploaded an hour ago for a lesson not yet
+     * built is not reported.
+     *
+     * @param int $minage Only items at least this many seconds old. 0 for all.
+     * @return \core_contentbank\content[] Item id => item, largest file first.
+     */
+    public static function find_unlinked(int $minage = 0): array {
+        global $DB;
+        $found = [];
+        $sizes = [];
+        $params = ['contenttype' => 'contenttype_mediabank'];
+        $select = 'contenttype = :contenttype';
+        if ($minage > 0) {
+            $select .= ' AND timecreated <= :cutoff';
+            $params['cutoff'] = time() - $minage;
+        }
+        $records = $DB->get_recordset_select('contentbank_content', $select, $params, 'id');
+        foreach ($records as $record) {
+            $content = new content($record);
+            $file = $content->get_file();
+            if (!$file || self::count_links($content) > 0) {
+                continue;
+            }
+            $found[$record->id] = $content;
+            $sizes[$record->id] = $file->get_filesize();
+        }
+        $records->close();
+        arsort($sizes);
+        return array_replace(array_flip(array_keys($sizes)), $found);
+    }
+
+    /**
      * Make every link to a file carry the file's current content.
      *
      * A link nobody has opened is stored without the content of its own, and one that was synced before the item was
