@@ -42,20 +42,22 @@ try {
     $content = null;
 }
 
-$returnurl = $content ? new moodle_url('/contentbank/view.php', ['id' => $id, 'contextid' => $content->get_contextid()])
+// Only a course that really links to the item is sent on to the item. Anyone else goes back to the course, whatever the id.
+$links = $content ? count(\contenttype_mediabank\usage::get_links_in_course($content, $courseid)) : 0;
+$returnurl = $links
+    ? new moodle_url('/contentbank/view.php', ['id' => $id, 'contextid' => $content->get_contextid()])
     : new moodle_url('/course/view.php', ['id' => $courseid]);
 $PAGE->set_url(new moodle_url('/contentbank/contenttype/mediabank/convert.php', ['id' => $id, 'courseid' => $courseid]));
 $PAGE->set_context(context_course::instance($course->id));
 $PAGE->set_title(get_string('convertcourse', 'contenttype_mediabank'));
 $PAGE->set_heading(format_string($course->fullname));
 
-if ($content && $confirm && confirm_sesskey()) {
+if ($links && $confirm && confirm_sesskey()) {
     $count = \contenttype_mediabank\usage::detach_in_course($content, $courseid);
     redirect($returnurl, get_string('convertdone', 'contenttype_mediabank', $count), null,
         \core\output\notification::NOTIFY_SUCCESS);
 }
 
-$links = $content ? count(\contenttype_mediabank\usage::get_links_in_course($content, $courseid)) : 0;
 echo $OUTPUT->header();
 if (!$links) {
     echo $OUTPUT->notification(get_string('convertnolinks', 'contenttype_mediabank'), \core\output\notification::NOTIFY_INFO);
