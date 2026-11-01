@@ -239,11 +239,18 @@ class contenttype extends \core_contentbank\contenttype {
                 $other += $course->links;
             } else if (\core_course_category::can_view_course_info($course)) {
                 $name = format_string($course->fullname, true, ['context' => \context_course::instance($course->id)]);
-                $items[] = \html_writer::tag('li', get_string(
-                    'usagecourse',
-                    'contenttype_mediabank',
-                    (object) ['name' => $name, 'links' => $course->links]
-                ));
+                $text = get_string('usagecourse', 'contenttype_mediabank', (object) ['name' => $name, 'links' => $course->links]);
+                if (has_capability('moodle/course:manageactivities', \context_course::instance($course->id))) {
+                    $url = new \moodle_url('/contentbank/contenttype/mediabank/convert.php', [
+                        'id' => $content->get_id(),
+                        'courseid' => $course->id,
+                    ]);
+                    $text .= ' ' . \html_writer::link($url, get_string('usageconvert', 'contenttype_mediabank'), [
+                        'class' => 'btn btn-sm btn-secondary ms-2',
+                        'title' => get_string('convertcourse', 'contenttype_mediabank'),
+                    ]);
+                }
+                $items[] = \html_writer::tag('li', $text);
             } else {
                 $hidden += $course->links;
             }

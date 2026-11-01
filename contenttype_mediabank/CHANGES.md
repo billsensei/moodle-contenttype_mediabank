@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- New **Convert to copies** button next to each course in *Where this item is used*, for people with `moodle/course:manageactivities` in that course. New `usage::detach_in_course()` and `usage::get_links_in_course()`; `links_converted` now records the course in `other['courseid']` (0 = all courses). New page `convert.php`.
 - New `usage::find_unlinked(minage)`: the items nothing links to, largest first. Used by the new `local_mediabank` command `cli/unlinked.php`. No setting, no table.
 
 ## 0.11.1 (2026-10-30)

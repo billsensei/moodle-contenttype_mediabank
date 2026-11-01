@@ -23,7 +23,7 @@ These are the gaps the guides already admit to. Closing them is what would justi
 
 Not decided. Each needs a design check against how Moodle works.
 
-- **Convert just my course's link to a copy.** Today a teacher picks the item again and chooses "Make a copy of the file", and only a manager can convert all links at once.
+- **Convert just my course's link to a copy.** Built, unreleased: a button in *Where this item is used*. Not yet tried by hand in a browser with a real link, and there is no Behat scenario because the test steps cannot create a link without the file picker.
 - **Carry alt text, transcripts and captions with the file.** Today a course gets the bare file. Moodle gives a plugin no standard way to attach these to a file alias, so this is a hard one.
 - **A clearer "where is this used" page,** with links to the activities and not only the course names.
 - **Translations.** The plugins ship English only. Language packs are welcome: see [TRANSLATING.md](TRANSLATING.md).

@@ -220,6 +220,25 @@ class usage {
     }
 
     /**
+     * The links to the item that sit inside one course.
+     *
+     * @param \core_contentbank\content $content The item.
+     * @param int $courseid The course.
+     * @return \stored_file[]
+     */
+    public static function get_links_in_course(\core_contentbank\content $content, int $courseid): array {
+        $links = [];
+        foreach (self::get_links($content) as $link) {
+            $context = \context::instance_by_id($link->get_contextid(), IGNORE_MISSING);
+            $coursecontext = $context ? $context->get_course_context(false) : false;
+            if ($coursecontext && (int) $coursecontext->instanceid === $courseid) {
+                $links[] = $link;
+            }
+        }
+        return $links;
+    }
+
+    /**
      * Turn every link to the item into an independent copy.
      *
      * Used before an item is deleted or moved, so that no course loses the file.
@@ -228,9 +247,32 @@ class usage {
      * @return int Number of links converted.
      */
     public static function detach_all(\core_contentbank\content $content): int {
+        return self::convert($content, self::get_links($content));
+    }
+
+    /**
+     * Turn the links to the item that sit inside one course into independent copies. Other courses keep their links.
+     *
+     * @param \core_contentbank\content $content The item.
+     * @param int $courseid The course.
+     * @return int Number of links converted.
+     */
+    public static function detach_in_course(\core_contentbank\content $content, int $courseid): int {
+        return self::convert($content, self::get_links_in_course($content, $courseid), $courseid);
+    }
+
+    /**
+     * Convert the given links to copies and log it.
+     *
+     * @param \core_contentbank\content $content The item.
+     * @param \stored_file[] $links The links to convert.
+     * @param int $courseid The course they are in, or 0 for all courses.
+     * @return int Number of links converted.
+     */
+    protected static function convert(\core_contentbank\content $content, array $links, int $courseid = 0): int {
         $count = 0;
         $fs = get_file_storage();
-        foreach (self::get_links($content) as $link) {
+        foreach ($links as $link) {
             // A link nobody has opened yet is stored without its content. Sync it first, or the copy would be empty.
             $link->sync_external_file();
             // Core copies the item's current content into the link, then drops the reference.
@@ -238,7 +280,7 @@ class usage {
             $count++;
         }
         if ($count > 0) {
-            event\links_converted::create_from_item($content, $count)->trigger();
+            event\links_converted::create_from_item($content, $count, $courseid)->trigger();
         }
         return $count;
     }

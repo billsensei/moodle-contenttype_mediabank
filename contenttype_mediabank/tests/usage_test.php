@@ -80,6 +80,35 @@ final class usage_test extends \advanced_testcase {
     }
 
     /**
+     * Converting one course's links leaves the other courses linked, and the converted file keeps its content.
+     */
+    public function test_detach_in_course_only_touches_that_course(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course1 = $this->getDataGenerator()->create_course();
+        $course2 = $this->getDataGenerator()->create_course();
+        $item = link_helper::create_item('pic.png', media_samples::get('png'));
+        $link1 = link_helper::create_link($item, \context_course::instance($course1->id));
+        link_helper::create_link($item, \context_course::instance($course1->id), 'mod_label', 'intro');
+        link_helper::create_link($item, \context_course::instance($course2->id));
+
+        $sink = $this->redirectEvents();
+        $this->assertSame(2, usage::detach_in_course($item, (int) $course1->id));
+        $events = array_filter($sink->get_events(), fn($e) => $e instanceof \contenttype_mediabank\event\links_converted);
+        $sink->close();
+        $this->assertCount(1, $events);
+        $this->assertEquals($course1->id, reset($events)->other['courseid']);
+
+        $this->assertSame(1, usage::count_links($item));
+        $this->assertArrayHasKey($course2->id, usage::get_courses($item));
+        $copy = get_file_storage()->get_file_by_id($link1->get_id());
+        $this->assertFalse($copy->is_external_file());
+        $this->assertSame(media_samples::get('png'), $copy->get_content());
+        // Nothing left to convert: no second event, no error.
+        $this->assertSame(0, usage::detach_in_course($item, (int) $course1->id));
+    }
+
+    /**
      * An item with links cannot be deleted by hand, and can again once the links are converted.
      */
     public function test_linked_item_cannot_be_deleted_by_hand(): void {

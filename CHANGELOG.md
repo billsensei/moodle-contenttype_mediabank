@@ -8,6 +8,7 @@ and the bundle zip attached.
 
 ## Unreleased
 
+- `contenttype_mediabank`: a teacher who can edit a course's activities can convert just that course's links to an item into copies, from a **Convert to copies** button in *Where this item is used* (new page `convert.php`, asks first, needs the session key). Other courses keep their links. No new capability: it uses `moodle/course:manageactivities` in the course.
 - `local_mediabank`: new command `php local/mediabank/cli/unlinked.php [--days=N] [--csv]` lists the items that nothing links to, largest first, to help clear space. It only reads. Uses the new `usage::find_unlinked()` in `contenttype_mediabank`. The same report is a page under Site administration > Reports > "Media bank: items nobody links to" (administrators only, read-only, largest 500 items, optional minimum age in days). CSV output neutralises names that a spreadsheet would read as a formula.
 
 ## [0.11.1] - 2026-10-30

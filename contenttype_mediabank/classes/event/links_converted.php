@@ -41,13 +41,14 @@ class links_converted extends base {
      *
      * @param \core_contentbank\content $item The item whose links were converted.
      * @param int $count How many links.
+     * @param int $courseid The one course whose links were converted, or 0 for all courses.
      * @return self
      */
-    public static function create_from_item(\core_contentbank\content $item, int $count): self {
+    public static function create_from_item(\core_contentbank\content $item, int $count, int $courseid = 0): self {
         return self::create([
             'objectid' => $item->get_id(),
             'context' => \context::instance_by_id($item->get_contextid()),
-            'other' => ['count' => $count],
+            'other' => ['count' => $count, 'courseid' => $courseid],
         ]);
     }
 
@@ -59,7 +60,8 @@ class links_converted extends base {
     #[\Override]
     public function get_description() {
         return "The user with id '$this->userid' converted {$this->other['count']} link(s) to the media bank item with id " .
-            "'$this->objectid' into copies.";
+            "'$this->objectid' into copies" .
+            (empty($this->other['courseid']) ? '.' : " in the course with id '{$this->other['courseid']}'.");
     }
 
     #[\Override]
