@@ -24,7 +24,7 @@ These are the gaps the guides already admit to. Closing them is what would justi
 Not decided. Each needs a design check against how Moodle works.
 
 - **Convert just my course's link to a copy.** Built, unreleased: a button in *Where this item is used*. Not yet tried by hand in a browser with a real link. Behat covers only the "no links" answer, not a real conversion, because the test steps cannot create a link without the file picker.
-- **Carry alt text, transcripts and captions with the file.** Today a course gets the bare file for video, audio and PDF. For **pictures**, `filter_mediabank` 0.1.0 (Alpha, unreleased) now fills in the bank's alt text on a linked picture. Not done: captions and transcripts. A student cannot read the item's context, so the caption file would need a per-course copy kept in sync and its own file route; that needs a design review first.
+- **Carry alt text, transcripts and captions with the file.** Today a course gets the bare file for video, audio and PDF. For **pictures**, `filter_mediabank` 0.1.0 (Alpha, unreleased) now fills in the bank's alt text on a linked picture. Not done: captions and transcripts. A student cannot read the item's context, so the caption file would need a per-course copy kept in sync and its own file route; the design is written up in [CAPTIONS-DESIGN.md](CAPTIONS-DESIGN.md) and waits for a decision.
 - **A clearer "where is this used" page.** Built, unreleased: activities are named and linked under each course. Not yet seen in a browser, and the `get_usage` web service still returns courses only.
 - **Translations.** The plugins ship English only. Language packs are welcome: see [TRANSLATING.md](TRANSLATING.md).
 
