@@ -164,6 +164,64 @@ final class link_captions_test extends \advanced_testcase {
     }
 
     /**
+     * A hidden book chapter keeps its files, and so its captions, from people who may not see it.
+     */
+    public function test_hidden_book_chapter(): void {
+        $this->resetAfterTest();
+        $item = $this->make_item();
+        $course = $this->getDataGenerator()->create_course();
+        $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $book = $this->getDataGenerator()->create_module('book', ['course' => $course->id]);
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_book');
+        $shown = $generator->create_chapter(['bookid' => $book->id]);
+        $hidden = $generator->create_chapter(['bookid' => $book->id, 'hidden' => 1]);
+        $other = $this->getDataGenerator()->create_module('book', ['course' => $course->id]);
+        $foreign = $generator->create_chapter(['bookid' => $other->id]);
+        $context = \context_module::instance($book->cmid);
+        $shownalias = link_helper::create_link($item, $context, 'mod_book', 'chapter', (int) $shown->id);
+        $hiddenalias = link_helper::create_link($item, $context, 'mod_book', 'chapter', (int) $hidden->id);
+        // A chapter id that belongs to a different book, and one that does not exist.
+        $foreignalias = link_helper::create_link($item, $context, 'mod_book', 'chapter', (int) $foreign->id);
+        $missingalias = link_helper::create_link($item, $context, 'mod_book', 'chapter', 999999);
+
+        $this->setUser($student);
+        $this->assertSame(self::VTT, $this->fetch($shownalias));
+        $this->assertNull($this->fetch($hiddenalias), 'Hidden chapter.');
+        $this->assertNull($this->fetch($foreignalias), 'Chapter of another book.');
+        $this->assertNull($this->fetch($missingalias), 'No such chapter.');
+        $this->setUser($teacher);
+        $this->assertSame(self::VTT, $this->fetch($hiddenalias));
+    }
+
+    /**
+     * Each listed module is asked for the capability its own file code asks for, and a student without it gets nothing.
+     */
+    public function test_module_capability_is_required(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $item = $this->make_item();
+        $course = $this->getDataGenerator()->create_course();
+        $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $studentrole = $DB->get_field('role', 'id', ['shortname' => 'student'], MUST_EXIST);
+        $modules = [
+            'resource' => ['mod_resource', 'content', 'mod/resource:view'],
+            'page' => ['mod_page', 'content', 'mod/page:view'],
+            'folder' => ['mod_folder', 'content', 'mod/folder:view'],
+        ];
+        foreach ($modules as $name => [$component, $filearea, $capability]) {
+            $module = $this->getDataGenerator()->create_module($name, ['course' => $course->id]);
+            $context = \context_module::instance($module->cmid);
+            $alias = link_helper::create_link($item, $context, $component, $filearea);
+            $this->setUser($student);
+            $this->assertSame(self::VTT, $this->fetch($alias), $name);
+            assign_capability($capability, CAP_PROHIBIT, $studentrole, $context->id, true);
+            \accesslib_clear_all_caches_for_unit_testing();
+            $this->assertNull($this->fetch($alias), $name . ' without ' . $capability);
+        }
+    }
+
+    /**
      * A replaced caption is served at once, and a converted copy, a plain file and an item without captions give nothing.
      */
     public function test_changes_to_the_bank_show_at_once(): void {

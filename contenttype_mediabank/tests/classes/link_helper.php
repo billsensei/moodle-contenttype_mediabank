@@ -53,13 +53,15 @@ class link_helper {
      * @param \context $context Where the link lives, for example a course module context.
      * @param string $component Component owning the link.
      * @param string $filearea File area of the link.
+     * @param int $itemid Item id of the link, for example a book chapter's id.
      * @return \stored_file
      */
     public static function create_link(
         \core_contentbank\content $item,
         \context $context,
         string $component = 'mod_resource',
-        string $filearea = 'content'
+        string $filearea = 'content',
+        int $itemid = 0
     ): \stored_file {
         $source = $item->get_file();
         $repos = \repository::get_instances(['type' => 'contentbank']);
@@ -76,7 +78,7 @@ class link_helper {
             'contextid' => $context->id,
             'component' => $component,
             'filearea' => $filearea,
-            'itemid' => 0,
+            'itemid' => $itemid,
             'filepath' => '/',
             'filename' => $source->get_filename(),
         ], $repo->id, $reference);

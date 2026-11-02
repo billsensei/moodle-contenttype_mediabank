@@ -32,12 +32,16 @@ class link_captions {
     /** @var string File area name in the URL. No file is stored under it. */
     public const FILEAREA = 'linkcaptions';
 
-    /** @var string[] Activity file areas where being able to see the activity means being able to see the file. */
+    /**
+     * @var array[] Activity file areas, besides the description, where captions are offered: component => [file area,
+     *      the capability the module's own file code asks for]. Each rule here copies what that module checks before it
+     *      serves a file; see viewer_may_read() for the one extra check, a hidden book chapter.
+     */
     protected const MODULE_AREAS = [
-        'mod_resource' => 'content',
-        'mod_page' => 'content',
-        'mod_book' => 'chapter',
-        'mod_folder' => 'content',
+        'mod_resource' => ['content', 'mod/resource:view'],
+        'mod_page' => ['content', 'mod/page:view'],
+        'mod_book' => ['chapter', 'mod/book:read'],
+        'mod_folder' => ['content', 'mod/folder:view'],
     ];
 
     /**
@@ -104,7 +108,7 @@ class link_captions {
             if (!$cm || 'mod_' . $cm->modname !== $component) {
                 return false;
             }
-            return $filearea === 'intro' || (self::MODULE_AREAS[$component] ?? null) === $filearea;
+            return $filearea === 'intro' || (self::MODULE_AREAS[$component][0] ?? null) === $filearea;
         }
         if ($context->contextlevel == CONTEXT_COURSE) {
             return $component === 'course' && in_array($filearea, ['summary', 'section'], true);
@@ -121,6 +125,7 @@ class link_captions {
      * @return bool
      */
     public static function viewer_may_read(\stored_file $alias): bool {
+        global $DB;
         if (!self::is_place_allowed($alias)) {
             return false;
         }
@@ -139,8 +144,16 @@ class link_captions {
             if (!$cm || !$cm->uservisible || $cm->deletioninprogress) {
                 return false;
             }
-            if (isset(self::MODULE_AREAS[$alias->get_component()]) && $alias->get_filearea() !== 'intro') {
-                return has_capability('mod/' . $cm->modname . ':view', $context);
+            if ($alias->get_filearea() === 'intro') {
+                return true;
+            }
+            if (!has_capability(self::MODULE_AREAS[$alias->get_component()][1], $context)) {
+                return false;
+            }
+            if ($alias->get_component() === 'mod_book') {
+                // The chapter's files are filed under the chapter's id. A hidden chapter is for people who may see them.
+                $chapter = $DB->get_record('book_chapters', ['id' => $alias->get_itemid(), 'bookid' => $cm->instance]);
+                return $chapter && (!$chapter->hidden || has_capability('mod/book:viewhiddenchapters', $context));
             }
             return true;
         }

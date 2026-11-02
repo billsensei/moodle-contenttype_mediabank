@@ -91,7 +91,8 @@ The rule must be **no weaker than "may play the video"**, and it must not reveal
    | Alias component / area | Check |
    |---|---|
    | any activity, area `intro` | `require_course_login($course, true, $cm)` (login, enrolment or guest rules, visibility and availability of the activity) |
-   | `mod_resource` / `content`, `mod_page` / `content`, `mod_book` / `chapter`, `mod_folder` / `content` | the same, plus the activity's own *view* capability (`mod/<name>:view`) |
+   | `mod_resource` / `content`, `mod_page` / `content`, `mod_folder` / `content` | the same, plus the capability that module's own file code asks for (`mod/resource:view`, `mod/page:view`, `mod/folder:view`) |
+| `mod_book` / `chapter` | the same, plus `mod/book:read`, and the **chapter must exist in this book and not be hidden** unless the viewer has `mod/book:viewhiddenchapters` (the alias's item id is the chapter id) |
    | `course` / `summary`, `course` / `section` | `require_course_login($course)` |
    | everything else (forum posts, assignment submissions, quiz answers, block content, user files) | **refused**, because there access depends on the record (group, owner), which the route cannot know |
 
@@ -169,3 +170,7 @@ The rule must be **no weaker than "may play the video"**, and it must not reveal
 **Tests:** `contenttype_mediabank/tests/link_captions_test.php` (5 tests, 37 assertions: a student through a File resource; an outsider, a hidden activity, a wrong context and bad arguments; only the listed places, with a forum post, attachment and block refused; a replaced or removed caption and a converted copy; guests follow the course's guest access) and `filter_mediabank/tests/media_tracks_test.php` (7 tests, 30 assertions: track and transcript, audio with `src`, players left alone, no captions, other contexts and places, hostile text through the cleaner, other stages do nothing). With the place check switched off, one test in each file fails. The contenttype suite is 127 tests and the filter suite 20, all passing on 5.3.
 
 **Not done or not tested:** a Behat scenario (the steps cannot create a link without the file picker); a real browser showing the captions button; other Moodle versions; the Moodle mobile app.
+
+**Corrections after a security review (2 November 2026, same day).** The first build treated "may see the activity" as enough for every listed area. That is wrong for a book: a chapter can be hidden on its own, and the Book module asks for `mod/book:read`, not `mod/book:view` (which does not exist). The rule now copies what each module's own file code checks (table in section 5) and the hidden-chapter rule is tested (`test_hidden_book_chapter`, which fails without it; `test_module_capability_is_required` for the other three). Lesson: for each listed place, read that module's `*_pluginfile()` and copy its checks before listing it.
+
+**Known and accepted:** the filter decides only by place and context, not by record. An author of a book can put the URL of a link that lives in a hidden chapter into a visible chapter of the same book, and the transcript then shows there. That author can already read the hidden chapter and the item's transcript, and could paste the text, so it is not a way past any access rule. The captions file itself is still refused to anyone who may not read that chapter. Similarly a restricted-but-listed activity (access rules, "show description") is treated as not readable by the route, which is stricter than core's intro rule.
