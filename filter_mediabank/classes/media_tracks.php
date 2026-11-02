@@ -104,11 +104,42 @@ class media_tracks {
         $transcript = '';
         $words = trim($item->get_transcript());
         if ($words !== '') {
-            $transcript = '<details class="filter-mediabank-transcript"><summary>'
-                . s(get_string('transcript', 'filter_mediabank')) . '</summary><p>'
-                . nl2br(s($words), false) . '</p></details>';
+            $heading = s(get_string('transcript', 'filter_mediabank'));
+            $body = nl2br(s($words), false);
+            $transcript = self::cleaner_keeps_details()
+                ? '<details class="filter-mediabank-transcript"><summary>' . $heading . '</summary><p>' . $body . '</p></details>'
+                : '<div class="filter-mediabank-transcript"><p><strong>' . $heading . '</strong></p><p>' . $body . '</p></div>';
         }
         return ['track' => $track, 'transcript' => $transcript];
+    }
+
+    /** @var bool|null Whether Moodle's HTML cleaner keeps <details>, found once per request. Null until asked. */
+    protected static ?bool $detailsallowed = null;
+
+    /**
+     * Whether the transcript can be a collapsible block on this site.
+     *
+     * Moodle 5.3 added <details> and <summary> to what its cleaner allows. On earlier versions the cleaner would strip
+     * the tags and leave a stray word, so a plain labelled block is used there. The cleaner is asked rather than the
+     * version number, so a site that changes the rules gets the right answer too.
+     *
+     * @return bool
+     */
+    public static function cleaner_keeps_details(): bool {
+        if (self::$detailsallowed === null) {
+            $cleaned = clean_text('<details><summary>a</summary><p>b</p></details>', FORMAT_HTML);
+            self::$detailsallowed = str_contains($cleaned, '<details') && str_contains($cleaned, '<summary');
+        }
+        return self::$detailsallowed;
+    }
+
+    /**
+     * Forget what was found, or fix the answer. For tests.
+     *
+     * @param bool|null $force True or false to fix the answer, null to ask the cleaner again.
+     */
+    public static function reset_details_probe(?bool $force = null): void {
+        self::$detailsallowed = $force;
     }
 
     /**

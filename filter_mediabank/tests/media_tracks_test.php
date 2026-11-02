@@ -49,6 +49,7 @@ final class media_tracks_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         link_lookup::reset_cache();
+        media_tracks::reset_details_probe();
         $course = $this->getDataGenerator()->create_course();
         $label = $this->getDataGenerator()->create_module('label', ['course' => $course->id]);
         $context = \context_module::instance($label->cmid);
@@ -84,9 +85,13 @@ final class media_tracks_test extends \advanced_testcase {
 
     /**
      * A player gets a captions track that is not on by default, and a transcript after it.
+     *
+     * @param bool $details Whether the cleaner is taken to keep <details>.
      */
-    public function test_track_and_transcript_are_added(): void {
+    #[\PHPUnit\Framework\Attributes\DataProvider('details_provider')]
+    public function test_track_and_transcript_are_added(bool $details): void {
         [$filter, $url, $alias] = $this->setup_player(true, "Hello & welcome\n<b>Line two</b>");
+        media_tracks::reset_details_probe($details);
         $out = $this->apply($filter, '<p><video controls><source src="' . s($url) . '" type="video/mp4"></video></p>');
         $track = '<track kind="captions" label="Captions" src="'
             . s(\contenttype_mediabank\link_captions::url_for($alias)->out(false)) . '">';
@@ -94,9 +99,23 @@ final class media_tracks_test extends \advanced_testcase {
         $this->assertStringNotContainsString('default', $out);
         // The track is inside the element, the transcript right after it.
         $this->assertLessThan(strpos($out, '</video>'), strpos($out, '<track'));
-        $this->assertGreaterThan(strpos($out, '</video>'), strpos($out, '<details'));
-        $this->assertStringContainsString('<summary>Transcript</summary>', $out);
+        $this->assertGreaterThan(strpos($out, '</video>'), strpos($out, 'filter-mediabank-transcript'));
+        if ($details) {
+            $this->assertStringContainsString('<details class="filter-mediabank-transcript"><summary>Transcript</summary>', $out);
+        } else {
+            $this->assertStringNotContainsString('<details', $out);
+            $this->assertStringContainsString('<div class="filter-mediabank-transcript"><p><strong>Transcript</strong></p>', $out);
+        }
         $this->assertStringContainsString('Hello &amp; welcome<br>' . "\n" . '&lt;b&gt;Line two&lt;/b&gt;', $out);
+    }
+
+    /**
+     * Both forms of the transcript block.
+     *
+     * @return array
+     */
+    public static function details_provider(): array {
+        return ['collapsible block' => [true], 'plain block' => [false]];
     }
 
     /**
@@ -180,7 +199,8 @@ final class media_tracks_test extends \advanced_testcase {
         $this->assertStringNotContainsString('onloadstart', $cleaned);
         $this->assertStringContainsString('&lt;script&gt;', $cleaned);
         $this->assertStringContainsString('<track', $cleaned, 'The cleaner keeps a caption track.');
-        $this->assertStringContainsString('<details', $cleaned, 'The cleaner keeps the transcript.');
+        $this->assertStringContainsString('filter-mediabank-transcript', $cleaned, 'The cleaner keeps the transcript.');
+        $this->assertStringContainsString('&lt;script&gt;alert(1)&lt;/script&gt;', $cleaned);
     }
 
     /**
