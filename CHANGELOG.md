@@ -8,6 +8,7 @@ and the bundle zip attached.
 
 ## Unreleased
 
+- Documentation only: five new screenshots (captions on a video, the transcript, *Where this item is used* with Convert to copies, the items-nobody-links-to report, and Manage filters) in `docs/images/`, and the scripts to retake them (`scripts/screenshots/`). Taking them was also the first check of the 0.12.0 features in a real browser: no fault was found.
 - Documentation only: the listing guide (`docs/PLUGIN-DIRECTORY.md`) now follows the Moodle Marketplace, which replaced the Moodle Plugins directory, and covers all three plugins.
 
 ## [0.12.0] - 2026-11-02

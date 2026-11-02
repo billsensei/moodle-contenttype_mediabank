@@ -1,0 +1,4 @@
+@core @contenttype @contenttype_mediabank @zz_seed
+Feature: Seed demo content for screenshots (throwaway, copy into a temporary copy of the plugin's tests/behat as zz_seed.feature)
+  Scenario: Seed
+    Given the media bank demo content exists

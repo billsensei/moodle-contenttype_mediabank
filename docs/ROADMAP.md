@@ -17,7 +17,7 @@ These are the gaps the guides already admit to. Closing them is what would justi
 | Only the **File** resource was tried for Link or Copy | Try the choice in other activities that use the standard file picker (for example Folder or Assignment attachments) and fix what differs. |
 | The browser scenarios do not cover video or SVG | The 6 scenarios were re-run for 0.11.1 and pass in CI on all four Moodle versions. Add scenarios for video upload and for SVG. |
 | Site-level items were covered only by automated tests | Browser scenarios for items in the site context. |
-| The captions button, transcript and alt text have not been seen in a real browser | Try a File resource and a Page with a linked video and picture, as a student, on a real site; add a Behat scenario if the steps allow it. |
+| The captions button, transcript and alt text were tried in headless Chromium on a test site only | Try a File resource and a Page with a linked video and picture, as a student, on a real site, in other browsers and with a screen reader, and on a page saved by the TinyMCE editor; add a Behat scenario if the steps allow it. |
 | `filter_mediabank` is Alpha and new | Real use on a site, then move it to Beta. |
 | Very large files and a real web server | Test uploads near the 1 GB limit through a real web server, with and without antivirus scanning. |
 
@@ -25,7 +25,7 @@ These are the gaps the guides already admit to. Closing them is what would justi
 
 Not decided. Each needs a design check against how Moodle works.
 
-- **Convert just my course's link to a copy.** Done in 0.12.0: a **Convert to copies** button in *Where this item is used*. Still open: it has not been tried by hand in a browser with a real link, and Behat covers only the "no links" answer, because the test steps cannot create a link without the file picker.
+- **Convert just my course's link to a copy.** Done in 0.12.0: a **Convert to copies** button in *Where this item is used*. It was clicked through in a browser with a real link on 2 November 2026 (it converts only that course, a plain GET does not convert). Still open: Behat covers only the "no links" answer, because the test steps cannot create a link without the file picker.
 - **Carry alt text, captions and transcripts with the file.** Done in 0.12.0 for courses that **link** to an item, by the optional `filter_mediabank` (Alpha): a linked picture gets the bank's alt text; a video or audio player gets a captions track (off until the viewer turns it on) and a transcript. The design and the decisions are in [CAPTIONS-DESIGN.md](CAPTIONS-DESIGN.md). Still open: plain links to a file, forum posts and assignments, the Moodle mobile app, several caption languages, and a Behat scenario.
 - **A clearer "where is this used" page.** Done in 0.12.0: activities are named and linked under each course. Still open: the `get_usage` web service returns courses only.
 - **Translations.** The plugins ship English only. Language packs are welcome: see [TRANSLATING.md](TRANSLATING.md).

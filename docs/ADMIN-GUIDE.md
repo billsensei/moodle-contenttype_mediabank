@@ -295,7 +295,7 @@ Finally delete the plugin folders from the server (Moodle tells you which). Mood
 - Site-level items in the browser: the browser scenarios used items in a course's content bank; items in the site context were covered by the automated tests only.
 - Activities other than the **File** resource for the Link and Copy choice. Other activities that use Moodle's standard file picker offer the same choice, but only the File resource was exercised.
 - Linting (code style) on Moodle 5.0 to 5.2 on the test machine. GitHub Actions runs it on all four versions.
-- The optional filter in a real browser: the **Captions** button, the **Transcript** block and the text alternative were tested through Moodle's own text formatting and cleaner, not by looking at a page. Nor was a page saved by the TinyMCE editor, or the Convert to copies button with a real link.
+- The optional filter and the Convert to copies button were also tried by a person-driven script in headless Chromium on a Moodle 5.3 test site, as a student, a teacher and an administrator (the **Captions** menu and a caption on screen, the **Transcript** block, a picture getting its text alternative, a File resource shown on its own page, and a click through Convert to copies with a real link). What was not tried: a page saved by the TinyMCE editor, Moodle 5.0 to 5.2 in a browser, browsers other than Chromium, and a screen reader.
 
 **Known limits:**
 - Both plugins are marked **Beta**: released for testing. Try them on a copy of your site first.

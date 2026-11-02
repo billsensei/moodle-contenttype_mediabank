@@ -1,0 +1,109 @@
+<?php
+// Method to paste into class behat_contenttype_mediabank in a temporary copy of the plugin. Not loaded by the plugin.
+
+    // Screenshot seed. Paste this method into the COPY of behat_contenttype_mediabank.php inside a Moodle tree (never into the
+    // repository's own file). See scripts/screenshots/README.md.
+
+    /**
+     * @Given /^the media bank demo content exists$/
+     */
+    public function the_media_bank_demo_content_exists(): void {
+        global $DB, $CFG;
+        require_once($CFG->libdir . '/testing/generator/lib.php');
+        require_once($CFG->dirroot . '/mod/resource/locallib.php');
+        require_once($CFG->libdir . '/resourcelib.php');
+        $assets = getenv('MEDIABANK_SHOT_ASSETS') ?: '/tmp/mediabank-shot-assets';
+        $gen = testing_util::get_data_generator();
+        $fs = get_file_storage();
+        $DB->set_field('course', 'fullname', 'Riverside College', ['id' => SITEID]);
+        $DB->set_field('course', 'shortname', 'Riverside', ['id' => SITEID]);
+        $tessa = $gen->create_user(['username' => 'teacher1', 'password' => 'teacher1', 'firstname' => 'Tessa', 'lastname' => 'Teacher']);
+        $sam = $gen->create_user(['username' => 'student1', 'password' => 'student1', 'firstname' => 'Sam', 'lastname' => 'Student']);
+        $bio = $gen->create_course(['fullname' => 'Biology 101', 'shortname' => 'BIO101', 'numsections' => 1]);
+        $chem = $gen->create_course(['fullname' => 'Chemistry 201', 'shortname' => 'CHEM201', 'numsections' => 1]);
+        foreach ([$bio, $chem] as $course) {
+            $gen->enrol_user($tessa->id, $course->id, 'editingteacher');
+            $gen->enrol_user($sam->id, $course->id, 'student');
+        }
+        $upload = function (string $file, string $name, \stdClass $course, ?\stdClass $user = null) use ($fs, $assets, $tessa) {
+            $user = $user ?? $tessa;
+            \core\session\manager::set_user($user);
+            $ctx = \context_course::instance($course->id);
+            $draft = $fs->create_file_from_pathname([
+                'contextid' => \context_user::instance($user->id)->id, 'component' => 'user', 'filearea' => 'draft',
+                'itemid' => file_get_unused_draft_itemid(), 'filepath' => '/', 'filename' => $file,
+            ], $assets . '/' . $file);
+            $item = (new \contenttype_mediabank\contenttype($ctx))->upload_content($draft);
+            $item->get_content_type_instance()->rename_content($item, $name);
+            return $item;
+        };
+        $link = function ($item, \context $context, string $component, string $filearea, int $sortorder = 0) use ($fs) {
+            \core\session\manager::set_user(get_admin());
+            $source = $item->get_file();
+            $repos = \repository::get_instances(['type' => 'contentbank']);
+            $repo = reset($repos);
+            $reference = \file_storage::pack_reference([
+                'contextid' => $source->get_contextid(), 'component' => $source->get_component(),
+                'filearea' => $source->get_filearea(), 'itemid' => $source->get_itemid(),
+                'filepath' => $source->get_filepath(), 'filename' => $source->get_filename(),
+            ]);
+            return $fs->create_file_from_reference([
+                'contextid' => $context->id, 'component' => $component, 'filearea' => $filearea, 'itemid' => 0,
+                'filepath' => '/', 'filename' => $source->get_filename(), 'sortorder' => $sortorder,
+            ], $repo->id, $reference);
+        };
+        // The items live in the Biology 101 content bank.
+        $video = $upload('cell-division-lecture.mp4', 'Cell division lecture', $bio);
+        $draftvtt = $fs->create_file_from_pathname([
+            'contextid' => \context_user::instance($tessa->id)->id, 'component' => 'user', 'filearea' => 'draft',
+            'itemid' => file_get_unused_draft_itemid(), 'filepath' => '/', 'filename' => 'c.vtt',
+        ], $assets . '/captions.vtt');
+        \contenttype_mediabank\captions::save($video, $draftvtt);
+        $video->merge_metadata(['transcript' => "Welcome to week one. Today we look at how a cell divides.\n"
+            . "Before mitosis begins, the cell copies its DNA.\n"
+            . "Then the chromosomes line up in the middle of the cell.\n"
+            . "Finally the cell splits into two identical daughter cells."]);
+        $diagram = $upload('mitosis-diagram.png', 'The stages of mitosis', $bio);
+        $diagram->merge_metadata(['alt' => 'Diagram of the four stages of mitosis in order: prophase, metaphase, anaphase and telophase']);
+        $handout = $upload('lab-safety-handout.pdf', 'Lab safety handout', $bio);
+        $upload('cell-division-lecture.mp4', 'Orientation week welcome', $bio);
+        $upload('mitosis-diagram.png', 'Draft poster for open day', $bio);
+        $upload('lab-safety-handout.pdf', 'Lab safety handout (2024 edition)', $bio);
+        $biocontext = fn($cm) => \context_module::instance($cm->cmid);
+        // Biology 101: a page with the video and the picture, the video on its own as a File resource, and the handout.
+        $page = $gen->create_module('page', ['course' => $bio->id, 'name' => 'Week 1: How a cell divides',
+            'content' => '<p>Watch the lecture, then study the diagram of the four stages.</p>'
+                . '<p><video controls="controls" width="640"><source src="@@PLUGINFILE@@/cell-division-lecture.mp4" type="video/mp4"></video></p>'
+                . '<p><img src="@@PLUGINFILE@@/mitosis-diagram.png" width="600" class="img-fluid"></p>',
+            'contentformat' => FORMAT_HTML, 'display' => RESOURCELIB_DISPLAY_AUTO, 'printheading' => 1]);
+        $pagectx = $biocontext($page);
+        $fs->delete_area_files($pagectx->id, 'mod_page', 'content');
+        $link($video, $pagectx, 'mod_page', 'content');
+        $link($diagram, $pagectx, 'mod_page', 'content');
+        $res = $gen->create_module('resource', ['course' => $bio->id, 'name' => 'Cell division lecture (video)',
+            'display' => RESOURCELIB_DISPLAY_EMBED, 'showdescription' => 0]);
+        $resctx = $biocontext($res);
+        $fs->delete_area_files($resctx->id, 'mod_resource', 'content');
+        $link($video, $resctx, 'mod_resource', 'content', 1);
+        $pdf = $gen->create_module('resource', ['course' => $bio->id, 'name' => 'Lab safety handout',
+            'display' => RESOURCELIB_DISPLAY_AUTO, 'showdescription' => 0]);
+        $pdfctx = $biocontext($pdf);
+        $fs->delete_area_files($pdfctx->id, 'mod_resource', 'content');
+        $link($handout, $pdfctx, 'mod_resource', 'content', 1);
+        // Chemistry 201 uses the handout and the diagram as well.
+        $pdf2 = $gen->create_module('resource', ['course' => $chem->id, 'name' => 'Lab safety handout',
+            'display' => RESOURCELIB_DISPLAY_AUTO, 'showdescription' => 0]);
+        $pdf2ctx = $biocontext($pdf2);
+        $fs->delete_area_files($pdf2ctx->id, 'mod_resource', 'content');
+        $link($handout, $pdf2ctx, 'mod_resource', 'content', 1);
+        $label = $gen->create_module('label', ['course' => $chem->id, 'intro' => '<p>Revise the stages of cell division before the practical.</p>'
+            . '<p><img src="@@PLUGINFILE@@/mitosis-diagram.png" width="500" class="img-fluid"></p>', 'introformat' => FORMAT_HTML]);
+        $labelctx = $biocontext($label);
+        $fs->delete_area_files($labelctx->id, 'mod_label', 'intro');
+        $link($diagram, $labelctx, 'mod_label', 'intro');
+        $DB->set_field('course_sections', 'name', 'Week 2', ['course' => $bio->id, 'section' => 1]);
+        $DB->set_field('course_sections', 'name', 'Week 2', ['course' => $chem->id, 'section' => 1]);
+        filter_set_global_state('mediabank', TEXTFILTER_ON);
+        \core\session\manager::set_user(get_admin());
+        purge_all_caches();
+    }

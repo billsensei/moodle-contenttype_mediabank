@@ -36,7 +36,7 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 
 1. **The repository name.** Moodle's guidance prefers one plugin per repository, named `moodle-{plugintype}_{pluginname}`, with the plugin at the root. This repository holds three plugins in subfolders and is called `moodle-repository_mediabank` (the name comes from an early plan, and there is no `repository_mediabank` plugin). A reviewer may ask about it. The options are to explain it (the three plugins are released together and the zips are built by `scripts/build_release.py`), or to split the repository into three. Splitting would also let the Marketplace's release workflow publish new versions by itself, because the workflow's documentation does not describe packaging a repository with several plugins, so assume it cannot. It is a large change, so do not do it unless asked.
 2. **Whether to list `filter_mediabank` now.** It is Alpha, new, and its captions and transcript have been tested by machines and not yet seen by a person in a browser. Listing only the first two and adding the filter later, once it has had real use, is the cautious choice.
-3. **Screenshots.** Seven exist in `docs/images/` (section 6). There is none yet of the **Captions** button, the **Transcript** block, the *items nobody links to* report or the *Where this item is used* list with activities. Take them on a real site first, because the listing is the first thing an administrator sees.
+3. **Screenshots.** Twelve exist in `docs/images/` (section 6): the seven from 0.11 and five new ones taken on 2 November 2026 for 0.12, which show the **Captions** button with a caption on screen, the **Transcript** block, *Where this item is used* with activities and **Convert to copies**, the *items nobody links to* report and the **Manage filters** switch. They were taken on a Moodle 5.3 test site with invented content ([scripts/screenshots/README.md](../scripts/screenshots/README.md)). A text alternative cannot be photographed: say in the listing that a picture's alt text comes from the bank. Look at them once before you upload, because they are the first thing an administrator sees.
 4. **Who is the contact and where is support.** The GitHub issue tracker ([SUPPORT.md](SUPPORT.md)). Say so in the listing.
 
 ## 4. Before you submit (checklist)
@@ -109,15 +109,26 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 
 ## 6. Screenshots
 
-Add alt text to each in the form. From `docs/images/`:
+Add alt text to each in the form. From `docs/images/`. The first group is for the content type (Entry 1).
 
 1. `teacher-1-content-bank.png`: the Content bank in list view, with three items.
-2. `teacher-2-item-page.png`: an item page with a preview and the courses that link to it. (This shows the 0.11 layout, without the activities and the **Convert to copies** button. Retake it for 0.12.)
+2. `teacher-10-where-used-and-convert.png`: an item page for an image, with *Where this item is used* listing two courses, the activity that holds each link and a **Convert to copies** button for each course. Alt text: "An item page for a picture of the stages of mitosis. Below it, Where this item is used lists Biology 101 and Chemistry 201, each with a Convert to copies button and the activity that holds the link."
 3. `teacher-4-link-or-copy.png`: the file picker, with Link to the file selected.
 4. `teacher-5-more-menu.png`: the More menu, with Replace with file.
 5. `teacher-3-edit-form.png`, `teacher-6-edit-video.png`, `teacher-7-edit-image.png`: the Edit page, with the accessibility fields.
+6. `teacher-2-item-page.png`: an item page for a PDF. It shows the 0.11 layout, without the activities and the Convert button, so prefer number 2 for the listing. It stays in the guides until they are redone.
 
-**Still to take, on a real site:** a course page with a linked video showing the **Captions** button and the **Transcript** block; a picture whose alt text came from the bank; *Where this item is used* with activities and **Convert to copies**; the *Media bank: items nobody links to* report. The Teacher guide and the walk-through PDFs show the 0.11 screens and would be redone at the same time ([RELEASING.md](RELEASING.md)).
+For the filter (Entry 3), the first two also show the filter's work:
+
+7. `teacher-8-captions-in-course.png`: a course page as a student sees it, with a video player and a caption on the video. Alt text: "A course page in Biology 101. A video player shows a title card, Cell division, with the caption 'Welcome to week one. Today we look at how a cell divides.' over it, and a Transcript heading under the player."
+8. `teacher-9-transcript-in-course.png`: the same page with the transcript open. Alt text: "The same course page with the Transcript opened, showing the four lines of the lecture under the video."
+9. `admin-2-manage-filters.png`: Site administration > Plugins > Filters > Manage filters, with Media bank text alternatives set to On. Alt text: "The Manage filters page with a row, Media bank text alternatives, set to On."
+
+For the tools (Entry 2):
+
+10. `admin-1-unlinked-report.png`: Site administration > Reports > Media bank: items nobody links to. Alt text: "The report Media bank: items nobody links to, a table of three items with their size and upload date, and a box to hide recent uploads."
+
+**Not shown:** a picture getting its alt text from the bank (it is invisible by nature). The 0.12 changes in the Teacher guide and the two walk-through PDFs (still the 0.11 screens) are not redone; see [RELEASING.md](RELEASING.md).
 
 ## 7. Entry 2: Media bank tools
 
@@ -154,7 +165,7 @@ Add alt text to each in the form. From `docs/images/`:
 | Documentation | https://github.com/billsensei/moodle-repository_mediabank/blob/main/docs/ADMIN-GUIDE.md |
 | Release notes | https://github.com/billsensei/moodle-repository_mediabank/blob/main/local_mediabank/CHANGES.md |
 
-**Screenshots:** the *items nobody links to* report once it has been photographed (section 6). Until then, leave it without, or use `teacher-1-content-bank.png` with a note that the settings are on the content type's settings page.
+**Screenshots:** `admin-1-unlinked-report.png` (section 6, number 10), and optionally `teacher-1-content-bank.png`.
 
 ## 8. Entry 3: Media bank text alternatives (Alpha)
 
@@ -198,7 +209,7 @@ Add alt text to each in the form. From `docs/images/`:
 | Documentation | https://github.com/billsensei/moodle-repository_mediabank/blob/main/docs/CAPTIONS-DESIGN.md |
 | Release notes | https://github.com/billsensei/moodle-repository_mediabank/blob/main/filter_mediabank/CHANGES.md |
 
-**Screenshots:** none exist yet (section 6). Do not list this plugin without at least two: the **Captions** button on a player, and the **Transcript** block.
+**Screenshots:** `teacher-8-captions-in-course.png`, `teacher-9-transcript-in-course.png` and `admin-2-manage-filters.png` (section 6, numbers 7 to 9).
 
 ## 9. Things to say honestly in the listing
 
