@@ -8,7 +8,10 @@ and the bundle zip attached.
 
 ## Unreleased
 
-- `filter_mediabank` 0.1.2 (2026110202): a picture gets an item's text alternative only when the link is in a place the captions and transcript already allow, not in any place in the text's own context. Content type 0.12.2 and tools 0.4.1 are unchanged.
+## 0.12.3 (2026-11-02): content type 0.12.3, filter 0.1.2 (tools 0.4.1 unchanged)
+
+- Filter: a picture gets an item's text alternative only when the link is in a place the captions and transcript already allow, not in any place in the text's own context.
+- Content type: no change in behaviour. Test-only changes: PHPUnit attributes instead of doc-comment annotations, and axe accessibility checks in the Behat features.
 
 ## 0.12.2 (2026-11-02): content type 0.12.2 (tools 0.4.1 and filter 0.1.1 unchanged)
 

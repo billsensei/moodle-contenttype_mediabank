@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.3 (2026-11-02)
+Version 2026110203. No change to how the content type behaves. Released so that it goes out with filter 0.1.2 under one project version. No setting, no table. Moodle offers the upgrade. Tools 0.4.1 is unchanged.
+
+- The tests now use PHPUnit attributes instead of doc-comment annotations, and the Behat features run Moodle's axe accessibility checks on the edit form and the item page.
+
 ## 0.12.2 (2026-11-02)
 Version 2026110202. Changes what a web service returns (see the first point); no new setting, no table. Moodle offers the upgrade. Tools 0.4.1 and filter 0.1.1 are unchanged and still fit.
 
