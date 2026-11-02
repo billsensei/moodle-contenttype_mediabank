@@ -4,21 +4,23 @@ The Media bank lets your site keep videos, audio, PDFs and images in one place (
 
 **Prefer pictures?** [Install-Walk-Thru.pdf](Install-Walk-Thru.pdf) shows every click, with screenshots, for people who do not use the command line.
 
-It is two plugins, installed in this order:
+It is two plugins, installed in this order, and an optional third:
 
 | Order | Plugin | Zip file |
 |---|---|---|
 | 1 | Media bank content type (`contenttype_mediabank`) | `contenttype_mediabank_<version>.zip` |
 | 2 | Media bank tools (`local_mediabank`) | `local_mediabank_<version>.zip` |
+| 3 (optional, Alpha) | Media bank text alternatives (`filter_mediabank`) | `filter_mediabank_<version>.zip` |
 
-The second one needs the first, so install them in that order. Do not unzip anything. Moodle reads the zip files as they are.
+The others need the first, so install the content type first. The third carries text alternatives, captions and transcripts into courses; it does nothing until you switch it on under *Site administration > Plugins > Filters > Manage filters*. Do not unzip anything. Moodle reads the zip files as they are.
 
 ## Which file do I download?
 
-Get the two zips from the **Releases** page on GitHub (open the latest release and look under **Assets**):
+Get the zips from the **Releases** page on GitHub (open the latest release and look under **Assets**):
 
 - `contenttype_mediabank_<version>.zip`
 - `local_mediabank_<version>.zip`
+- `filter_mediabank_<version>.zip` (optional)
 
 Do **not** use these, because Moodle cannot install them:
 

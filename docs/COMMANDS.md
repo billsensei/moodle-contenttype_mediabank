@@ -17,7 +17,7 @@ MariaDB on `127.0.0.1:3307`, and `export LOCPATH=~/.local/locale` in a fresh she
 | Behat `@contenttype_mediabank` | 7 scenarios, 151 steps (about 6 minutes) |
 | Core privacy and event checks | pass on 5.0 to 5.3 |
 | In-tree phpcs, `--max-warnings 0` | clean on 5.0 to 5.2 locally; CI runs it on all four |
-| GitHub Actions | 32 jobs: 2 plugins x PHP 8.3, 8.4 x Moodle 5.0 to 5.3 x PostgreSQL, MariaDB |
+| GitHub Actions | 48 jobs: 3 plugins x PHP 8.3, 8.4 x Moodle 5.0 to 5.3 x PostgreSQL, MariaDB |
 
 Sections below that give a smaller number (4, 5, 44, 53, 61, 72, 79, 88, 104 to 109 tests) were right on the day and are kept as
 history. The Behat run for the SVG change (0.11.0) was not repeated, because no browser step changed.
@@ -343,5 +343,9 @@ Tests: 13 tests, 46 assertions on 5.3 (vertical tab; stray quote; only `pre_clea
 
 ## Captions and transcripts through links (2026-11-02, unreleased)
 Option B of docs/CAPTIONS-DESIGN.md, chosen by Bill with captions off by default. Route `/pluginfile.php/<alias context>/contenttype_mediabank/linkcaptions/<alias file id>/captions.vtt`, decided by `link_captions::find_file()`; filter step `media_tracks`. Details, deviations (unlisted does not hide captions; the filter only acts when the link is in the text's own context; the viewer is checked in the route, not the filter) and test counts are in section 10 of that document. Suites on 5.3: contenttype 127 tests / 570 assertions (`--fail-on-warning`), filter 20 / 76. phpcs clean. Mutation check: with `is_place_allowed()` forced to true, one test in each new file fails.
-NOT done: Behat, a browser, other Moodle versions, the mobile app. Release note: raise the filter's `contenttype_mediabank` dependency to the new content type version, and add the filter to `scripts/build_release.py` only when it leaves Alpha.
+NOT done: Behat, a browser, other Moodle versions, the mobile app. Done afterwards: the filter's dependency is now `contenttype_mediabank` 2026110200, and the filter is in `scripts/build_release.py` (see the next section).
 Trap: a PHPUnit test class may not define a method called `run()` (final).
+
+## Versions, dependencies and the release script (2026-11-02)
+Set for the next release (not tagged, not pushed as a release): `contenttype_mediabank` 0.12.0 / 2026110200, `local_mediabank` 0.4.0 / 2026110200 (depends on content type 2026110200, because its unlinked-items report calls `usage::find_unlinked()`), `filter_mediabank` 0.1.0 / 2026110200 (depends on content type 2026110200 for `link_captions`). `scripts/build_release.py` now builds three plugin zips and a bundle with `READ-ME-FIRST.txt` (the filter as an optional third step), and `CHANGES-filter_mediabank.md`. All three zips pass `validate_plugin_zip.php` on 5.3. CI is 3 plugins x 2 x 4 x 2 = 48 jobs; the docs that said 32 were updated. `filter_mediabank` has its own `README.md` and `CHANGES.md`. The `version` numbers use 2 November 2026; if the release is made on a later day, change them (they must stay higher than the last release's).
+Trap: a plugin zip was built before, with new code, under an unchanged version number, in 0.3.0. This time every plugin with new code has a new number.

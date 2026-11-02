@@ -6,7 +6,8 @@
 Writes, into DIR (default: ./dist):
   contenttype_mediabank_<version>.zip   installable with Site administration > Plugins > Install plugins
   local_mediabank_<version>.zip         installable the same way (install the content type first)
-  mediabank-<release>-bundle.zip        both zips, the guides and a READ-ME-FIRST.txt, for sending to a client; NOT installable itself
+  filter_mediabank_<version>.zip        installable the same way (install the content type first; optional, Alpha)
+  mediabank-<release>-bundle.zip        the three zips, the guides and a READ-ME-FIRST.txt, for sending to a client; NOT installable itself
 
 Each plugin zip has one top folder called "mediabank", which is what Moodle's installer expects. The zips are
 reproducible: file order and timestamps come from the files and the last commit, not from the time of the build.
@@ -20,7 +21,7 @@ import zipfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-PLUGINS = ['contenttype_mediabank', 'local_mediabank']
+PLUGINS = ['contenttype_mediabank', 'local_mediabank', 'filter_mediabank']
 SKIP_DIR_NAMES = {'node_modules', 'vendor', '__pycache__'}
 GUIDES = ['GETTING-STARTED.md', 'INSTALL.md', 'ADMIN-GUIDE.md', 'TEACHER-GUIDE.md', 'FAQ.md', 'GLOSSARY.md', 'TROUBLESHOOTING.md', 'UPGRADING.md',
           'Install-Walk-Thru.pdf', 'Use-Walk-Thru.pdf']
@@ -80,9 +81,13 @@ What to do:
   2. In Moodle, go to Site administration > Plugins > Install plugins.
   3. Upload {first} first.
   4. Then upload {second}.
+  5. Optional: upload {third} to carry a picture's text alternative, and a video's
+     captions and transcript, into the courses that link to an item. It is an Alpha
+     plugin and does nothing until you switch it on under Site administration >
+     Plugins > Filters > Manage filters. It must be installed after {first}.
      Upload each zip as it is. Do not unzip them.
 
-Leave "Plugin type" alone. Moodle detects it by itself for these two files.
+Leave "Plugin type" alone. Moodle detects it by itself for these files.
 
 The guides are in this folder. Start with INSTALL.md, or Install-Walk-Thru.pdf if
 you would like pictures. If something goes wrong, see TROUBLESHOOTING.md.
@@ -94,7 +99,7 @@ def build_bundle(zips: list, out: Path, timestamp: tuple) -> Path:
     target = out / f'mediabank-{release}-bundle.zip'
     root = f'mediabank-{release}-bundle/'
     with zipfile.ZipFile(target, 'w') as zf:
-        note = READ_ME_FIRST.format(bundle=target.name, first=zips[0].name, second=zips[1].name)
+        note = READ_ME_FIRST.format(bundle=target.name, first=zips[0].name, second=zips[1].name, third=zips[2].name)
         add(zf, root + 'READ-ME-FIRST.txt', note.encode(), timestamp, 0o100644)
         for z in zips:
             add(zf, root + z.name, z.read_bytes(), timestamp, 0o100644)
@@ -106,7 +111,7 @@ def build_bundle(zips: list, out: Path, timestamp: tuple) -> Path:
                 print(f'WARNING: docs/{guide} is missing, not in the bundle', file=sys.stderr)
         for image in sorted((REPO / 'docs' / 'images').glob('*.png')):
             add(zf, root + 'images/' + image.name, image.read_bytes(), timestamp, 0o100644)
-        for plugin, label in (('contenttype_mediabank', 'contenttype'), ('local_mediabank', 'local')):
+        for plugin, label in (('contenttype_mediabank', 'contenttype'), ('local_mediabank', 'local'), ('filter_mediabank', 'filter')):
             source = REPO / plugin / 'CHANGES.md'
             add(zf, root + f'CHANGES-{label}_mediabank.md', source.read_bytes(), timestamp, 0o100644)
     return target

@@ -8,7 +8,7 @@ Work through it in order and tick each box. Do not skip the checks because the c
 
 1. **A change to the plugins' code needs a new version number and a new release.** Moodle only offers an upgrade when the number goes up, so a fix released under the old number never reaches the sites that already installed it.
 2. **Never move or re-create a tag** after it is published.
-3. **Merge to `main` only when all 32 CI jobs are green.**
+3. **Merge to `main` only when all 48 CI jobs are green.**
 4. **Publish as a pre-release** while the plugins are Beta.
 5. **Attach the zips built from the commit that passed CI.**
 
@@ -24,7 +24,7 @@ A change to the guides alone is not a release. Push it to `main`, and, if the gu
 
 - `version` must be higher than the last release's. Two releases on the same day use `01`, `02` and so on.
 - The project tag is `v<content type release>` (for example `v0.11.1`). If only `local_mediabank` changed, also raise the content type's release number by a patch so there is a new tag, and say in the notes that it has no code change.
-- `local_mediabank` lists the content type version it needs under `$plugin->dependencies`. Raise that only if the tools plugin now needs something newer.
+- `local_mediabank` and `filter_mediabank` list the content type version they need under `$plugin->dependencies`. Raise that when they start calling something newer, and check it every release: a filter that calls a class the installed content type lacks does nothing, and a tools plugin that calls a missing method fails.
 - `requires` stays at Moodle 5.0 (`2025041400`) and `supported` at `[500, 503]` unless you are adding or dropping a Moodle version (see "When Moodle releases a new version" in [MAINTAINERS.md](MAINTAINERS.md)).
 - If the database changes, add an `upgrade.php` step. So far no release has needed one, because the plugins have no tables of their own.
 
@@ -34,7 +34,8 @@ A change to the guides alone is not a release. Push it to `main`, and, if the gu
 
 Update, on that branch:
 
-- [ ] `version.php` in each plugin that changed (`version` and `release`).
+- [ ] `version.php` in each plugin that changed (`version` and `release`). `filter_mediabank/CHANGES.md` is the third changelog.
+- [ ] Each plugin's `$plugin->dependencies` names the lowest content type version that has what it calls (the filter calls `link_captions`; the tools use `usage::find_unlinked()`).
 - [ ] `contenttype_mediabank/CHANGES.md` and `local_mediabank/CHANGES.md`: rename "Unreleased" to the new version and date.
 - [ ] Root `CHANGELOG.md` (see [CHANGELOG-POLICY.md](CHANGELOG-POLICY.md)): a new dated section with both plugin versions, and a `[x.y.z]: https://github.com/billsensei/moodle-repository_mediabank/releases/tag/vx.y.z` link at the bottom.
 - [ ] [UPGRADING.md](UPGRADING.md): a row in the per-version table if an administrator sees any difference.
@@ -48,8 +49,8 @@ Update, on that branch:
 
 Run these on Moodle 5.0, 5.1, 5.2 and 5.3. The commands are in [DEVELOPMENT.md](DEVELOPMENT.md).
 
-- [ ] PHPUnit for both plugins, with no warnings.
-- [ ] Behat for both plugins.
+- [ ] PHPUnit for all three plugins, with no warnings.
+- [ ] Behat for the plugins that have scenarios.
 - [ ] `phpcs` with the Moodle standard, run inside a Moodle tree, as CI does it (section 3 of the Development guide).
 - [ ] If the change touched uploading, serving files, SVG, video preparation, backup or privacy, run a security review of the changed files, and the privacy provider tests.
 
@@ -57,16 +58,17 @@ Run these on Moodle 5.0, 5.1, 5.2 and 5.3. The commands are in [DEVELOPMENT.md](
 
     python3 scripts/build_release.py --out dist
 
-This writes `contenttype_mediabank_<version>.zip`, `local_mediabank_<version>.zip` and `mediabank-<release>-bundle.zip`. Then, for each zip, on each Moodle version, on a site where the plugin is not installed:
+This writes `contenttype_mediabank_<version>.zip`, `local_mediabank_<version>.zip`, `filter_mediabank_<version>.zip` and `mediabank-<release>-bundle.zip`. Then, for each zip, on each Moodle version, on a site where the plugin is not installed:
 
     php scripts/validate_plugin_zip.php --moodle=<moodle> --zip=dist/<zip> --component=contenttype_mediabank
     php scripts/validate_plugin_zip.php --moodle=<moodle> --zip=dist/<zip> --component=local_mediabank
+    php scripts/validate_plugin_zip.php --moodle=<moodle> --zip=dist/<zip> --component=filter_mediabank
 
 - [ ] Every check passes. The only warning expected is the Beta one.
 - [ ] The bundle is **not** a plugin: do not run the validator on it, and do not upload it to Moodle.
-- [ ] Spot-check the bundle: it holds both plugin zips, the guides in `GUIDES` in `scripts/build_release.py`, the two PDFs and the `images/` folder.
+- [ ] Spot-check the bundle: it holds both plugin zips, the guides in `GUIDES` in `scripts/build_release.py`, the two PDFs and the `images/` folder, and one `CHANGES-*.md` file for each of the three plugins.
 
-Do a real install once on a clean site (content type first, then the tools plugin), or, for an upgrade, over the previous release. Follow [INSTALL.md](INSTALL.md) exactly as a user would.
+Do a real install once on a clean site (content type first, then the tools plugin and the filter), or, for an upgrade, over the previous release. Follow [INSTALL.md](INSTALL.md) exactly as a user would.
 
 ## 5. Get CI green
 
@@ -74,7 +76,7 @@ Do a real install once on a clean site (content type first, then the tools plugi
     gh run list --branch release-<version> --limit 1
     gh run view <id> --log-failed
 
-- [ ] All 32 jobs are green. Read a failure with `--log-failed` once the whole run has finished; logs are not available while it runs.
+- [ ] All 48 jobs are green. Read a failure with `--log-failed` once the whole run has finished; logs are not available while it runs.
 - [ ] If a fix is needed, make it on the branch, rebuild the zips and start from section 4 again.
 
 ## 6. Merge and tag

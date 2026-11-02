@@ -30,4 +30,4 @@ $plugin->requires  = 2025041400; // Moodle 5.0.
 $plugin->supported = [500, 503];
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->release   = '0.1.0';
-$plugin->dependencies = ['contenttype_mediabank' => 2026103000];
+$plugin->dependencies = ['contenttype_mediabank' => 2026110200];

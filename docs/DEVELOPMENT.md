@@ -168,10 +168,10 @@ The plugin folder inside each zip is called `mediabank`, and the bundle zip itse
 
 ## 8. The CI workflow
 
-`.github/workflows/ci.yml` runs on every push and pull request: 32 jobs, from the plugin (2) times PHP (8.3, 8.4) times Moodle
+`.github/workflows/ci.yml` runs on every push and pull request: 48 jobs, from the plugin (3) times PHP (8.3, 8.4) times Moodle
 (`MOODLE_500_STABLE` to `MOODLE_503_STABLE`) times database (PostgreSQL, MariaDB). Each job installs Moodle with
 `moodle-plugin-ci`, then runs PHP lint, PHP mess detector, the code checker, the PHPDoc checker, validate, upgrade savepoints,
-mustache lint, grunt, PHPUnit with `--fail-on-warning`, and Behat. `local_mediabank` jobs install the content type as an extra
+mustache lint, grunt, PHPUnit with `--fail-on-warning`, and Behat. `local_mediabank` and `filter_mediabank` jobs install the content type as an extra
 plugin. An extra step installs `ffmpeg` so the real-video test runs.
 
 To run it on a change, push the branch; there is nothing to start. Read a failure with `gh run view <id> --log-failed` once the
@@ -181,7 +181,7 @@ whole run has finished (the logs are not available while it runs).
 
 1. Everything on a branch, with the version, changelogs and guides updated.
 2. Run the checks above on 5.0, 5.1, 5.2 and 5.3, and build and validate the zips from the commit.
-3. Push the branch. **Merge only when all 32 jobs are green.**
+3. Push the branch. **Merge only when all 48 jobs are green.**
 4. Fast-forward `main`, tag `v<content type release>` (annotated), push both.
 5. Create the GitHub release as a **pre-release** while the plugins are Beta, and attach the three zips (from the commit that
    passed CI). Say in the notes anything an administrator must decide.

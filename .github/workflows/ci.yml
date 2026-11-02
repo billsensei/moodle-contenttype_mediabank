@@ -1,4 +1,4 @@
-# Runs on every push and pull request: 2 plugins x PHP 8.3 and 8.4 x Moodle 5.0 to 5.3 x PostgreSQL and MariaDB = 32 jobs.
+# Runs on every push and pull request: 3 plugins x PHP 8.3 and 8.4 x Moodle 5.0 to 5.3 x PostgreSQL and MariaDB = 48 jobs.
 # See docs/DEVELOPMENT.md, section 8.
 name: Moodle Plugin CI
 
