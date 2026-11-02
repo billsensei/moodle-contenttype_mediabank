@@ -39,9 +39,9 @@ The maintainer may set up a way to sponsor the project later, for example throug
 
 You are free to pay anyone, including the maintainer, to install, support, train staff on or customise the Media bank on your own site. That is a private agreement between you and them. It is not funding of the project, and it does not change what the project does. The licence lets you, or someone you hire, change your own copy and share the result under the same licence.
 
-## Funding and the Moodle Plugins directory
+## Funding and the Moodle Marketplace
 
-The Moodle Plugins directory ([PLUGIN-DIRECTORY.md](PLUGIN-DIRECTORY.md)) is for free plugins. This project is not a Moodle Marketplace product, and nothing here applies to selling it.
+The Moodle Marketplace ([PLUGIN-DIRECTORY.md](PLUGIN-DIRECTORY.md)), which replaced the Moodle Plugins directory, lists free plugins as well as paid ones. This project would be listed as free. It is not a paid Marketplace product, and nothing here applies to selling it.
 
 ## Copyright and licence
 

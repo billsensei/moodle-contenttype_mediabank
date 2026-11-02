@@ -8,7 +8,7 @@ and the bundle zip attached.
 
 ## Unreleased
 
-Nothing yet.
+- Documentation only: the listing guide (`docs/PLUGIN-DIRECTORY.md`) now follows the Moodle Marketplace, which replaced the Moodle Plugins directory, and covers all three plugins.
 
 ## [0.12.0] - 2026-11-02
 

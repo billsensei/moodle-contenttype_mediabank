@@ -72,7 +72,7 @@ CI checks the language file's order and syntax. A new language needs no change t
 
 ## Where the project's translations live
 
-For now, translations are kept in the plugin's own `lang/<code>/` folder, as above. If the plugins are listed in the Moodle Plugins directory ([PLUGIN-DIRECTORY.md](PLUGIN-DIRECTORY.md)), Moodle's translation tool for plugins (AMOS) may become the better home for them. If that happens, this page will say how, and translations already in the repository will be moved over.
+For now, translations are kept in the plugin's own `lang/<code>/` folder, as above. If the plugins are listed on the Moodle Marketplace ([PLUGIN-DIRECTORY.md](PLUGIN-DIRECTORY.md)), Moodle's translation tool for plugins (AMOS) may become the better home for them. If that happens, this page will say how, and translations already in the repository will be moved over.
 
 ## Translating the guides
 

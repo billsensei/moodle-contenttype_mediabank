@@ -1,38 +1,63 @@
-# Media bank: Submitting to the Moodle Plugins directory
+# Media bank: Listing the plugins on the Moodle Marketplace
 
-The text and checklist for listing the two plugins in the Moodle Plugins directory (moodle.org/plugins). Copy the text into the submission form. The directory's form and rules change from time to time, so read its current submission guide at [moodledev.io](https://moodledev.io) first, and treat the field names below as a guide.
+The text and checklist for listing the three plugins where Moodle administrators look for plugins. Copy the text into the submission form. The form and the rules change from time to time, so read the current guide first (links in section 1) and treat the field names below as a guide.
 
-This is not the same as the Moodle Marketplace, which is a separate route for plugins that are sold. Nothing here covers it.
+**This page used to be about the Moodle Plugins directory (moodle.org/plugins).** That directory has been replaced by the **Moodle Marketplace** (marketplace.moodle.com). Moodle's developer documentation now calls the old contribution steps legacy guidance that "should not be used for new plugin submissions". The Marketplace lists **free** plugins as well as paid ones, so a free, GPL project like this one is listed there. Nothing here is about selling the plugins ([FUNDING.md](FUNDING.md)).
 
-## What you submit
+## 1. What the Marketplace asks for (checked 2 November 2026)
 
-Two separate entries, one for each plugin. The directory works one plugin at a time.
+From Moodle's own pages: the [plugin contribution page](https://moodledev.io/general/community/plugincontribution), the [Marketplace home page](https://marketplace.moodle.com), the [Plugins FAQ](https://docs.moodle.org/501/en/Plugins_FAQ) and the [Marketplace API page](https://moodledev.io/general/community/plugincontribution/moodlemarketplaceapi). These are summaries, not quotes of rules, and they may have changed.
 
-| Order | Plugin | Zip | Required? |
-|---|---|---|---|
-| 1 | `contenttype_mediabank` | `contenttype_mediabank_<version>.zip` | Yes. This is the main plugin. |
-| 2 | `local_mediabank` | `local_mediabank_<version>.zip` | Optional. It adds backup of linked files and the command-line tools. It needs the first. |
+- Sign in with the same email as your moodle.org account, choose **Submit a plugin**, say whether the plugin is free or paid, upload the plugin zip, and fill in the details: description, documentation, setup instructions and screenshots.
+- The plugin name with its Frankenstyle prefix must be unique.
+- **Automated checks** run on the upload: validation of the archive, and Moodle plugin CI tests.
+- **Review.** A submission becomes a ticket in the Marketplace team's queue. Free plugins are reviewed once, with no promised time. The reviewers may ask for changes; answer on the ticket, fix in the repository, resubmit.
+- **A plugin is not published when review passes.** You complete the plugin page and publish it yourself.
+- **New versions.** Version uploads go through an API with a token (created under your account's security settings). The first listing is made with the web form. When the Marketplace launched, uploading through the API was switched off and uploads were done by hand from the plugin's dashboard, with the API promised as a priority. Workflow runs for other plugins from this maintainer have since created new versions through it, so it works at least for a repository with one plugin at its root. Check which is true when you release.
+- The old Plugins directory is read-only.
 
-You can submit the content type alone and add the tools later. Submit the content type first either way, because the tools plugin names it as a dependency.
+What the Moodle plugin review criteria have always covered: coding standard, language strings instead of hard-coded text, accessibility, security and input handling, backup and restore behaviour, tests, and whether someone maintains the plugin. This project has a green CI run of all of them on Moodle 5.0 to 5.3 ([COMMANDS.md](COMMANDS.md)).
 
-Upload the **plugin zips from the GitHub release**, not the bundle and not GitHub's source zip. The folder inside each is called `mediabank`, as the directory expects.
+## 2. What you submit
 
-## Before you submit
+Three separate entries, one for each plugin. The Marketplace works one plugin at a time.
+
+| Order | Plugin | Zip | Maturity | Required? |
+|---|---|---|---|---|
+| 1 | `contenttype_mediabank` | `contenttype_mediabank_<version>.zip` | Beta | Yes. This is the main plugin. |
+| 2 | `local_mediabank` | `local_mediabank_<version>.zip` | Beta | Optional. Backup of linked files, the unlinked-items report and command-line tools. Needs the first. |
+| 3 | `filter_mediabank` | `filter_mediabank_<version>.zip` | **Alpha** | Optional. Carries text alternatives, captions and transcripts into courses. Needs the first. |
+
+Submit the content type first either way, because the other two name it as a dependency. You can submit the content type alone and add the others later. **Whether to list an Alpha plugin yet is your decision** (section 3, point 2).
+
+Upload the **plugin zips from the GitHub release**, not the bundle and not GitHub's source zip. The folder inside each is called `mediabank`, as Moodle expects.
+
+## 3. Things to settle before submitting
+
+1. **The repository name.** Moodle's guidance prefers one plugin per repository, named `moodle-{plugintype}_{pluginname}`, with the plugin at the root. This repository holds three plugins in subfolders and is called `moodle-repository_mediabank` (the name comes from an early plan, and there is no `repository_mediabank` plugin). A reviewer may ask about it. The options are to explain it (the three plugins are released together and the zips are built by `scripts/build_release.py`), or to split the repository into three. Splitting would also let the Marketplace's release workflow publish new versions by itself, because the workflow's documentation does not describe packaging a repository with several plugins, so assume it cannot. It is a large change, so do not do it unless asked.
+2. **Whether to list `filter_mediabank` now.** It is Alpha, new, and its captions and transcript have been tested by machines and not yet seen by a person in a browser. Listing only the first two and adding the filter later, once it has had real use, is the cautious choice.
+3. **Screenshots.** Seven exist in `docs/images/` (section 6). There is none yet of the **Captions** button, the **Transcript** block, the *items nobody links to* report or the *Where this item is used* list with activities. Take them on a real site first, because the listing is the first thing an administrator sees.
+4. **Who is the contact and where is support.** The GitHub issue tracker ([SUPPORT.md](SUPPORT.md)). Say so in the listing.
+
+## 4. Before you submit (checklist)
 
 - [ ] A moodle.org account, and you are content to be the listed maintainer.
-- [ ] The release you are submitting is tagged and published on GitHub, and CI is green for it.
-- [ ] Both zips pass `scripts/validate_plugin_zip.php` on Moodle 5.0, 5.1, 5.2 and 5.3. See [RELEASING.md](RELEASING.md).
-- [ ] `version.php` has the right `release`, `maturity` (Beta), `requires` and `supported`.
-- [ ] The privacy provider tests and the Moodle compliance test pass.
+- [ ] The release you are submitting is tagged and published on GitHub, and CI is green for it (0.12.0: tag `v0.12.0`, 48 of 48 jobs).
+- [ ] The zips from that release pass `scripts/validate_plugin_zip.php` on Moodle 5.0, 5.1, 5.2 and 5.3. See [RELEASING.md](RELEASING.md).
+- [ ] `version.php` has the right `release`, `maturity`, `requires` and `supported` for each plugin.
+- [ ] The privacy provider tests pass. All three plugins have a privacy provider: the content type erases a user's items; the tools plugin and the filter store nothing.
+- [ ] English strings only ship with the plugins; other languages come later through Moodle's translation tool ([TRANSLATING.md](TRANSLATING.md)).
 - [ ] The README and the guides are current, with no personal email, token or password anywhere ([STYLE-GUIDE.md](STYLE-GUIDE.md)).
 - [ ] The issue tracker on GitHub is open and the issue forms work.
-- [ ] You have read the directory's current guidelines and have nothing in the plugin they forbid.
+- [ ] You have read the Marketplace's current submission guide and have nothing in the plugins it forbids.
 
-## Entry 1: Media bank content type
+## 5. Entry 1: Media bank content type
 
 **Plugin name (as shown):** Media bank content type
 
 **Frankenstyle name:** `contenttype_mediabank`
+
+**Free or paid:** Free
 
 **Short description** (one or two sentences):
 
@@ -48,7 +73,8 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 > Features:
 >
 > * Upload checks that read what is inside a file, not just its name, with limits for each kind (video, audio, PDF, image).
-> * A "Where this item is used" panel that lists the courses that link to it, and an item that courses link to cannot be deleted by accident.
+> * A "Where this item is used" panel that lists the courses that link to it, and under each course the activities that hold the link, each one a link you can open. An item that courses link to cannot be deleted by accident.
+> * A teacher who can edit a course's activities can turn just that course's links into copies, with a **Convert to copies** button. Other courses keep their links.
 > * Replace a file, keep the earlier one for a time, and put it back.
 > * Accessibility fields: a required text alternative for images, and a transcript and WebVTT captions for video and audio.
 > * MP4 videos are prepared in the background so playback can start before the whole file has downloaded. Nothing is re-encoded, and no extra software is needed on the server.
@@ -58,7 +84,7 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 >
 > **Beta.** Released for testing. Try it on a copy of your site first. It is tested on Moodle 5.0 to 5.3 with PHP 8.3 and 8.4, on PostgreSQL and MariaDB. It does not support the Moodle mobile app.
 >
-> Install the content type first. The optional "Media bank tools" plugin (`local_mediabank`) adds backup of linked files and command-line tools.
+> Install the content type first. Two optional plugins build on it: "Media bank tools" (`local_mediabank`), for backup of linked files, a report of unused items and command-line tools, and "Media bank text alternatives" (`filter_mediabank`, Alpha), which carries an item's text alternative, captions and transcript into the courses that link to it.
 
 **Moodle versions:** 5.0, 5.1, 5.2, 5.3
 
@@ -66,7 +92,7 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 
 **Licence:** GNU GPL v3 or later
 
-**Tags / categories** (choose from the directory's list): Content bank, Files, Media, Accessibility, Video, Audio, PDF
+**Tags / categories** (choose from the Marketplace's list): Content bank, Files, Media, Accessibility, Video, Audio, PDF
 
 **URLs**
 
@@ -79,30 +105,39 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 
 **Release notes for this version:** copy the section for the version from [`contenttype_mediabank/CHANGES.md`](../contenttype_mediabank/CHANGES.md).
 
-**Screenshots** (add alt text to each in the form), from `docs/images/`:
+**Setup instructions:** install the zip from Site administration > Plugins > Install plugins; nothing else is needed. The settings are under Site administration > Plugins > Content bank > Media bank ([ADMIN-GUIDE.md](ADMIN-GUIDE.md)).
+
+## 6. Screenshots
+
+Add alt text to each in the form. From `docs/images/`:
 
 1. `teacher-1-content-bank.png`: the Content bank in list view, with three items.
-2. `teacher-2-item-page.png`: an item page with a preview and the courses that link to it.
+2. `teacher-2-item-page.png`: an item page with a preview and the courses that link to it. (This shows the 0.11 layout, without the activities and the **Convert to copies** button. Retake it for 0.12.)
 3. `teacher-4-link-or-copy.png`: the file picker, with Link to the file selected.
 4. `teacher-5-more-menu.png`: the More menu, with Replace with file.
 5. `teacher-3-edit-form.png`, `teacher-6-edit-video.png`, `teacher-7-edit-image.png`: the Edit page, with the accessibility fields.
 
-## Entry 2: Media bank tools
+**Still to take, on a real site:** a course page with a linked video showing the **Captions** button and the **Transcript** block; a picture whose alt text came from the bank; *Where this item is used* with activities and **Convert to copies**; the *Media bank: items nobody links to* report. The Teacher guide and the walk-through PDFs show the 0.11 screens and would be redone at the same time ([RELEASING.md](RELEASING.md)).
+
+## 7. Entry 2: Media bank tools
 
 **Plugin name (as shown):** Media bank tools
 
 **Frankenstyle name:** `local_mediabank`
 
+**Free or paid:** Free
+
 **Short description:**
 
-> Optional companion to the Media bank content type: carries linked Media bank files in course backups, and adds command-line tools.
+> Optional companion to the Media bank content type: carries linked Media bank files in course backups, finds items no course uses, and adds command-line tools.
 
 **Full description:**
 
 > This plugin needs the **Media bank content type** (`contenttype_mediabank`), which must be installed first. The content type works without it.
 >
 > * **Backup and restore of linked files.** With the content type's setting **Include linked files in course backups** switched on (it is off by default), manual course backups carry the files behind Media bank links, so restoring on a different site does not leave them out. Where a link cannot be kept on restore, the file becomes an ordinary copy. Restore does not trust the backup file: hashes and paths are checked.
-> * **Command-line tools.** `local/mediabank/cli/item.php` shows one item, the courses that link to it and its earlier versions, and can turn its links into copies or restore a version. `local/mediabank/cli/optimize_videos.php` queues videos uploaded before streaming preparation existed (with `--dry-run` to only count them).
+> * **A report of items nobody links to,** under Site administration > Reports, for administrators: the largest 500 items that no course uses, with size and upload date, and an optional minimum age. It only reads. The same list is available as a command that can also write CSV.
+> * **Command-line tools.** `local/mediabank/cli/item.php` shows one item, the courses that link to it and its earlier versions, and can turn its links into copies or restore a version. `local/mediabank/cli/optimize_videos.php` queues videos uploaded before streaming preparation existed (with `--dry-run` to only count them). `local/mediabank/cli/unlinked.php` lists unused items.
 >
 > It has no database tables of its own and stores no personal data. **Beta**: try it on a copy of your site first.
 
@@ -119,28 +154,72 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 | Documentation | https://github.com/billsensei/moodle-repository_mediabank/blob/main/docs/ADMIN-GUIDE.md |
 | Release notes | https://github.com/billsensei/moodle-repository_mediabank/blob/main/local_mediabank/CHANGES.md |
 
-**Screenshots:** the plugin has no screens of its own. Either leave it without, or use `teacher-1-content-bank.png` with a note that the setting is on the content type's settings page.
+**Screenshots:** the *items nobody links to* report once it has been photographed (section 6). Until then, leave it without, or use `teacher-1-content-bank.png` with a note that the settings are on the content type's settings page.
 
-## Things to say honestly in the listing
+## 8. Entry 3: Media bank text alternatives (Alpha)
 
-The directory's readers are administrators. Do not leave these out:
+**Plugin name (as shown):** Media bank text alternatives
 
-- It is **Beta** and has had testing but not long use on real sites.
+**Frankenstyle name:** `filter_mediabank`
+
+**Free or paid:** Free
+
+**Short description:**
+
+> Optional filter for the Media bank: shows a linked picture's text alternative, and a linked video or audio player's captions and transcript, in the courses that use them.
+
+**Full description:**
+
+> This plugin needs the **Media bank content type** (`contenttype_mediabank`), which must be installed first. It does nothing until an administrator switches it on under Site administration > Plugins > Filters > Manage filters.
+>
+> When a course **links** to a Media bank item, it normally gets the bare file. This filter carries the text kept with the item into the course:
+>
+> * A picture with no text alternative, an empty one, or only its file name gets the item's text alternative. One a teacher wrote, and a picture marked as decorative, are left alone.
+> * A video or audio player gets the item's captions, as a **Captions** button that is off until the viewer turns it on, and its transcript in a **Transcript** block under the player. A player that already has a captions track of its own is left alone.
+>
+> Correct a caption or an alt text once in the bank and every linked course shows the correction. A copy of the file is independent and gets nothing.
+>
+> Students never need access to the Content bank. Captions are served through the course, after a check that the viewer may open the page the link is on. They are offered in activity descriptions, and in File, Page, Book and Folder content and course and section summaries; not in forum posts, assignments, quizzes or blocks, and a hidden book chapter keeps its captions from people who may not see it.
+>
+> It works before Moodle cleans the HTML, so text from users who are not trusted is cleaned after the filter.
+>
+> **Alpha**: new, tested by automated tests on Moodle 5.0 to 5.3 and not yet by long use. Not for the Moodle mobile app, and not for a plain link to a file (the filter works on a player the editor inserted, or a File resource shown on its own page). Try it on a copy of your site first.
+
+**Dependency:** `contenttype_mediabank`, the version named in `filter_mediabank/version.php`.
+
+**Moodle versions, licence:** as above. **Maturity:** Alpha.
+
+**URLs**
+
+| Field | Address |
+|---|---|
+| Source code | https://github.com/billsensei/moodle-repository_mediabank |
+| Issue tracker | https://github.com/billsensei/moodle-repository_mediabank/issues |
+| Documentation | https://github.com/billsensei/moodle-repository_mediabank/blob/main/docs/CAPTIONS-DESIGN.md |
+| Release notes | https://github.com/billsensei/moodle-repository_mediabank/blob/main/filter_mediabank/CHANGES.md |
+
+**Screenshots:** none exist yet (section 6). Do not list this plugin without at least two: the **Captions** button on a player, and the **Transcript** block.
+
+## 9. Things to say honestly in the listing
+
+The Marketplace's readers are administrators. Do not leave these out:
+
+- The content type and the tools are **Beta** and the filter is **Alpha**: tested, but not used for long on real sites.
 - The mobile app is **not supported**.
-- Captions, alt text and transcripts stay with the bank item. A course that links to or copies the file gets the bare file.
+- A course that **copies** a file gets the bare file. A course that **links** to it gets the text alternative, captions and transcript only if the optional filter is installed and switched on, and only in the places listed above.
 - SVG has not had a manual security review, and it is off by default.
 - Uninstalling the content type **deletes every item** in the bank.
 - Moodle 4.5 and earlier are not supported.
 
 These are all in the [FAQ](FAQ.md) and the [Administrator guide](ADMIN-GUIDE.md).
 
-## After submitting
+## 10. After submitting
 
-- Expect a review by the directory's approvers. They may ask for changes. Answer on the submission, and fix in the repository.
-- A fix that changes code means a **new version and a new release** ([RELEASING.md](RELEASING.md)). Upload the new zips as a new version of the entry.
-- Keep the listing text and the README in step with each other.
-- When the directory approves a version, add a line to the changelog and the README ("Also available from the Moodle Plugins directory").
-- The directory lets users follow a plugin and ask for support. Say in the listing where you want support: the GitHub issue tracker ([SUPPORT.md](SUPPORT.md)).
+- Expect a review. Answer the reviewers on the ticket, and fix in the repository.
+- A fix that changes code means a **new version and a new release** ([RELEASING.md](RELEASING.md)). Upload the new zip as a new version of the entry: by hand from the plugin's dashboard, or through the API if it is available to you (section 1).
+- Keep the listing text and the README in step with each other. The plugin descriptions above change when a release changes what the plugins do.
+- When a plugin is published, add a line to the changelog and the README ("Also available from the Moodle Marketplace"), and update [ROADMAP.md](ROADMAP.md) and [FUNDING.md](FUNDING.md).
+- Say in the listing where you want support: the GitHub issue tracker ([SUPPORT.md](SUPPORT.md)).
 
 ## Copyright and licence
 

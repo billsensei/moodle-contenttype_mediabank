@@ -32,7 +32,7 @@ Not decided. Each needs a design check against how Moodle works.
 
 ## 3. Ideas for administrators
 
-- **Listing in the Moodle plugins directory,** so sites can install and update from Moodle itself. The listing text and checklist are ready in [PLUGIN-DIRECTORY.md](PLUGIN-DIRECTORY.md); submitting waits on the stable-release work above.
+- **Listing on the Moodle Marketplace** (which replaced the Moodle Plugins directory), so sites can find the plugins where administrators look. The listing text and checklist are in [PLUGIN-DIRECTORY.md](PLUGIN-DIRECTORY.md), updated for three entries and the Marketplace's route. Submitting needs your decisions (section 3 of that page: whether to list the Alpha filter now, the repository name, and screenshots taken on a real site).
 - **A report of items nobody links to,** to help clear space. Done in 0.12.0: a page under Site administration > Reports and a command (`cli/unlinked.php`).
 
 ## 4. Video, audio and files
