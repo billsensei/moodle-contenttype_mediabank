@@ -105,5 +105,5 @@ function contenttype_mediabank_pluginfile($course, $cm, $context, $filearea, $ar
 
     \core\session\manager::write_close();
     header('X-Content-Type-Options: nosniff');
-    send_stored_file($file, 0, 0, $forcedownload, $options);
+    send_stored_file($file, 0, 0, $forcedownload, ['cacheability' => 'private'] + $options);
 }

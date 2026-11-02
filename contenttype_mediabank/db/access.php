@@ -35,7 +35,7 @@ $capabilities = [
         ],
     ],
     'contenttype/mediabank:upload' => [
-        'riskbitmask' => RISK_SPAM,
+        'riskbitmask' => RISK_SPAM | RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
@@ -45,7 +45,7 @@ $capabilities = [
         ],
     ],
     'contenttype/mediabank:useeditor' => [
-        'riskbitmask' => RISK_SPAM,
+        'riskbitmask' => RISK_SPAM | RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [

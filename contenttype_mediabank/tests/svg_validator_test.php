@@ -130,6 +130,7 @@ final class svg_validator_test extends \basic_testcase {
             'entity definition' => "<?xml version=\"1.0\"?><!DOCTYPE svg [<!ENTITY a \"b\">]><svg $ns/>",
             'entity definition, odd case' => "<!DOCTYPE svg [<!entity a \"b\">]><svg $ns/>",
             'doctype with an internal subset' => "<!DOCTYPE svg [<!ATTLIST svg x CDATA \"1\">]><svg $ns/>",
+            'doctype from another site' => "<!DOCTYPE svg SYSTEM \"http://example.com/x.dtd\"><svg $ns/>",
             'stylesheet instruction' => "<?xml-stylesheet href=\"https://example.com/a.css\"?><svg $ns/>",
             'element in an unknown namespace' => "<svg $ns><x:thing xmlns:x=\"https://example.com/ns\"/></svg>",
             'attribute in an unknown namespace' => "<svg $ns xmlns:x=\"https://example.com/ns\" x:y=\"1\"/>",

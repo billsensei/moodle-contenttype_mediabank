@@ -230,7 +230,7 @@ class usage {
         $fs = get_file_storage();
         $total = 0;
         $references = $DB->get_recordset_sql(
-            "SELECT DISTINCT fr.id, fr.reference
+            "SELECT fr.id, fr.reference
                FROM {files_reference} fr
                JOIN {repository_instances} ri ON ri.id = fr.repositoryid
                JOIN {repository} r ON r.id = ri.typeid

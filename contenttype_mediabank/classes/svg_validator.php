@@ -179,7 +179,10 @@ class svg_validator {
                     $problem = 'entity reference';
                     break;
                 case XML_DOCUMENT_TYPE_NODE:
-                    $problem = $child->internalSubset ? 'internal subset' : null;
+                    // Only the standard W3C declaration is expected. Any other address for a DTD is refused.
+                    $system = (string) $child->systemId;
+                    $problem = $child->internalSubset ? 'internal subset'
+                        : ($system !== '' && !str_starts_with($system, 'http://www.w3.org/') ? 'external document type' : null);
                     break;
                 default:
                     $problem = null;

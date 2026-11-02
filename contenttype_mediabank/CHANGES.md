@@ -8,6 +8,11 @@ Fixes from the audit of 0.12.0 (no new setting, no table).
 - *Where this item is used* finds the item's links once, not twice (`usage::get_courses()` and `get_places()` take an optional list of links).
 - `get_items` web service reads its rows in one query and wraps them, instead of core's one extra query per item. Results and paging are unchanged.
 - `usage::find_unlinked()` finds all linked references in one query instead of two queries per item.
+- SVG: a document type declaration is accepted only when it is empty or points at w3.org; a DTD address on another site is refused.
+- `upload` and `useeditor` now carry `RISK_XSS` as well as `RISK_SPAM`, because an administrator can allow SVG. Moodle applies this on the next upgrade (bump the version when releasing).
+- Files, captions and earlier versions are sent with `cacheability` private, as the link captions already were.
+- The `alt` and `transcript` web service fields say they are plain text that the client must escape.
+- `usage::sync_all_links()` no longer uses `SELECT DISTINCT` on a text column.
 - Serving a file, and the web services, no longer use core's `is_view_allowed()`, which also depends on the person's *display unlisted* choice in the Content bank list. New `content::is_accessible()` checks only the creator, public visibility and `moodle/contentbank:viewunlistedcontent`. Lists still follow the choice.
 
 ## 0.12.0 (2026-11-02)

@@ -85,7 +85,7 @@ class contenttype extends \core_contentbank\contenttype {
             foreach (self::SVG_HEADERS as $header) {
                 header($header);
             }
-            send_stored_file($file, 0, 0, true, $options);
+            send_stored_file($file, 0, 0, true, ['cacheability' => 'private'] + $options);
             return true;
         }
         if (!self::is_safe_to_serve_inline($file, $extension)) {
@@ -93,7 +93,7 @@ class contenttype extends \core_contentbank\contenttype {
         }
 
         header('X-Content-Type-Options: nosniff');
-        send_stored_file($file, 0, 0, $forcedownload, $options);
+        send_stored_file($file, 0, 0, $forcedownload, ['cacheability' => 'private'] + $options);
         return true;
     }
 

@@ -109,8 +109,14 @@ class item {
             'filesize' => new external_value(PARAM_INT, 'Size in bytes'),
             'fileurl' => new external_value(PARAM_URL, 'Web service URL of the file. Add the token to fetch it'),
             'visibility' => new external_value(PARAM_INT, '1 public, 2 unlisted'),
-            'alt' => new external_value(PARAM_RAW, 'Text alternative, empty if none'),
-            'transcript' => new external_value(PARAM_RAW, 'Transcript, empty if none'),
+            'alt' => new external_value(
+                PARAM_RAW,
+                'Text alternative, empty if none. Plain text, not HTML: escape it before showing it on a page'
+            ),
+            'transcript' => new external_value(
+                PARAM_RAW,
+                'Transcript, empty if none. Plain text, not HTML: escape it before showing it on a page'
+            ),
             'captionsurl' => $nullable(PARAM_URL, 'Web service URL of the WebVTT captions, null if none'),
             'width' => $nullable(PARAM_INT, 'Image width in pixels, null if not an image'),
             'height' => $nullable(PARAM_INT, 'Image height in pixels, null if not an image'),
