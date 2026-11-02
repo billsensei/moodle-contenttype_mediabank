@@ -89,6 +89,7 @@ $string['transcript'] = 'Transcript';
 $string['transcript_help'] = 'The words spoken in the video or audio, as text. It is shown under the preview in the bank.';
 $string['unsupportedpreview'] = 'No preview is available for this file type.';
 $string['usageconvert'] = 'Convert to copies';
+$string['usageconvertcourse'] = 'Convert to copies: {$a}';
 $string['usagecourse'] = '{$a->name}: {$a->links} link(s)';
 $string['usagedeletenote'] = 'This item cannot be deleted while courses link to it. Replace the file to update every course, or convert the links to copies first.';
 $string['usageelsewhere'] = 'Elsewhere in the course, or in an activity you cannot see: {$a} link(s)';

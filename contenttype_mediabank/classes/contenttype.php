@@ -267,6 +267,7 @@ class contenttype extends \core_contentbank\contenttype {
                     $text .= ' ' . \html_writer::link($url, get_string('usageconvert', 'contenttype_mediabank'), [
                         'class' => 'btn btn-sm btn-secondary ms-2',
                         'title' => get_string('convertcourse', 'contenttype_mediabank'),
+                        'aria-label' => get_string('usageconvertcourse', 'contenttype_mediabank', $name),
                     ]);
                 }
                 $items[] = \html_writer::tag('li', $text . $this->render_places($content, $course, $places[$course->id] ?? null));

@@ -53,6 +53,8 @@ if (!$items) {
 
 $table = new html_table();
 $table->attributes['class'] = 'generaltable';
+$table->caption = get_string('unlinkedreport', 'local_mediabank');
+$table->captionhide = true;
 $table->head = [
     get_string('unlinkedname', 'local_mediabank'),
     get_string('unlinkedsize', 'local_mediabank'),
