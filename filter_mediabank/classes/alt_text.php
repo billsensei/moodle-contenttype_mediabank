@@ -16,6 +16,8 @@
 
 namespace filter_mediabank;
 
+use contenttype_mediabank\link_captions;
+
 /**
  * Finds the media bank item behind a picture in course text and puts its text alternative on the picture.
  *
@@ -139,13 +141,14 @@ class alt_text {
      * The text alternative of the media bank item that a picture URL is a link to.
      *
      * @param string $url A pluginfile URL.
-     * @param int $contextid Context of the text. A link in another context gives no text.
+     * @param int $contextid Context of the text. A link in another context, or in a place where seeing the page does not
+     *     mean being allowed to read the file, gives no text.
      * @return string The text alternative, or an empty string when the URL is not a link to a media bank item.
      */
     public static function find_alt(string $url, int $contextid): string {
         global $DB;
         $alias = link_lookup::find_alias($url);
-        if (!$alias || (int) $alias->get_contextid() !== $contextid) {
+        if (!$alias || (int) $alias->get_contextid() !== $contextid || !link_captions::is_place_allowed($alias)) {
             return '';
         }
         $source = \file_storage::unpack_reference($alias->get_reference());

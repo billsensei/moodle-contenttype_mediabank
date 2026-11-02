@@ -31,22 +31,25 @@ use contenttype_mediabank\tests\media_samples;
 #[\PHPUnit\Framework\Attributes\CoversClass(alt_text::class)]
 final class text_filter_test extends \advanced_testcase {
     /**
-     * Make a bank item with a text alternative, link it into a course and return the filter, the file URL and the course.
+     * Make a bank item with a text alternative, link it into a label activity and return the filter, the file URL and the course.
      *
      * @param string $alt The text alternative of the item.
-     * @return array [text_filter, url, course]
+     * @param string $component Component the link belongs to.
+     * @param string $filearea File area the link is in.
+     * @return array [text_filter, url, course, module context]
      */
-    protected function setup_link(string $alt): array {
+    protected function setup_link(string $alt, string $component = 'mod_label', string $filearea = 'intro'): array {
         $this->resetAfterTest();
         $this->setAdminUser();
         alt_text::reset_cache();
         $course = $this->getDataGenerator()->create_course();
         $item = link_helper::create_item('pic.png', media_samples::get('png'));
         $item->merge_metadata(['alt' => $alt]);
-        $context = \context_course::instance($course->id);
-        $link = link_helper::create_link($item, $context, 'mod_label', 'intro');
-        $url = \moodle_url::make_pluginfile_url($context->id, 'mod_label', 'intro', 0, '/', $link->get_filename())->out(false);
-        return [new text_filter($context, []), $url, $course];
+        $label = $this->getDataGenerator()->create_module('label', ['course' => $course->id]);
+        $context = \context_module::instance($label->cmid);
+        $link = link_helper::create_link($item, $context, $component, $filearea);
+        $url = \moodle_url::make_pluginfile_url($context->id, $component, $filearea, 0, '/', $link->get_filename())->out(false);
+        return [new text_filter($context, []), $url, $course, $context];
     }
 
     /**
@@ -89,6 +92,15 @@ final class text_filter_test extends \advanced_testcase {
         [, $url] = $this->setup_link('A red dot');
         $other = $this->getDataGenerator()->create_course();
         $filter = new text_filter(\context_course::instance($other->id), []);
+        $html = '<img src="' . $url . '">';
+        $this->assertSame($html, $this->apply($filter, $html));
+    }
+
+    /**
+     * A link in a place that is not on the list gives no text alternative, even in the text's own context.
+     */
+    public function test_alt_is_not_taken_from_a_link_in_a_place_that_is_not_allowed(): void {
+        [$filter, $url] = $this->setup_link('A red dot', 'mod_label', 'content');
         $html = '<img src="' . $url . '">';
         $this->assertSame($html, $this->apply($filter, $html));
     }
@@ -210,9 +222,8 @@ final class text_filter_test extends \advanced_testcase {
      * Whatever the filter does to a hostile tag, untrusted text is cleaned afterwards, so no script attribute survives.
      */
     public function test_untrusted_text_is_cleaned_after_the_filter(): void {
-        [, $url, $course] = $this->setup_link('A red dot');
+        [, $url, , $context] = $this->setup_link('A red dot');
         filter_set_global_state('mediabank', TEXTFILTER_ON);
-        $context = \context_course::instance($course->id);
         $html = '<img title="alt=\'\' onerror=x" src="' . s($url) . '"><img a"b onerror=y src="' . s($url) . '" alt="">';
         $out = format_text($html, FORMAT_HTML, ['context' => $context, 'noclean' => false, 'trusted' => false]);
         $dom = new \DOMDocument();
@@ -238,9 +249,8 @@ final class text_filter_test extends \advanced_testcase {
      * Through format_text, when the filter is switched on, with an HTML-escaped URL as the editor saves it.
      */
     public function test_works_through_format_text(): void {
-        [, $url, $course] = $this->setup_link('A red dot');
+        [, $url, , $context] = $this->setup_link('A red dot');
         filter_set_global_state('mediabank', TEXTFILTER_ON);
-        $context = \context_course::instance($course->id);
         $html = '<p><img src="' . s($url) . '" alt=""></p>';
         $this->assertStringContainsString('alt="A red dot"', format_text($html, FORMAT_HTML, ['context' => $context]));
     }
