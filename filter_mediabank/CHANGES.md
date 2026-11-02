@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- A picture gets the text alternative of a media bank item only when the link is in the same context as the text, as the captions and transcript already required. Before, text in one course could show the alt text of an item linked in another.
+
 ## 0.1.0 (2026-11-02)
 Version 2026110200. Alpha. Needs contenttype_mediabank 0.12.0.
 

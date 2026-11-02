@@ -28,6 +28,22 @@ class content extends \core_contentbank\content {
     public const MAX_TRANSCRIPT_LENGTH = 100000;
 
     /**
+     * Whether the current user may be given the item's file, captions and details.
+     *
+     * Core's is_view_allowed() also hides unlisted items when the person has switched off "display unlisted" in the Content
+     * bank, which is a choice about what to list. It must not decide whether a file the person owns, or may see, is served.
+     *
+     * @return bool
+     */
+    public function is_accessible(): bool {
+        global $USER;
+        $context = \context::instance_by_id($this->get_contextid());
+        return $USER->id == $this->content->usercreated
+            || $this->get_visibility() == self::VISIBILITY_PUBLIC
+            || has_capability('moodle/contentbank:viewunlistedcontent', $context);
+    }
+
+    /**
      * Facts kept with the item: kind, image size, and later alt text, transcript and so on.
      *
      * @return array

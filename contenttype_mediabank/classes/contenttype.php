@@ -113,7 +113,7 @@ class contenttype extends \core_contentbank\contenttype {
         if (!$record || (int) $record->contextid !== (int) $context->id) {
             return false;
         }
-        return (new self($context))->can_access() && (new content($record))->is_view_allowed();
+        return (new self($context))->can_access() && (new content($record))->is_accessible();
     }
 
     /**
@@ -162,15 +162,32 @@ class contenttype extends \core_contentbank\contenttype {
 
     #[\Override]
     public function move_content(\core_contentbank\content $content, \context $context): bool {
+        global $DB;
         // Links point at the item's current context, so they would break. Keep them working as copies.
-        usage::detach_all($content);
-        $from = $content->get_contextid();
-        $moved = parent::move_content($content, $context);
-        if ($moved) {
-            versions::move_all($from, $context->id, $content->get_id());
-            captions::move($from, $context->id, $content->get_id());
+        // Done in one transaction, so that a move that fails does not leave the links already converted.
+        $transaction = $DB->start_delegated_transaction();
+        try {
+            usage::detach_all($content);
+            $from = $content->get_contextid();
+            $moved = parent::move_content($content, $context);
+            if ($moved) {
+                versions::move_all($from, $context->id, $content->get_id());
+                captions::move($from, $context->id, $content->get_id());
+            } else {
+                throw new \moodle_exception('errormovefailed', 'contenttype_mediabank');
+            }
+            $transaction->allow_commit();
+        } catch (\moodle_exception $e) {
+            try {
+                $transaction->rollback($e);
+            } catch (\Throwable $rolledback) {
+                if ($e->errorcode !== 'errormovefailed') {
+                    throw $rolledback;
+                }
+            }
+            return false;
         }
-        return $moved;
+        return true;
     }
 
     #[\Override]

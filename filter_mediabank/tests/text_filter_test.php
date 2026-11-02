@@ -83,6 +83,17 @@ final class text_filter_test extends \advanced_testcase {
     }
 
     /**
+     * Text in another context cannot borrow the text alternative of an item linked somewhere else.
+     */
+    public function test_alt_is_not_taken_from_a_link_in_another_context(): void {
+        [, $url] = $this->setup_link('A red dot');
+        $other = $this->getDataGenerator()->create_course();
+        $filter = new text_filter(\context_course::instance($other->id), []);
+        $html = '<img src="' . $url . '">';
+        $this->assertSame($html, $this->apply($filter, $html));
+    }
+
+    /**
      * What a teacher wrote, and a decorative picture, are left as they are.
      */
     public function test_teacher_alt_and_decorative_are_kept(): void {

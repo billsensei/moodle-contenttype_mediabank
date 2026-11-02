@@ -38,6 +38,20 @@ class hook_callbacks {
      * @param after_file_created $hook The hook.
      */
     public static function after_file_created(after_file_created $hook): void {
+        // Core calls this while it saves a file. Nothing here, not even an Error, may stop the file being saved.
+        try {
+            self::report_link($hook);
+        } catch (\Throwable $e) {
+            debugging('Could not check a new file for a media bank link: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
+    }
+
+    /**
+     * Find out whether a new file is a link to a media bank item, and if so report it.
+     *
+     * @param after_file_created $hook The hook.
+     */
+    protected static function report_link(after_file_created $hook): void {
         global $DB;
         $record = $hook->filerecord;
         if (empty($record->referencefileid)) {
@@ -74,7 +88,7 @@ class hook_callbacks {
                 // Give the link the item's content now. A link nobody has opened would otherwise be empty if the item
                 // were erased, and core keeps whatever the link holds.
                 usage::sync_links($content);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 debugging('Could not finish a link to media bank item ' . $item->id . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
             }
         }

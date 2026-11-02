@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+Fixes from the audit of 0.12.0 (no new setting, no table).
+
+- A new link is reported inside a `try` that catches every `Throwable`, so an error there can never stop core saving the user's file.
+- Moving an item now converts its links and moves it in one database transaction, so a move that fails leaves the links as they were.
+- Serving a file, and the web services, no longer use core's `is_view_allowed()`, which also depends on the person's *display unlisted* choice in the Content bank list. New `content::is_accessible()` checks only the creator, public visibility and `moodle/contentbank:viewunlistedcontent`. Lists still follow the choice.
+
 ## 0.12.0 (2026-11-02)
 Version 2026110200. New features, no new setting, no table and nothing an administrator must decide. Moodle offers the upgrade; nothing else is needed. Pairs with local_mediabank 0.4.0 and the new, optional filter_mediabank 0.1.0.
 

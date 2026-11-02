@@ -50,6 +50,7 @@ $string['errorcontentmismatch'] = 'The file {$a->name} was not accepted because 
 $string['errorempty'] = 'The file {$a->name} was not accepted because it is empty.';
 $string['errorextensionchange'] = 'The file {$a->name} cannot replace this item. A replacement must be a .{$a->expected} file, so that existing links keep working.';
 $string['errornosuchitem'] = 'There is no such media bank item that you can use.';
+$string['errormovefailed'] = 'The item could not be moved.';
 $string['errornosuchversion'] = 'Version {$a} of this item does not exist.';
 $string['errornotallowed'] = 'The file {$a->name} was not accepted because this kind of file is not allowed in the media bank.';
 $string['errorsvgactive'] = 'The file {$a->name} was not accepted because an SVG file may contain only a picture: no scripts, animation, embedded pages, event handlers or links that load anything.';

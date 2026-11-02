@@ -38,9 +38,10 @@ class alt_text {
      * end is left as it is, together with everything after it.
      *
      * @param string $text HTML.
+     * @param int $contextid Context of the text. Only links in this context are used.
      * @return string The HTML, changed where a picture needed it.
      */
-    public static function apply_to_text(string $text): string {
+    public static function apply_to_text(string $text, int $contextid): string {
         $out = '';
         $pos = 0;
         $length = strlen($text);
@@ -56,7 +57,7 @@ class alt_text {
             if ($parsed === null) {
                 break;
             }
-            $out .= substr($text, $pos, $found - $pos) . self::apply_to_tag(substr($text, $found, $parsed['end'] - $found));
+            $out .= substr($text, $pos, $found - $pos) . self::apply_to_tag(substr($text, $found, $parsed['end'] - $found), $contextid);
             $pos = $parsed['end'];
         }
         return $out . ($pos < $length ? substr($text, $pos) : '');
@@ -69,9 +70,10 @@ class alt_text {
      * another attribute's value is never touched.
      *
      * @param string $tag The whole tag, from < to >.
+     * @param int $contextid Context of the text.
      * @return string The tag, changed or not.
      */
-    public static function apply_to_tag(string $tag): string {
+    public static function apply_to_tag(string $tag, int $contextid): string {
         $parsed = html_tag::parse($tag, 4);
         if ($parsed === null || $parsed['end'] !== strlen($tag)) {
             return $tag;
@@ -89,7 +91,7 @@ class alt_text {
         if (!self::is_missing($current, self::filename_of($url))) {
             return $tag;
         }
-        $bankalt = self::find_alt($url);
+        $bankalt = self::find_alt($url, $contextid);
         if ($bankalt === '') {
             return $tag;
         }
@@ -136,12 +138,13 @@ class alt_text {
      * The text alternative of the media bank item that a picture URL is a link to.
      *
      * @param string $url A pluginfile URL.
+     * @param int $contextid Context of the text. A link in another context gives no text.
      * @return string The text alternative, or an empty string when the URL is not a link to a media bank item.
      */
-    public static function find_alt(string $url): string {
+    public static function find_alt(string $url, int $contextid): string {
         global $DB;
         $alias = link_lookup::find_alias($url);
-        if (!$alias) {
+        if (!$alias || (int) $alias->get_contextid() !== $contextid) {
             return '';
         }
         $source = \file_storage::unpack_reference($alias->get_reference());

@@ -41,7 +41,7 @@ class text_filter extends \core_filters\text_filter {
             return $text;
         }
         if (stripos($text, '<img') !== false) {
-            $text = alt_text::apply_to_text($text);
+            $text = alt_text::apply_to_text($text, (int) $this->context->id);
         }
         if (stripos($text, '<video') !== false || stripos($text, '<audio') !== false) {
             $text = media_tracks::apply_to_text($text, (int) $this->context->id);

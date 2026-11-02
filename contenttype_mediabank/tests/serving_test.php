@@ -103,6 +103,19 @@ final class serving_test extends \advanced_testcase {
     }
 
     /**
+     * Hiding unlisted items from the Content bank list does not stop the owner being given the file.
+     */
+    public function test_owner_keeps_unlisted_file_when_unlisted_are_not_listed(): void {
+        $this->resetAfterTest();
+        $course = $this->getDataGenerator()->create_course();
+        $creator = $this->enrol_user($course, 'editingteacher');
+        $item = $this->create_item($creator, $course, true);
+        set_user_preference('core_contentbank_displayunlisted', 0, $creator);
+
+        $this->assertTrue($this->can_serve($creator, $item));
+    }
+
+    /**
      * The item must exist, be a media bank item and be in the context the URL names.
      */
     public function test_url_must_match_a_media_bank_item(): void {

@@ -71,7 +71,7 @@ class item {
         }
         [, $type] = self::require_access($record->contextid);
         $content = new content($record);
-        if (!$content->is_view_allowed()) {
+        if (!$content->is_accessible()) {
             throw new \core\exception\moodle_exception('errornosuchitem', 'contenttype_mediabank');
         }
         return [$content, $type];
