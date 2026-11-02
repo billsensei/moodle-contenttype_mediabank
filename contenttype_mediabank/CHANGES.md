@@ -5,6 +5,9 @@ Fixes from the audit of 0.12.0 (no new setting, no table).
 
 - A new link is reported inside a `try` that catches every `Throwable`, so an error there can never stop core saving the user's file.
 - Moving an item now converts its links and moves it in one database transaction, so a move that fails leaves the links as they were.
+- *Where this item is used* finds the item's links once, not twice (`usage::get_courses()` and `get_places()` take an optional list of links).
+- `get_items` web service reads its rows in one query and wraps them, instead of core's one extra query per item. Results and paging are unchanged.
+- `usage::find_unlinked()` finds all linked references in one query instead of two queries per item.
 - Serving a file, and the web services, no longer use core's `is_view_allowed()`, which also depends on the person's *display unlisted* choice in the Content bank list. New `content::is_accessible()` checks only the creator, public visibility and `moodle/contentbank:viewunlistedcontent`. Lists still follow the choice.
 
 ## 0.12.0 (2026-11-02)

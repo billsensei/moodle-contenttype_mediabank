@@ -74,13 +74,14 @@ class usage {
      * The links grouped by course.
      *
      * @param \core_contentbank\content $content The item.
+     * @param \stored_file[]|null $links The item's links if the caller already has them, from {@see get_links()}.
      * @return \stdClass[] Course id => object with id, links, and (for a course) the course record fields fullname and
      *      shortname. Links that are not inside a course are grouped under id 0.
      */
-    public static function get_courses(\core_contentbank\content $content): array {
+    public static function get_courses(\core_contentbank\content $content, ?array $links = null): array {
         global $DB;
         $courses = [];
-        foreach (self::get_links($content) as $link) {
+        foreach ($links ?? self::get_links($content) as $link) {
             $context = \context::instance_by_id($link->get_contextid(), IGNORE_MISSING);
             $coursecontext = $context ? $context->get_course_context(false) : false;
             $id = $coursecontext ? (int) $coursecontext->instanceid : 0;
@@ -101,12 +102,13 @@ class usage {
      * what the viewer may see.
      *
      * @param \core_contentbank\content $content The item.
+     * @param \stored_file[]|null $links The item's links if the caller already has them, from {@see get_links()}.
      * @return array[] Course id => ['activities' => cmid => links, 'elsewhere' => links not in an activity]. Links outside
      *      any course are not included.
      */
-    public static function get_places(\core_contentbank\content $content): array {
+    public static function get_places(\core_contentbank\content $content, ?array $links = null): array {
         $places = [];
-        foreach (self::get_links($content) as $link) {
+        foreach ($links ?? self::get_links($content) as $link) {
             $context = \context::instance_by_id($link->get_contextid(), IGNORE_MISSING);
             $coursecontext = $context ? $context->get_course_context(false) : false;
             if (!$coursecontext) {
@@ -144,13 +146,26 @@ class usage {
             $select .= ' AND timecreated <= :cutoff';
             $params['cutoff'] = time() - $minage;
         }
+        // One query for every reference that has a link, instead of one per item. The same links as
+        // file_storage::search_references() finds: not in a user's draft area.
+        $linked = $DB->get_fieldset_sql(
+            "SELECT DISTINCT fr.referencehash
+               FROM {files_reference} fr
+               JOIN {repository_instances} ri ON ri.id = fr.repositoryid
+               JOIN {repository} r ON r.id = ri.typeid
+               JOIN {files} f ON f.referencefileid = fr.id
+              WHERE r.type = :type AND (f.component <> :user OR f.filearea <> :draft)",
+            ['type' => 'contentbank', 'user' => 'user', 'draft' => 'draft']
+        );
+        $linked = array_flip($linked);
         $records = $DB->get_recordset_select('contentbank_content', $select, $params, 'id');
         foreach ($records as $record) {
             $content = new content($record);
-            $file = $content->get_file();
-            if (!$file || self::count_links($content) > 0) {
+            $reference = self::get_reference($content);
+            if ($reference === null || isset($linked[sha1($reference)])) {
                 continue;
             }
+            $file = $content->get_file();
             $found[$record->id] = $content;
             $sizes[$record->id] = $file->get_filesize();
         }

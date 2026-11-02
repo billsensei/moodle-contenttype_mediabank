@@ -39,6 +39,9 @@ class embedded_links {
     /** @var string Name of the backup_ids_temp item where core queues links to restore. */
     private const QUEUE = 'file_aliases_queue';
 
+    /** @var bool[] Backup id => whether this backup is general and includes files. Kept for the length of the request. */
+    private static array $applies = [];
+
     /**
      * Whether the admin chose to include linked files in backups.
      *
@@ -60,10 +63,13 @@ class embedded_links {
         if (!self::is_enabled()) {
             return false;
         }
-        $controller = backup_controller_dbops::load_controller($backupid);
-        $applies = $controller->get_mode() === backup::MODE_GENERAL && $controller->get_include_files();
-        $controller->destroy();
-        return $applies;
+        // Loading the controller reads the whole backup plan, and this is asked once for each course and activity.
+        if (!isset(self::$applies[$backupid])) {
+            $controller = backup_controller_dbops::load_controller($backupid);
+            self::$applies[$backupid] = $controller->get_mode() === backup::MODE_GENERAL && $controller->get_include_files();
+            $controller->destroy();
+        }
+        return self::$applies[$backupid];
     }
 
     /**

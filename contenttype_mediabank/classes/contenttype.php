@@ -243,8 +243,9 @@ class contenttype extends \core_contentbank\contenttype {
      * @return string HTML.
      */
     protected function render_usage(\core_contentbank\content $content): string {
-        $courses = usage::get_courses($content);
-        $places = usage::get_places($content);
+        $links = usage::get_links($content);
+        $courses = usage::get_courses($content, $links);
+        $places = usage::get_places($content, $links);
         $heading = \html_writer::tag('h3', get_string('usageheading', 'contenttype_mediabank'), ['class' => 'h5 mt-3']);
         if (!$courses) {
             return $heading . \html_writer::tag('p', get_string('usagenone', 'contenttype_mediabank'));

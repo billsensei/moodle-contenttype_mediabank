@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- A backup is checked once for whether it is a general backup with files, not once for each course and activity.
+
 ## 0.4.0 (2026-11-02)
 Version 2026110200. Needs contenttype_mediabank 0.12.0 (the unlinked-items report calls `usage::find_unlinked()`). No setting, no table.
 

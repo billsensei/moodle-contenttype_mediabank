@@ -18,7 +18,6 @@ namespace contenttype_mediabank\external;
 
 use contenttype_mediabank\content;
 use contenttype_mediabank\upload_rules;
-use core_contentbank\contentbank;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -64,6 +63,7 @@ class get_items extends external_api {
      * @return array
      */
     public static function execute(int $contextid, string $kind = '', string $query = '', int $page = 0, int $perpage = 50): array {
+        global $DB;
         $params = self::validate_parameters(
             self::execute_parameters(),
             ['contextid' => $contextid, 'kind' => $kind, 'query' => $query, 'page' => $page, 'perpage' => $perpage]
@@ -76,10 +76,26 @@ class get_items extends external_api {
         }
         [$context, $type] = item::require_access($params['contextid']);
 
-        $contents = (new contentbank())->search_contents($params['query'] ?: null, $context->id, ['mediabank']);
-        if ($params['kind'] !== '') {
-            $contents = array_filter($contents, fn(content $content) => item::get_kind($content) === $params['kind']);
+        // Core's search_contents() loads every row again, one query each, before anything is filtered. The rows are
+        // read once here and wrapped as they are.
+        $select = 'contenttype = :contenttype AND contextid = :contextid';
+        $sqlparams = ['contenttype' => 'contenttype_mediabank', 'contextid' => $context->id];
+        if ($params['query'] !== '') {
+            $select .= ' AND ' . $DB->sql_like('name', ':name', false, false);
+            $sqlparams['name'] = '%' . $DB->sql_like_escape($params['query']) . '%';
         }
+        $contents = [];
+        $records = $DB->get_recordset_select('contentbank_content', $select, $sqlparams, 'name ASC, id ASC');
+        foreach ($records as $record) {
+            $content = new content($record);
+            if (!$content->is_view_allowed()) {
+                continue;
+            }
+            if ($params['kind'] === '' || item::get_kind($content) === $params['kind']) {
+                $contents[] = $content;
+            }
+        }
+        $records->close();
         $total = count($contents);
         $pageitems = array_slice(array_values($contents), $params['page'] * $params['perpage'], $params['perpage']);
 
