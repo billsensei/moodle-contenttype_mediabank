@@ -47,6 +47,12 @@ class get_items extends external_api {
             'query' => new external_value(PARAM_TEXT, 'Only items whose name contains this text', VALUE_DEFAULT, ''),
             'page' => new external_value(PARAM_INT, 'Page number, starting at 0', VALUE_DEFAULT, 0),
             'perpage' => new external_value(PARAM_INT, 'Items per page, at most ' . self::MAX_PER_PAGE, VALUE_DEFAULT, 50),
+            'includetranscripts' => new external_value(
+                PARAM_BOOL,
+                'Include each transcript, which may be 100,000 characters. Off by default: see hastranscript, then get_item',
+                VALUE_DEFAULT,
+                0
+            ),
         ]);
     }
 
@@ -60,13 +66,28 @@ class get_items extends external_api {
      * @param string $query Name filter or empty.
      * @param int $page Page number from 0.
      * @param int $perpage Items per page.
+     * @param bool $includetranscripts Whether to include the transcripts.
      * @return array
      */
-    public static function execute(int $contextid, string $kind = '', string $query = '', int $page = 0, int $perpage = 50): array {
+    public static function execute(
+        int $contextid,
+        string $kind = '',
+        string $query = '',
+        int $page = 0,
+        int $perpage = 50,
+        bool $includetranscripts = false
+    ): array {
         global $DB;
         $params = self::validate_parameters(
             self::execute_parameters(),
-            ['contextid' => $contextid, 'kind' => $kind, 'query' => $query, 'page' => $page, 'perpage' => $perpage]
+            [
+                'contextid' => $contextid,
+                'kind' => $kind,
+                'query' => $query,
+                'page' => $page,
+                'perpage' => $perpage,
+                'includetranscripts' => $includetranscripts,
+            ]
         );
         if ($params['kind'] !== '' && !array_key_exists($params['kind'], upload_rules::KINDS)) {
             throw new \invalid_parameter_exception('kind must be one of ' . implode(', ', array_keys(upload_rules::KINDS)));
@@ -99,9 +120,10 @@ class get_items extends external_api {
         $total = count($contents);
         $pageitems = array_slice(array_values($contents), $params['page'] * $params['perpage'], $params['perpage']);
 
+        $withtranscripts = (bool) $params['includetranscripts'];
         return [
             'total' => $total,
-            'items' => array_map(fn(content $content) => item::export($content, $type), $pageitems),
+            'items' => array_map(fn(content $content) => item::export($content, $type, $withtranscripts), $pageitems),
             'warnings' => [],
         ];
     }

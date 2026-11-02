@@ -178,6 +178,26 @@ final class external_test extends \core_external\tests\externallib_testcase {
     }
 
     /**
+     * A list leaves the transcripts out unless asked, and says which items have one.
+     */
+    public function test_get_items_leaves_transcripts_out_unless_asked(): void {
+        $this->resetAfterTest();
+        $course = $this->getDataGenerator()->create_course();
+        $context = \context_course::instance($course->id);
+        $teacher = $this->enrol_user($course, 'editingteacher');
+        $item = $this->create_item($teacher, $context, 'talk.mp3', media_samples::get('mp3'));
+        $item->merge_metadata(['transcript' => 'Hello there']);
+        $this->setUser($teacher);
+
+        $plain = $this->call(get_items::class, ['contextid' => $context->id])['items'][0];
+        $this->assertSame('', $plain['transcript']);
+        $this->assertTrue($plain['hastranscript']);
+
+        $full = $this->call(get_items::class, ['contextid' => $context->id, 'includetranscripts' => 1])['items'][0];
+        $this->assertSame('Hello there', $full['transcript']);
+    }
+
+    /**
      * One item has its file and caption addresses and its accessibility text, and no creator.
      */
     public function test_get_item(): void {

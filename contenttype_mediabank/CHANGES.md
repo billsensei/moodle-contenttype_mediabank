@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- Web services: a list no longer carries every transcript, which may be 100,000 characters each (up to 10 MB a page). `contenttype_mediabank_get_items` has a new parameter `includetranscripts` (default off), and every item has a new field `hastranscript`. **A client that read `transcript` from a list now gets an empty string**: ask for `includetranscripts=1`, or read the item with `contenttype_mediabank_get_item`, which always includes the transcript.
+
 ## 0.12.1 (2026-11-02)
 Version 2026110201. Fixes and hardening from a code and security audit of 0.12.0. No new setting and no table. Moodle offers the upgrade; nothing else is needed. The `upload` and `useeditor` capabilities now carry `RISK_XSS`, which Moodle records during this upgrade.
 

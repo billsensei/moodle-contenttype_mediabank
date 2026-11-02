@@ -115,8 +115,10 @@ class item {
             ),
             'transcript' => new external_value(
                 PARAM_RAW,
-                'Transcript, empty if none. Plain text, not HTML: escape it before showing it on a page'
+                'Transcript, empty if none or if the list was asked without transcripts (see hastranscript). '
+                . 'Plain text, not HTML: escape it before showing it on a page'
             ),
+            'hastranscript' => new external_value(PARAM_BOOL, 'Whether the item has a transcript. Get it with get_item'),
             'captionsurl' => $nullable(PARAM_URL, 'Web service URL of the WebVTT captions, null if none'),
             'width' => $nullable(PARAM_INT, 'Image width in pixels, null if not an image'),
             'height' => $nullable(PARAM_INT, 'Image height in pixels, null if not an image'),
@@ -133,9 +135,10 @@ class item {
      *
      * @param content $content The item.
      * @param contenttype $type Content type for the item's context.
+     * @param bool $withtranscript Whether to include the transcript text. A transcript may be 100,000 characters.
      * @return array
      */
-    public static function export(content $content, contenttype $type): array {
+    public static function export(content $content, contenttype $type, bool $withtranscript = true): array {
         $context = \context::instance_by_id($content->get_contextid());
         $file = $content->get_file();
         $metadata = $content->get_metadata();
@@ -159,7 +162,8 @@ class item {
             'fileurl' => $file ? $url('contentbank', 'public', $file->get_filename()) : '',
             'visibility' => (int) $content->get_visibility(),
             'alt' => $content->get_alt(),
-            'transcript' => $content->get_transcript(),
+            'transcript' => $withtranscript ? $content->get_transcript() : '',
+            'hastranscript' => $content->get_transcript() !== '',
             'captionsurl' => $captions ? $url('contenttype_mediabank', captions::FILEAREA, captions::FILENAME) : null,
             'width' => isset($metadata['width']) ? (int) $metadata['width'] : null,
             'height' => isset($metadata['height']) ? (int) $metadata['height'] : null,
