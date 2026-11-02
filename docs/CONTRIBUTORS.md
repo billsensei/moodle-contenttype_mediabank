@@ -9,7 +9,7 @@ Thank you to everyone who has helped build the Media bank.
 ## Built with
 
 - **Claude** (an AI assistant made by Anthropic) wrote much of the code, tests and documentation, working with Bill White in Claude Code. Commits that Claude helped write say so in a `Co-Authored-By` line. Everything was reviewed and run by the maintainer before release.
-- **Automated security reviews** looked at the code before each release and found real problems that were fixed first. They are recorded in `contenttype_mediabank/CHANGES.md`.
+- **Automated security reviews** looked at the code before each release and found real problems that were fixed first. Examples from 0.12.0: a spreadsheet-formula risk in the unlinked-items CSV, a way to learn which item ids exist, activity names shown to people who could not enter the course, a script-attribute risk and a missing cleaner step in the text filter, and a hidden book chapter whose captions were not protected. Each was fixed before it was released. They are mentioned in the changelogs where they changed what the plugins do, and written up in full in `docs/COMMANDS.md` and `docs/CAPTIONS-DESIGN.md`.
 
 ## Standing on the shoulders of
 
