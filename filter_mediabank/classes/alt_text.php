@@ -57,7 +57,8 @@ class alt_text {
             if ($parsed === null) {
                 break;
             }
-            $out .= substr($text, $pos, $found - $pos) . self::apply_to_tag(substr($text, $found, $parsed['end'] - $found), $contextid);
+            $tag = substr($text, $found, $parsed['end'] - $found);
+            $out .= substr($text, $pos, $found - $pos) . self::apply_to_tag($tag, $contextid);
             $pos = $parsed['end'];
         }
         return $out . ($pos < $length ? substr($text, $pos) : '');
