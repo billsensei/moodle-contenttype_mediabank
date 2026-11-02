@@ -1,4 +1,4 @@
-@core @core_contentbank @contenttype @contenttype_mediabank @javascript
+@core @core_contentbank @contenttype @contenttype_mediabank @javascript @accessibility
 Feature: Add accessibility information to a media bank item
   In order to make media usable for everyone
   As a teacher
@@ -32,15 +32,19 @@ Feature: Add accessibility information to a media bank item
     And I click on "Content bank" "link"
     And I click on "bankimage" "link"
     And I click on "Edit" "link"
+    And the "#region-main" "css_element" should meet accessibility standards
     When I press "Save"
     Then I should see "Required"
     And I set the field "Text alternative" to "A single red dot"
     And I press "Save"
     And I should see "Content updated"
     And "//img[@alt='A single red dot']" "xpath_element" should exist
+    And the ".contenttype-mediabank-preview" "css_element" should meet accessibility standards
     # Nothing links to this item, so it can still be deleted.
     And "Delete" "link" should exist
 
+  # No axe check here: Moodle 5.0's axe step fails with "No data" on a page that has an <audio> player. The image scenario above
+  # checks the item page on every version.
   Scenario: A transcript is shown under the audio preview
     Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on

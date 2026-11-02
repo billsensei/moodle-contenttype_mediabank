@@ -15,11 +15,13 @@ Feature: Report of media bank items that nothing links to
       | contextlevel | reference | contenttype           | user  | contentname | filepath                                                     |
       | Course       | C1        | contenttype_mediabank | admin | unusedpic   | /contentbank/contenttype/mediabank/tests/fixtures/sample.png |
 
+  @javascript @accessibility
   Scenario: An unlinked item is listed in the report
     Given I log in as "admin"
     When I navigate to "Reports > Media bank: items nobody links to" in site administration
     Then I should see "1 item(s) with no links"
     And I should see "unusedpic"
+    And the "#region-main" "css_element" should meet accessibility standards
 
   Scenario: A minimum age hides recent uploads
     Given I log in as "admin"
