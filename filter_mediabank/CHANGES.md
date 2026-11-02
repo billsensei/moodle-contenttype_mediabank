@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2 (2026-11-02)
+Version 2026110202. Hardening. No new setting and no table. Moodle offers the upgrade; nothing else is needed. Needs contenttype_mediabank 0.12.0, as before.
+
+- A picture gets the text alternative of a media bank item only when the link is in a place where seeing the page means being allowed to read the file (activity descriptions, File, Page, Book and Folder content, course and section summaries). Before, any link in the text's own context counted. This is the same rule the captions and transcript already followed.
+
 ## 0.1.1 (2026-11-02)
 Version 2026110201. Fixes and hardening from a code and security audit of the previous release. No new setting and no table. Moodle offers the upgrade; nothing else is needed.
 

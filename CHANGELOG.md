@@ -8,6 +8,8 @@ and the bundle zip attached.
 
 ## Unreleased
 
+- `filter_mediabank` 0.1.2 (2026110202): a picture gets an item's text alternative only when the link is in a place the captions and transcript already allow, not in any place in the text's own context. Content type 0.12.2 and tools 0.4.1 are unchanged.
+
 ## 0.12.2 (2026-11-02): content type 0.12.2 (tools 0.4.1 and filter 0.1.1 unchanged)
 
 - Web services: `contenttype_mediabank_get_items` no longer carries every transcript, which could be 100,000 characters each. New parameter `includetranscripts` (default off) and new field `hastranscript`. A client that read `transcript` from a list now gets an empty string: pass `includetranscripts=1`, or use `contenttype_mediabank_get_item`, which always includes it.
