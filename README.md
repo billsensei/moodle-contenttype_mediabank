@@ -70,7 +70,7 @@ Full steps, including installing by hand, are in [docs/INSTALL.md](docs/INSTALL.
 - [Maintainers](docs/MAINTAINERS.md): who looks after it, the standing rules, and the release routine
 - [Governance](docs/GOVERNANCE.md): who decides what, and how a decision is made
 - [Releasing](docs/RELEASING.md): the step-by-step checklist for a new version
-- [Captions design](docs/CAPTIONS-DESIGN.md): the proposal for carrying captions and transcripts into courses (not built)
+- [Captions design](docs/CAPTIONS-DESIGN.md): how captions and transcripts reach courses that link to an item, and what was decided
 - [Security policy](docs/SECURITY-POLICY.md): how a report is handled, what the plugins do, known limits, what an administrator can do
 - [Changelog policy](docs/CHANGELOG-POLICY.md): what goes in each changelog, and how to write an entry
 - [Style guide](docs/STYLE-GUIDE.md): how the guides and the words on the screen are written

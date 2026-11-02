@@ -1,6 +1,6 @@
 # Media bank: Design for carrying captions and transcripts into courses
 
-**Status: proposal for review. Nothing in this page is built.** Written 2 November 2026 after `filter_mediabank` 0.1.0 (alt text for pictures) was built. The evidence is in section 2; file names in square brackets are in the Moodle 5.3 tree.
+**Status: option B was chosen on 2 November 2026 and is built (unreleased).** See section 10 for what was decided and where the build differs from this proposal. Written the same day, after `filter_mediabank` 0.1.0 (alt text for pictures) was built. The evidence is in section 2; file names in square brackets are in the Moodle 5.3 tree.
 
 ## 1. The problem
 
@@ -113,7 +113,7 @@ The rule must be **no weaker than "may play the video"**, and it must not reveal
 | **Convert to copies** | The copy is an ordinary file; the filter finds no alias and adds nothing. The confirm page should say so |
 | Backup and restore | The restored file is a copy (existing behaviour), so no captions. Same as alt text |
 | Item moved, replaced or deleted | The route reads the item *now*, so a replaced caption shows at once. Deleting an item first turns its links into copies, so no dangling route |
-| Item in a hidden or unlisted state | `is_view_allowed()` is applied to the item as the item route does, so an unlisted item's captions are not served through a link either |
+| Item in an unlisted state | **Built differently from this proposal:** unlisted does not hide captions through a link. Unlisted only keeps an item out of lists; a course that links to it can already play the video, so hiding its captions would only hurt those viewers (section 10) |
 | Plain `<a href="...mp4">` links | Not covered (converted after our stage). Documented |
 | Moodle mobile app | Not covered (its own file route). Documented as untested |
 | Audio | Same as video |
@@ -144,3 +144,28 @@ The rule must be **no weaker than "may play the video"**, and it must not reveal
 4. **Can you check, on a real site, what the editor inserts for a video?** If it is a link, not a `<video>`, the filter would also need to turn that link into a player, which is a larger change.
 5. **Transcript:** under the player as a `<details>` block, or leave it to the bank page? (It is the part some teachers will want to hide.)
 6. **Languages:** one caption file per item is enough for now?
+
+## 10. Decisions and what was built (2 November 2026)
+
+**Decided by the maintainer:** go with option B, and captions are **off by default** (no `default` on the track). The other questions were answered by following the recommendations above: the list of places in section 5 as written, the transcript under the player as a `<details>` block, and one caption file per item. Question 4 was checked in the Moodle 5.3 tree: TinyMCE's *Insert media* produces `<video><source><track>` (`lib/editor/tiny/plugins/media/templates/embed/embed_media_video.mustache`), so the filter has to deal with players, not with plain links.
+
+**Built:**
+
+| Where | What |
+|---|---|
+| `contenttype_mediabank/classes/link_captions.php` | `url_for()`, `item_of()`, `is_place_allowed()` (the list), `viewer_may_read()` (login, enrolment or guest rules, activity visibility and availability, the activity's `view` capability, section visibility) and `find_file()` (the route's whole decision; every refusal is `null`) |
+| `contenttype_mediabank/lib.php` | New file area `linkcaptions` in `contenttype_mediabank_pluginfile()`: login for the activity or course, `find_file()`, then `text/vtt` with `nosniff`, private cache, session closed |
+| `filter_mediabank/classes/media_tracks.php` | Adds `<track kind="captions" label="Captions" src="...">` before `</video>` or `</audio>` and the transcript after it |
+| `filter_mediabank/classes/link_lookup.php`, `html_tag.php` | Shared by the alt text and track steps: URL to link, and the tag tokenizer |
+
+**Where the build differs from the proposal:**
+
+1. **Unlisted items.** Not applied to links (see the edge-case table). The video plays through the link, so its captions must too.
+2. **The filter only acts when the link is in the same context as the text** (`$this->context`), so text in one place cannot borrow a link from another and show its transcript to people who cannot see the file. The route checks the viewer separately.
+3. **The viewer is not checked in the filter**, only the place. The filter's output can be cached with the page; the route checks the viewer on every request. A transcript is added to text that the viewer can already see with the video in it.
+4. **No `default`** and no `srclang` (the item has no language).
+5. **The dependency.** `filter_mediabank` calls `link_captions`, which is new in `contenttype_mediabank`. The filter does nothing if the class is missing. At release the filter's dependency in `version.php` must be raised to the content type version that has the class.
+
+**Tests:** `contenttype_mediabank/tests/link_captions_test.php` (5 tests, 37 assertions: a student through a File resource; an outsider, a hidden activity, a wrong context and bad arguments; only the listed places, with a forum post, attachment and block refused; a replaced or removed caption and a converted copy; guests follow the course's guest access) and `filter_mediabank/tests/media_tracks_test.php` (7 tests, 30 assertions: track and transcript, audio with `src`, players left alone, no captions, other contexts and places, hostile text through the cleaner, other stages do nothing). With the place check switched off, one test in each file fails. The contenttype suite is 127 tests and the filter suite 20, all passing on 5.3.
+
+**Not done or not tested:** a Behat scenario (the steps cannot create a link without the file picker); a real browser showing the captions button; other Moodle versions; the Moodle mobile app.

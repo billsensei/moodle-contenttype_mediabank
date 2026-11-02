@@ -112,7 +112,7 @@ This is the Edit page of a video. The text alternative of an image is on the sam
 ![The Edit page of a picture with the required Text alternative field filled in.](images/teacher-7-edit-image.png)
 
 > **Important: these are kept with the bank item, not with the course.**
-> A course that links to the file, or holds a copy of it, gets the **bare file**. It does **not** get the captions, text alternative or transcript.
+> A course that **holds a copy** of the file gets the **bare file**: no captions, text alternative or transcript. A course that **links** to it gets them too, when the site's administrator has switched on the *Media bank text alternatives* filter: a picture gets its text alternative, and a video or audio player gets a *Captions* button (off until the viewer turns it on) and a *Transcript* under it. This works for a player you insert with the editor or a File resource that shows the video on its page, in activity descriptions, Page, Book and Folder content, and course and section summaries. It does not work for a plain link to the file, for forum posts or assignments, or in the Moodle app. If you add your own captions track to the player, yours is used.
 > So for a video in a course, also put the transcript on the course page, or in the activity's description, and make sure the video itself has the captions you need.
 > Likewise, people who use screen readers need a **tagged** PDF. The Media bank cannot check this for you. Check the file before you use it.
 

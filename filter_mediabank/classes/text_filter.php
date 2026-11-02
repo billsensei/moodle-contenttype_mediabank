@@ -17,7 +17,8 @@
 namespace filter_mediabank;
 
 /**
- * Gives a picture that was added to a course from the media bank as a link the text alternative kept with the bank item.
+ * Gives a picture that was added to a course from the media bank as a link the text alternative kept with the bank item, and a
+ * video or audio player the captions and transcript.
  *
  * Only a picture with no text alternative, an empty one, or just its file name is changed. Anything a teacher wrote, and a
  * picture marked as decorative, is left alone.
@@ -36,10 +37,16 @@ class text_filter extends \core_filters\text_filter {
 
     #[\Override]
     public function filter_stage_pre_clean(string $text, array $options): string {
-        if (stripos($text, '<img') === false || strpos($text, 'pluginfile.php') === false) {
+        if (strpos($text, 'pluginfile.php') === false) {
             return $text;
         }
-        return alt_text::apply_to_text($text);
+        if (stripos($text, '<img') !== false) {
+            $text = alt_text::apply_to_text($text);
+        }
+        if (stripos($text, '<video') !== false || stripos($text, '<audio') !== false) {
+            $text = media_tracks::apply_to_text($text, (int) $this->context->id);
+        }
+        return $text;
     }
 
     #[\Override]

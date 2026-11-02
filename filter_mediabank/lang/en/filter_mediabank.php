@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['captions'] = 'Captions';
 $string['filtername'] = 'Media bank text alternatives';
 $string['pluginname'] = 'Media bank text alternatives';
 $string['privacy:metadata'] = 'The media bank filter does not store any personal data.';
+$string['transcript'] = 'Transcript';

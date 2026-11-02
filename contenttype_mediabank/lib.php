@@ -40,6 +40,25 @@
 function contenttype_mediabank_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
     global $DB;
 
+    if ($filearea === \contenttype_mediabank\link_captions::FILEAREA) {
+        // Captions of a media bank item, read through a link in a course. See docs/CAPTIONS-DESIGN.md.
+        if ($context->contextlevel == CONTEXT_MODULE) {
+            require_login($course, false, $cm);
+        } else if ($context->contextlevel == CONTEXT_COURSE) {
+            require_login($course);
+        } else {
+            return false;
+        }
+        $file = \contenttype_mediabank\link_captions::find_file($context, $args);
+        if (!$file) {
+            return false;
+        }
+        \core\session\manager::write_close();
+        header('X-Content-Type-Options: nosniff');
+        // A caption file is fetched by the player, never downloaded. It is private to this user and re-checked each time.
+        send_stored_file($file, 0, 0, false, ['cacheability' => 'private'] + $options);
+    }
+
     if (!in_array($filearea, [\contenttype_mediabank\captions::FILEAREA, \contenttype_mediabank\versions::FILEAREA], true)) {
         return false;
     }
