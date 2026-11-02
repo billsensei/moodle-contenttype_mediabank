@@ -88,6 +88,17 @@ You can also reach this page from **Site administration → Plugins → Plugins 
 
 iPhone video (QuickTime brand mp4) and mp3 files with large cover-art tags are accepted.
 
+### Text alternatives, captions and transcripts in courses (optional filter)
+
+A third plugin, `filter_mediabank` (**Alpha**), carries the text kept with an item into the courses that **link** to it. It needs the content type 0.12.0 and does nothing until you switch it on under *Site administration > Plugins > Filters > Manage filters* (set it to *On*, or *Off, but available* and let teachers turn it on per course).
+
+- A picture with no text alternative, an empty one, or only its file name gets the item's text alternative. One a teacher wrote, and a picture marked as decorative, are left alone.
+- A video or audio player gets the item's captions as a **Captions** button that is off until the viewer turns it on, and its transcript in a **Transcript** block under the player (collapsible on Moodle 5.3 and later, a plain labelled block on 5.0 to 5.2). A player that already has a captions track of its own is left alone.
+- A **copy** is an independent file and gets nothing.
+- Captions and transcripts are offered in activity descriptions, and in File, Page, Book and Folder content, and in course and section summaries. Not in forum posts, assignments, quizzes or blocks, because there who may see a file depends on the record. A hidden book chapter keeps its captions from people who may not see it.
+- The captions are read through a route in the course (`/pluginfile.php/<context>/contenttype_mediabank/linkcaptions/<link id>/captions.vtt`) that checks the viewer against the activity or course the link is in. It is refused, with the same answer as a missing file, to anyone who could not open the page. Students never need access to the Content bank.
+- Not covered: a plain link to a file (only a player the editor inserted, or a File resource shown on its own page), the Moodle mobile app, and more than one caption file per item. Details and the security reasoning are in [CAPTIONS-DESIGN.md](https://github.com/billsensei/moodle-repository_mediabank/blob/main/docs/CAPTIONS-DESIGN.md).
+
 ## 3. Who can do what
 
 Two sets of permissions both have to allow an action: Moodle's Content bank permissions and the plugin's own. By default:
@@ -103,6 +114,7 @@ Two sets of permissions both have to allow an action: Moodle's Content bank perm
 
 - Students never need these. They see media through the course, whichever way it was added.
 - An item's file is only given to people who may see the item. Another teacher cannot fetch your unlisted item by guessing its address.
+- A teacher who can edit the activities of a course (`moodle/course:manageactivities` in the course) can use **Convert to copies** for that course's links to an item, without managing the item. It converts only that course.
 - Items can live in the site, a category or a course.
 
 ## 4. Large files
@@ -241,6 +253,14 @@ To queue the videos uploaded before streaming preparation existed (section 2):
 
 Run with no arguments to see the options. `--detach` makes every link an independent copy; the item can then be deleted. `--restore` puts a version back, and the file it replaces is kept as a new version.
 
+### Items nobody links to
+
+To find items that no course uses, to clear space, open *Site administration > Reports > Media bank: items nobody links to* (administrators only). It lists the largest 500 such items with their size and upload date, each linked to its page, and can hide items uploaded in the last N days. The same list is available from the command line, which also writes CSV:
+
+    php local/mediabank/cli/unlinked.php [--days=N] [--csv]
+
+It only reads: nothing is changed or deleted. A copy made from an item is an independent file and does not count as a link, and neither does a draft link in an open edit form. Names in the CSV that a spreadsheet would read as a formula (starting with `=`, `+`, `-`, `@` or a tab) get a leading apostrophe. On a very large bank it takes a while, because it counts the links of each item.
+
 ## 11. Removing the plugin
 
 **Read this first. Uninstalling deletes every item in the media bank**, with its versions, captions, alt text and transcripts. Course files are kept: Moodle asks the plugin to delete each item, and the plugin first turns every link into an ordinary copy. (Tested.) Uninstall does not offer a way to bring items back. **Make a full site backup (database and `moodledata`) first.**
@@ -266,15 +286,16 @@ Finally delete the plugin folders from the server (Moodle tells you which). Mood
 
 ## 12. What has been tested, and what has not
 
-**Tested** (PHP 8.4, MariaDB), on **Moodle 5.0.11, 5.1.8, 5.2.4 and 5.3**: a fresh install; 119 automated tests of the content type and 7 of backup and restore; Moodle's own privacy and event checks; and 7 browser scenarios (upload, refused files, link, copy, alt text, transcript). All pass on all four versions. The automated tests were re-run on all four versions for 0.11.1; the 7 browser scenarios were re-run on Moodle 5.3 for 0.11.1, and the project's GitHub Actions workflow runs them on all four. The plugin zips pass Moodle's own installer validation.
+**Tested** (PHP 8.4, MariaDB), on **Moodle 5.0.11, 5.1.8, 5.2.4 and 5.3**: a fresh install; 129 automated tests of the content type, 7 of backup and restore and 21 of the filter; Moodle's own privacy and event checks; and 11 browser scenarios (upload, refused files, link, copy, alt text, transcript, the convert page, the unlinked-items report). All pass on all four versions: the project's GitHub Actions workflow ran PHPUnit with `--fail-on-warning` and Behat for all three plugins on Moodle 5.0 to 5.3, PHP 8.3 and 8.4, PostgreSQL and MariaDB (48 jobs) for 0.12.0. The plugin zips pass Moodle's own installer validation.
 
 **Not tested:**
-- PHP 8.3 (not available on the test machine). PostgreSQL (only MariaDB was available).
+- PHP 8.3 and PostgreSQL on the test machine (only PHP 8.4 and MariaDB were available there). GitHub Actions runs both, and all 48 jobs pass.
 - The Moodle mobile app. The plugin has no mobile support.
 - Antivirus scanning of very large files; files near the 1 GB limit through a real web server.
 - Site-level items in the browser: the browser scenarios used items in a course's content bank; items in the site context were covered by the automated tests only.
 - Activities other than the **File** resource for the Link and Copy choice. Other activities that use Moodle's standard file picker offer the same choice, but only the File resource was exercised.
-- Linting (code style) on Moodle 5.0 to 5.2.
+- Linting (code style) on Moodle 5.0 to 5.2 on the test machine. GitHub Actions runs it on all four versions.
+- The optional filter in a real browser: the **Captions** button, the **Transcript** block and the text alternative were tested through Moodle's own text formatting and cleaner, not by looking at a page. Nor was a page saved by the TinyMCE editor, or the Convert to copies button with a real link.
 
 **Known limits:**
 - Both plugins are marked **Beta**: released for testing. Try them on a copy of your site first.

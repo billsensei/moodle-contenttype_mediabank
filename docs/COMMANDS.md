@@ -8,16 +8,18 @@ current ones. For the procedures in the order you would use them, read [DEVELOPM
 Paths are this machine's: Moodle trees in `/home/bill/test2/{moodle,moodle51,moodle52,moodle53}` (5.0 has no `public/` folder),
 MariaDB on `127.0.0.1:3307`, and `export LOCPATH=~/.local/locale` in a fresh shell before any PHPUnit or Behat run.
 
-## Current numbers (contenttype 0.11.1, local 0.3.1)
+## Current numbers (contenttype 0.12.0, local 0.4.0, filter 0.1.0)
 
 | Check | Result |
 |---|---|
-| `contenttype_mediabank_testsuite` | 119 tests, 509 assertions, on Moodle 5.0, 5.1, 5.2 and 5.3 |
+| `contenttype_mediabank_testsuite` | 129 tests, 581 assertions, on Moodle 5.0, 5.1, 5.2 and 5.3 (locally on 5.3; CI on all four) |
 | `local_mediabank/tests/backup_restore_test.php` | 7 tests, 27 assertions |
-| Behat `@contenttype_mediabank` | 7 scenarios, 151 steps (about 6 minutes) |
+| `filter_mediabank_testsuite` | 21 tests, 84 assertions (locally on 5.2 and 5.3; CI on all four) |
+| Behat `@contenttype_mediabank` | 9 scenarios, 175 steps (about 7 minutes) |
+| Behat `@local_mediabank` | 2 scenarios, 16 steps |
 | Core privacy and event checks | pass on 5.0 to 5.3 |
-| In-tree phpcs, `--max-warnings 0` | clean on 5.0 to 5.2 locally; CI runs it on all four |
-| GitHub Actions | 48 jobs: 3 plugins x PHP 8.3, 8.4 x Moodle 5.0 to 5.3 x PostgreSQL, MariaDB |
+| phpcs, `--warning-severity=1`, whole repository | clean (locally with the Moodle standard; CI runs it on all four versions) |
+| GitHub Actions | 48 jobs: 3 plugins x PHP 8.3, 8.4 x Moodle 5.0 to 5.3 x PostgreSQL, MariaDB. Run 41372737393 on `3c56c08`: 48 of 48 green |
 
 Sections below that give a smaller number (4, 5, 44, 53, 61, 72, 79, 88, 104 to 109 tests) were right on the day and are kept as
 history. The Behat run for the SVG change (0.11.0) was not repeated, because no browser step changed.

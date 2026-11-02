@@ -4,7 +4,7 @@ Where the project stands and where it could go. **This is a list of ideas, not p
 
 ## Where it stands
 
-Both plugins are **Beta** (released for testing): `contenttype_mediabank` 0.11.1 and `local_mediabank` 0.3.1, for Moodle 5.0 to 5.3. The features work and are well tested, but the plugins have not had long use on real sites. What has and has not been tested is listed in the Administrator guide, section 12. 0.11.1 and 0.3.1 are a hardening release with no new features; they replace the 0.11.0 downloads (see [CHANGELOG.md](../CHANGELOG.md)).
+The content type and the tools are **Beta** (released for testing): `contenttype_mediabank` 0.12.0 and `local_mediabank` 0.4.0, for Moodle 5.0 to 5.3. A third plugin, `filter_mediabank` 0.1.0, is optional and **Alpha**. The features work and are well tested, but the plugins have not had long use on real sites. What has and has not been tested is listed in the Administrator guide, section 12. 0.12.0 is a feature release: the first three teacher ideas below and the report of items nobody links to are in it (see [CHANGELOG.md](../CHANGELOG.md)).
 
 ## 1. Towards a stable release
 
@@ -17,21 +17,23 @@ These are the gaps the guides already admit to. Closing them is what would justi
 | Only the **File** resource was tried for Link or Copy | Try the choice in other activities that use the standard file picker (for example Folder or Assignment attachments) and fix what differs. |
 | The browser scenarios do not cover video or SVG | The 6 scenarios were re-run for 0.11.1 and pass in CI on all four Moodle versions. Add scenarios for video upload and for SVG. |
 | Site-level items were covered only by automated tests | Browser scenarios for items in the site context. |
+| The captions button, transcript and alt text have not been seen in a real browser | Try a File resource and a Page with a linked video and picture, as a student, on a real site; add a Behat scenario if the steps allow it. |
+| `filter_mediabank` is Alpha and new | Real use on a site, then move it to Beta. |
 | Very large files and a real web server | Test uploads near the 1 GB limit through a real web server, with and without antivirus scanning. |
 
 ## 2. Ideas that would help teachers
 
 Not decided. Each needs a design check against how Moodle works.
 
-- **Convert just my course's link to a copy.** Built, unreleased: a button in *Where this item is used*. Not yet tried by hand in a browser with a real link. Behat covers only the "no links" answer, not a real conversion, because the test steps cannot create a link without the file picker.
-- **Carry alt text, transcripts and captions with the file.** Today a course gets the bare file for video, audio and PDF. For **pictures**, `filter_mediabank` 0.1.0 (Alpha, unreleased) now fills in the bank's alt text on a linked picture. Not done: captions and transcripts. A student cannot read the item's context, so the caption file would need a per-course copy kept in sync and its own file route; captions and transcripts for video and audio are now built too (unreleased, option B of [CAPTIONS-DESIGN.md](CAPTIONS-DESIGN.md)): `filter_mediabank` adds a captions track (off by default) and a transcript to a player that links to the item. Not done: plain links, forum posts and assignments, the mobile app, several languages, a Behat scenario.
-- **A clearer "where is this used" page.** Built, unreleased: activities are named and linked under each course. Not yet seen in a browser, and the `get_usage` web service still returns courses only.
+- **Convert just my course's link to a copy.** Done in 0.12.0: a **Convert to copies** button in *Where this item is used*. Still open: it has not been tried by hand in a browser with a real link, and Behat covers only the "no links" answer, because the test steps cannot create a link without the file picker.
+- **Carry alt text, captions and transcripts with the file.** Done in 0.12.0 for courses that **link** to an item, by the optional `filter_mediabank` (Alpha): a linked picture gets the bank's alt text; a video or audio player gets a captions track (off until the viewer turns it on) and a transcript. The design and the decisions are in [CAPTIONS-DESIGN.md](CAPTIONS-DESIGN.md). Still open: plain links to a file, forum posts and assignments, the Moodle mobile app, several caption languages, and a Behat scenario.
+- **A clearer "where is this used" page.** Done in 0.12.0: activities are named and linked under each course. Still open: the `get_usage` web service returns courses only.
 - **Translations.** The plugins ship English only. Language packs are welcome: see [TRANSLATING.md](TRANSLATING.md).
 
 ## 3. Ideas for administrators
 
 - **Listing in the Moodle plugins directory,** so sites can install and update from Moodle itself. The listing text and checklist are ready in [PLUGIN-DIRECTORY.md](PLUGIN-DIRECTORY.md); submitting waits on the stable-release work above.
-- **A report of items nobody links to,** to help clear space. Built and unreleased: a page under Site administration > Reports and a command (`cli/unlinked.php`).
+- **A report of items nobody links to,** to help clear space. Done in 0.12.0: a page under Site administration > Reports and a command (`cli/unlinked.php`).
 
 ## 4. Video, audio and files
 

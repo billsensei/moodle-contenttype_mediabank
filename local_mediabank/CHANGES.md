@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 (2026-11-02)
+Version 2026110200. Needs contenttype_mediabank 0.12.0 (the unlinked-items report calls `usage::find_unlinked()`). No setting, no table.
+
 - New command `php local/mediabank/cli/unlinked.php [--days=N] [--csv]`: list the items that nothing links to, largest first, with the total size. Read-only. `--days` skips recent uploads. Needs the matching change in contenttype_mediabank.
 - New page Site administration > Reports > Media bank: items nobody links to (`unlinked.php`, `settings.php`, 2 Behat scenarios). Read-only; shows the largest 500 items; optional minimum age in days.
 - The command's CSV output prefixes a name starting with = + - @ or tab with an apostrophe, and control characters are replaced with a space (found by a security review).

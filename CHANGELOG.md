@@ -1,17 +1,29 @@
 # Changelog
 
 All notable changes to the project. Each plugin also keeps its own, more detailed list:
-[`contenttype_mediabank/CHANGES.md`](contenttype_mediabank/CHANGES.md) and [`local_mediabank/CHANGES.md`](local_mediabank/CHANGES.md).
+[`contenttype_mediabank/CHANGES.md`](contenttype_mediabank/CHANGES.md), [`local_mediabank/CHANGES.md`](local_mediabank/CHANGES.md) and [`filter_mediabank/CHANGES.md`](filter_mediabank/CHANGES.md).
 
-Both plugins are **Beta**. A release of the project is a tag on GitHub, `v<content type version>`, with the two plugin zips
+The content type and the tools are **Beta**; the filter is **Alpha**. A release of the project is a tag on GitHub, `v<content type version>`, with the three plugin zips
 and the bundle zip attached.
 
 ## Unreleased
+
+Nothing yet.
+
+## [0.12.0] - 2026-11-02
+
+`contenttype_mediabank` 0.12.0 (2026110200), `local_mediabank` 0.4.0 (2026110200), and a new optional plugin, `filter_mediabank` 0.1.0 (2026110200, **Alpha**).
+
+New features for teachers and administrators, no new setting, and no database change. Moodle offers the upgrade for the two existing plugins. Nothing needs deciding, except whether to install the optional filter and switch it on (*Site administration > Plugins > Filters > Manage filters*).
+
+**Install the content type first, then the tools, then (optionally) the filter.** The tools plugin and the filter now need content type 0.12.0.
 
 - New plugin `filter_mediabank` 0.1.0 (**Alpha**, optional; built into the release zips and the bundle): a text filter that gives a picture added to a course as a **link** the text alternative kept with the bank item. It only fills a picture with no alt, an empty alt or just the file name; a teacher's own alt and a decorative picture are left alone. It also gives a video or audio player that links to a bank item its captions (a **Captions** track, off until the viewer turns it on) and its transcript (a **Transcript** block under the player, collapsible on Moodle 5.3 and always open on 5.0 to 5.2, whose cleaner removes `<details>`), read through a new route that checks the viewer against the activity or course the link is in (`contenttype_mediabank` `link_captions`, file area `linkcaptions`). Only listed places get them: activity descriptions, File, Page, Book and Folder content, and course and section summaries. See [docs/CAPTIONS-DESIGN.md](docs/CAPTIONS-DESIGN.md). The filter needs `contenttype_mediabank` 0.12.0, which has the new `link_captions` class; `local_mediabank` 0.4.0 needs the same version for `usage::find_unlinked()`. Version numbers for this release are set (content type 0.12.0 / 2026110200, tools 0.4.0 / 2026110200, filter 0.1.0 / 2026110200); change them if it is released on a later day. An administrator switches it on under *Site administration > Plugins > Filters > Manage filters*. It works before Moodle cleans the HTML, so untrusted text is cleaned after it. It is in the CI matrix and in `scripts/build_release.py`.
 - `contenttype_mediabank`: *Where this item is used* now lists, under each course, the activities that hold the links, each with a link to open it. An activity the viewer cannot see, or any activity of a course the viewer cannot enter, is not named; it is counted under "Elsewhere in the course". New `usage::get_places()`.
 - `contenttype_mediabank`: a teacher who can edit a course's activities can convert just that course's links to an item into copies, from a **Convert to copies** button in *Where this item is used* (new page `convert.php`, asks first, needs the session key). Other courses keep their links. No new capability: it uses `moodle/course:manageactivities` in the course.
 - `local_mediabank`: new command `php local/mediabank/cli/unlinked.php [--days=N] [--csv]` lists the items that nothing links to, largest first, to help clear space. It only reads. Uses the new `usage::find_unlinked()` in `contenttype_mediabank`. The same report is a page under Site administration > Reports > "Media bank: items nobody links to" (administrators only, read-only, largest 500 items, optional minimum age in days). CSV output neutralises names that a spreadsheet would read as a formula.
+
+Tested: PHPUnit (`--fail-on-warning`) and Behat for all three plugins on Moodle 5.0 to 5.3, PHP 8.3 and 8.4, PostgreSQL and MariaDB, in GitHub Actions (48 jobs); the three zips pass Moodle's installer validation. Not tested: the captions button in a real browser, the Moodle mobile app, and a real install of the zips on a clean site (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [0.11.1] - 2026-10-30
 
@@ -100,6 +112,7 @@ Repository and documentation only, no change to the plugins:
 - Both plugins are Beta. Language strings are in alphabetical order and the privacy test is in `tests/privacy/`, as Moodle's
   current coding standard requires (found by the first GitHub Actions run).
 
+[0.12.0]: https://github.com/billsensei/moodle-repository_mediabank/releases/tag/v0.12.0
 [0.11.1]: https://github.com/billsensei/moodle-repository_mediabank/releases/tag/v0.11.1
 [0.11.0]: https://github.com/billsensei/moodle-repository_mediabank/releases/tag/v0.11.0
 [0.10.0]: https://github.com/billsensei/moodle-repository_mediabank/releases/tag/v0.10.0

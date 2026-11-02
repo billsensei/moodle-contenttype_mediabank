@@ -65,7 +65,7 @@ Be told plainly:
 ## 6. What an administrator can do
 
 - Keep Moodle and PHP up to date. A site that has not applied Moodle's own security updates is not protected by this plugin.
-- Install the newest release of both plugins (0.11.1 and 0.3.1 or later) and take backups first.
+- Install the newest release of both plugins (0.12.0 and 0.4.0 or later) and take backups first.
 - Leave **SVG** off unless you need it.
 - Keep the list of allowed kinds and the size limit to what your teachers use.
 - Give the Content bank upload permission only to people who need it.
