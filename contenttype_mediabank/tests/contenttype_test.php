@@ -23,8 +23,8 @@ namespace contenttype_mediabank;
  * @category   test
  * @copyright  2026 SenseiMoodle
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \contenttype_mediabank\contenttype
  */
+#[\PHPUnit\Framework\Attributes\CoversClass(contenttype::class)]
 final class contenttype_test extends \advanced_testcase {
     /**
      * The content type manages all four media kinds. SVG is managed only when an admin allows it, and is never served inline.

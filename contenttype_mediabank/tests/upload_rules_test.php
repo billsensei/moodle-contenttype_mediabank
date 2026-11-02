@@ -98,9 +98,9 @@ final class upload_rules_test extends \advanced_testcase {
     /**
      * Every managed kind is accepted on upload, and its kind is recorded.
      *
-     * @dataProvider accepted_provider
      * @param string $extension Extension without the dot.
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('accepted_provider')]
     public function test_upload_accepts_valid_files(string $extension): void {
         $this->resetAfterTest();
         $this->setAdminUser();
