@@ -8,6 +8,10 @@ and the bundle zip attached.
 
 ## Unreleased
 
+## 0.12.2 (2026-11-02): content type 0.12.2 (tools 0.4.1 and filter 0.1.1 unchanged)
+
+- Web services: `contenttype_mediabank_get_items` no longer carries every transcript, which could be 100,000 characters each. New parameter `includetranscripts` (default off) and new field `hastranscript`. A client that read `transcript` from a list now gets an empty string: pass `includetranscripts=1`, or use `contenttype_mediabank_get_item`, which always includes it.
+
 ## 0.12.1 (2026-11-02): content type 0.12.1, tools 0.4.1, filter 0.1.1
 
 Fixes and hardening from a code and security audit of 0.12.0. No new setting, no table.

@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.12.2 (2026-11-02)
+Version 2026110202. Changes what a web service returns (see the first point); no new setting, no table. Moodle offers the upgrade. Tools 0.4.1 and filter 0.1.1 are unchanged and still fit.
+
 - Web services: a list no longer carries every transcript, which may be 100,000 characters each (up to 10 MB a page). `contenttype_mediabank_get_items` has a new parameter `includetranscripts` (default off), and every item has a new field `hastranscript`. **A client that read `transcript` from a list now gets an empty string**: ask for `includetranscripts=1`, or read the item with `contenttype_mediabank_get_item`, which always includes the transcript.
 
 ## 0.12.1 (2026-11-02)

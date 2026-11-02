@@ -16,7 +16,7 @@ Status: **Beta**. Released for testing, so try it on a copy of your site first. 
 
 | Plugin | Folder | Version | Needs |
 |---|---|---|---|
-| Media bank content type (`contenttype_mediabank`) | `contenttype_mediabank/` | 0.12.1 | Moodle 5.0 to 5.3 |
+| Media bank content type (`contenttype_mediabank`) | `contenttype_mediabank/` | 0.12.2 | Moodle 5.0 to 5.3 |
 | Media bank tools (`local_mediabank`) | `local_mediabank/` | 0.4.1 | the content type |
 | Media bank text alternatives (`filter_mediabank`), optional, **Alpha** | `filter_mediabank/` | 0.1.1 | the content type |
 
