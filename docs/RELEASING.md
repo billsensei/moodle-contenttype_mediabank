@@ -9,8 +9,9 @@ Work through it in order and tick each box. Do not skip the checks because the c
 1. **A change to the plugins' code needs a new version number and a new release.** Moodle only offers an upgrade when the number goes up, so a fix released under the old number never reaches the sites that already installed it.
 2. **Never move or re-create a tag** after it is published.
 3. **Merge to `main` only when all 48 CI jobs are green.**
-4. **Publish as a pre-release** while the plugins are Beta.
-5. **Attach the zips built from the commit that passed CI.**
+4. **Make the tag only after CI is green on the exact commit it will name, and push it on its own, never in the same push as the branch.** A tag pushed before CI finishes has to be moved when CI finds something, and rule 2 forbids that. Release 0.12.1 went out this way and had its tag moved twice; do not repeat it.
+5. **Publish as a pre-release** while the plugins are Beta.
+6. **Attach the zips built from the commit that passed CI.**
 
 A change to the guides alone is not a release. Push it to `main`, and, if the guides are in the bundle, replace the bundle on the latest release (see the end of this page).
 
@@ -51,7 +52,7 @@ Run these on Moodle 5.0, 5.1, 5.2 and 5.3. The commands are in [DEVELOPMENT.md](
 
 - [ ] PHPUnit for all three plugins, with no warnings.
 - [ ] Behat for the plugins that have scenarios.
-- [ ] `phpcs` with the Moodle standard, run inside a Moodle tree, as CI does it (section 3 of the Development guide).
+- [ ] `phpcs` with the Moodle standard, run inside a Moodle tree, as CI does it (section 3 of the Development guide). Check every file, including `lang/`: CI checks the order of language strings and fails on a warning (`--max-warnings 0`). Leave out nothing when you run it by hand.
 - [ ] If the change touched uploading, serving files, SVG, video preparation, backup or privacy, run a security review of the changed files, and the privacy provider tests.
 
 ## 4. Build and validate the zips
@@ -81,13 +82,24 @@ Do a real install once on a clean site (content type first, then the tools plugi
 
 ## 6. Merge and tag
 
+Merge first, then wait, then tag. The tag is the last thing made, not the first.
+
     git switch main
     git merge --ff-only release-<version>
-    git tag -a v<release> -m "Media bank <release> (Beta)"
-    git push origin main v<release>
+    git push origin main
+    gh run list --branch main --limit 1
+    gh run view <id>
 
-- [ ] `main` fast-forwarded, so the tag is on the commit CI tested.
+- [ ] `main` fast-forwarded, so it is the commit CI tested.
+- [ ] CI on `main` is **completed and successful, 48 of 48**, for the commit you are about to tag. Check `headSha` matches `git rev-parse HEAD`. Do not tag while any job is queued or running, and do not tag on the strength of the branch run alone.
 - [ ] Rebuild the zips from `main` if the branch commit was not the same one, and check they match what you validated.
+
+Only then:
+
+    git tag -a v<release> -m "Media bank <release> (Beta)"
+    git push origin v<release>
+
+- [ ] The CI run for the tag also finishes green (it is the same commit, so it should). If it does not, treat it as a failed release: see "If a release is wrong" below.
 
 ## 7. Publish the release
 
