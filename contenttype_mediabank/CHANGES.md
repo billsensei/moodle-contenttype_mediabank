@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.12.1 (2026-11-02)
+Version 2026110201. Fixes and hardening from a code and security audit of 0.12.0. No new setting and no table. Moodle offers the upgrade; nothing else is needed. The `upload` and `useeditor` capabilities now carry `RISK_XSS`, which Moodle records during this upgrade.
+
 Fixes from the audit of 0.12.0 (no new setting, no table).
 
 - A new link is reported inside a `try` that catches every `Throwable`, so an error there can never stop core saving the user's file.

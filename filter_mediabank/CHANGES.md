@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.1.1 (2026-11-02)
+Version 2026110201. Fixes and hardening from a code and security audit of the previous release. No new setting and no table. Moodle offers the upgrade; nothing else is needed.
+
 - A picture gets the text alternative of a media bank item only when the link is in the same context as the text, as the captions and transcript already required. Before, text in one course could show the alt text of an item linked in another.
 
 ## 0.1.0 (2026-11-02)

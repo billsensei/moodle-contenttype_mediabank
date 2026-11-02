@@ -8,6 +8,15 @@ and the bundle zip attached.
 
 ## Unreleased
 
+## 0.12.1 (2026-11-02): content type 0.12.1, tools 0.4.1, filter 0.1.1
+
+Fixes and hardening from a code and security audit of 0.12.0. No new setting, no table.
+
+- The filter gives a picture the text alternative of an item only when the link is in the same context as the text.
+- A link made in a form can no longer stop the file being saved, whatever the error. Moving an item and converting its links is one transaction. Files are served to their owner even when *display unlisted* is off.
+- Faster: *Where this item is used*, the `get_items` web service, the unlinked-items report and backups with embedded files do much less repeated work.
+- SVG: a DOCTYPE that points at a DTD outside w3.org is refused. Files, captions and versions are sent with private caching. The `upload` and `useeditor` capabilities carry `RISK_XSS`.
+
 - Documentation only: five new screenshots (captions on a video, the transcript, *Where this item is used* with Convert to copies, the items-nobody-links-to report, and Manage filters) in `docs/images/`, and the scripts to retake them (`scripts/screenshots/`). Taking them was also the first check of the 0.12.0 features in a real browser: no fault was found.
 - Documentation only: the listing guide (`docs/PLUGIN-DIRECTORY.md`) now follows the Moodle Marketplace, which replaced the Moodle Plugins directory, and covers all three plugins.
 

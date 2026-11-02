@@ -25,9 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'filter_mediabank';
-$plugin->version   = 2026110200;
+$plugin->version   = 2026110201;
 $plugin->requires  = 2025041400; // Moodle 5.0.
 $plugin->supported = [500, 503];
 $plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.1.0';
+$plugin->release   = '0.1.1';
 $plugin->dependencies = ['contenttype_mediabank' => 2026110200];
