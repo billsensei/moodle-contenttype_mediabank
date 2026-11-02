@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.2 (2026-11-03)
+Version 2026110202. Accessibility only. No setting, no table. Moodle offers the upgrade.
+
+- The table on the unlinked-items report page has a visually hidden caption.
+
 ## 0.4.1 (2026-11-02)
 Version 2026110201. Fixes and hardening from a code and security audit of the previous release. No new setting and no table. Moodle offers the upgrade; nothing else is needed.
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.4 (2026-11-03)
+Version 2026110204. Accessibility only. No setting, no table. Moodle offers the upgrade. Tools 0.4.2 goes with it.
+
+- Each "Convert to copies" link on an item page has an `aria-label` that starts with the visible text and adds the course name, so a screen reader can tell the links apart.
+
 ## 0.12.3 (2026-11-02)
 Version 2026110203. No change to how the content type behaves. Released so that it goes out with filter 0.1.2 under one project version. No setting, no table. Moodle offers the upgrade. Tools 0.4.1 is unchanged.
 

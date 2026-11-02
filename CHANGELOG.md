@@ -8,6 +8,11 @@ and the bundle zip attached.
 
 ## Unreleased
 
+## 0.12.4 (2026-11-03): content type 0.12.4, tools 0.4.2 (filter 0.1.2 unchanged)
+
+- Content type: each "Convert to copies" link on an item page has an accessible name that includes the course, so a screen reader can tell them apart.
+- Tools: the unlinked-items report table has a visually hidden caption.
+
 ## 0.12.3 (2026-11-02): content type 0.12.3, filter 0.1.2 (tools 0.4.1 unchanged)
 
 - Filter: a picture gets an item's text alternative only when the link is in a place the captions and transcript already allow, not in any place in the text's own context.
