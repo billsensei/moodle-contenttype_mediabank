@@ -8,7 +8,7 @@ Work through it in order and tick each box. Do not skip the checks because the c
 
 1. **A change to the plugins' code needs a new version number and a new release.** Moodle only offers an upgrade when the number goes up, so a fix released under the old number never reaches the sites that already installed it.
 2. **Never move or re-create a tag** after it is published.
-3. **Merge to `main` only when all 48 CI jobs are green.**
+3. **Merge to `main` only when all 60 CI jobs are green.**
 4. **Make the tag only after CI is green on the exact commit it will name, and push it on its own, never in the same push as the branch.** A tag pushed before CI finishes has to be moved when CI finds something, and rule 2 forbids that. Release 0.12.1 went out this way and had its tag moved twice; do not repeat it.
 5. **Publish as a pre-release** while the plugins are Beta.
 6. **Attach the zips built from the commit that passed CI.**
