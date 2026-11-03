@@ -32,7 +32,7 @@ These are decisions already made. Change them only on purpose, and write the cha
 2. **Erasing a person keeps courses' files** as ordinary copies. Their bank items, earlier versions, captions, alt text and transcripts are erased.
 3. **The content type is the main plugin.** The tools plugin (`local_mediabank`) must keep working as an optional extra, and it names the content type version it needs in `$plugin->dependencies`.
 4. **No tables of the plugins' own.** Item data lives in the Content bank's tables. If that ever changes, it needs an `upgrade.php` step, a privacy review and a note in [UPGRADING.md](UPGRADING.md).
-5. **Nothing is merged unless all 60 CI jobs are green** (see "The CI workflow" in the Development guide).
+5. **Nothing is merged unless all 64 CI jobs are green** (see "The CI workflow" in the Development guide).
 6. **Check access in the plugin.** Serving a file is decided by `contenttype::can_serve`, not left to core.
 7. **No secrets and no personal email addresses** in the repository, the issues or the release notes.
 
@@ -54,7 +54,7 @@ If a bug report contains a private name, email address, token or student detail,
 A change is ready to merge when:
 
 - it does one thing, and says why;
-- it has a test, and all 60 CI jobs pass;
+- it has a test, and all 64 CI jobs pass;
 - user-visible text is a language string, kept in alphabetical order;
 - the plugin's `version.php`, its `CHANGES.md` and the root `CHANGELOG.md` are updated when it ships;
 - the guides change if what a person sees changes;

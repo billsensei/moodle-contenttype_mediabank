@@ -8,7 +8,7 @@ Work through it in order and tick each box. Do not skip the checks because the c
 
 1. **A change to the plugins' code needs a new version number and a new release.** Moodle only offers an upgrade when the number goes up, so a fix released under the old number never reaches the sites that already installed it.
 2. **Never move or re-create a tag** after it is published.
-3. **Merge to `main` only when all 60 CI jobs are green.**
+3. **Merge to `main` only when all 64 CI jobs are green.**
 4. **Make the tag only after CI is green on the exact commit it will name, and push it on its own, never in the same push as the branch.** A tag pushed before CI finishes has to be moved when CI finds something, and rule 2 forbids that. Release 0.12.1 went out this way and had its tag moved twice; do not repeat it.
 5. **Publish as a pre-release** while the plugins are Beta.
 6. **Attach the zips built from the commit that passed CI.**
@@ -65,7 +65,7 @@ This writes `contenttype_mediabank_<version>.zip`, `local_mediabank_<version>.zi
     php scripts/validate_plugin_zip.php --moodle=<moodle> --zip=dist/<zip> --component=local_mediabank
     php scripts/validate_plugin_zip.php --moodle=<moodle> --zip=dist/<zip> --component=filter_mediabank
 
-- [ ] Every check passes. The only warning expected is the Beta one.
+- [ ] Every check passes. The only warning expected is the Beta one. CI runs the build and these checks on every push (the `package` job, on Moodle 5.0 to 5.3), so a failure there means fix it before you go on; the manual run is still needed for the zips you upload.
 - [ ] The bundle is **not** a plugin: do not run the validator on it, and do not upload it to Moodle.
 - [ ] Spot-check the bundle: it holds both plugin zips, the guides in `GUIDES` in `scripts/build_release.py`, the two PDFs and the `images/` folder, and one `CHANGES-*.md` file for each of the three plugins.
 
@@ -77,7 +77,7 @@ Do a real install once on a clean site (content type first, then the tools plugi
     gh run list --branch release-<version> --limit 1
     gh run view <id> --log-failed
 
-- [ ] All 60 jobs are green. Read a failure with `--log-failed` once the whole run has finished; logs are not available while it runs.
+- [ ] All 64 jobs are green. Read a failure with `--log-failed` once the whole run has finished; logs are not available while it runs.
 - [ ] If a fix is needed, make it on the branch, rebuild the zips and start from section 4 again.
 
 ## 6. Merge and tag
@@ -91,7 +91,7 @@ Merge first, then wait, then tag. The tag is the last thing made, not the first.
     gh run view <id>
 
 - [ ] `main` fast-forwarded, so it is the commit CI tested.
-- [ ] CI on `main` is **completed and successful, 60 of 60**, for the commit you are about to tag. Check `headSha` matches `git rev-parse HEAD`. Do not tag while any job is queued or running, and do not tag on the strength of the branch run alone.
+- [ ] CI on `main` is **completed and successful, 64 of 64**, for the commit you are about to tag. Check `headSha` matches `git rev-parse HEAD`. Do not tag while any job is queued or running, and do not tag on the strength of the branch run alone.
 - [ ] Rebuild the zips from `main` if the branch commit was not the same one, and check they match what you validated.
 
 Only then:

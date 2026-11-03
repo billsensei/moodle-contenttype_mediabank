@@ -42,7 +42,7 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 ## 4. Before you submit (checklist)
 
 - [ ] A moodle.org account, and you are content to be the listed maintainer.
-- [ ] The release you are submitting is tagged and published on GitHub, and CI is green for it: the tag is `v<content type release>` and all 60 jobs passed on the tagged commit ([RELEASING.md](RELEASING.md)).
+- [ ] The release you are submitting is tagged and published on GitHub, and CI is green for it: the tag is `v<content type release>` and all 64 jobs passed on the tagged commit ([RELEASING.md](RELEASING.md)).
 - [ ] The zips from that release pass `scripts/validate_plugin_zip.php` on Moodle 5.0, 5.1, 5.2 and 5.3. See [RELEASING.md](RELEASING.md).
 - [ ] `version.php` has the right `release`, `maturity`, `requires` and `supported` for each plugin.
 - [ ] The privacy provider tests pass. All three plugins have a privacy provider: the content type erases a user's items; the tools plugin and the filter store nothing.

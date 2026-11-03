@@ -14,7 +14,7 @@ Nothing here means the project or its authors endorse the Media bank. Names belo
 
 | Tool | Used for |
 |---|---|
-| [moodle-plugin-ci](https://github.com/moodlehq/moodle-plugin-ci) | Installing Moodle and running the checks in the GitHub Actions workflow: 60 jobs on every push. |
+| [moodle-plugin-ci](https://github.com/moodlehq/moodle-plugin-ci) | Installing Moodle and running the checks in the GitHub Actions workflow: 64 jobs on every push. |
 | [PHPUnit](https://phpunit.de) | The unit and integration tests for both plugins. |
 | [Behat](https://behat.org) | The browser tests of what a teacher sees. |
 | [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) and Moodle's code checker | The coding standard and the PHPDoc checks. |

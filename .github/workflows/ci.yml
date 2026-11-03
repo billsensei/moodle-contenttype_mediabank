@@ -1,5 +1,6 @@
 # Runs on every push and pull request: 3 plugins x PostgreSQL and MariaDB x Moodle 5.0 to 5.3 x PHP 8.3 and 8.4, plus PHP 8.2 on
-# Moodle 5.0 and 5.1 only = 60 jobs. The actions are pinned to a commit; the tag is in the comment.
+# Moodle 5.0 and 5.1 only = 60 jobs, plus 4 package jobs (one per Moodle version) that build and validate the zips = 64.
+# The actions are pinned to a commit; the tag is in the comment.
 # See docs/DEVELOPMENT.md, section 8.
 name: Moodle Plugin CI
 
