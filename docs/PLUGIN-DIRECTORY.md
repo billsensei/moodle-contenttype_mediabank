@@ -36,7 +36,7 @@ The current release is **v0.12.4** (3 November 2026): content type 0.12.4, tools
 
 ## 3. Things to settle before submitting
 
-1. **The repository name.** Moodle's guidance prefers one plugin per repository, named `moodle-{plugintype}_{pluginname}`, with the plugin at the root. This repository holds three plugins in subfolders and is called `moodle-repository_mediabank` (the name comes from an early plan, and there is no `repository_mediabank` plugin). A reviewer may ask about it. The options are to explain it (the three plugins are released together and the zips are built by `scripts/build_release.py`), or to split the repository into three. Splitting would also let the Marketplace's release workflow publish new versions by itself, because the workflow's documentation does not describe packaging a repository with several plugins, so assume it cannot. It is a large change, so do not do it unless asked.
+1. **The repository name.** Moodle's guidance prefers one plugin per repository, named `moodle-{plugintype}_{pluginname}`, with the plugin at the root. This repository holds three plugins in subfolders and is called `moodle-contenttype_media-bank` (it was `moodle-repository_mediabank` until November 2026, a name from an early plan; GitHub redirects the old address). A reviewer may ask about it. The options are to explain it (the three plugins are released together and the zips are built by `scripts/build_release.py`), or to split the repository into three. Splitting would also let the Marketplace's release workflow publish new versions by itself, because the workflow's documentation does not describe packaging a repository with several plugins, so assume it cannot. It is a large change, so do not do it unless asked.
 2. **Whether to list `filter_mediabank` now.** It is Alpha, new, and its captions and transcript have been tested by machines and not yet seen by a person in a browser. Listing only the first two and adding the filter later, once it has had real use, is the cautious choice.
 3. **Screenshots.** Twelve exist in `docs/images/` (section 6): the seven from 0.11 and five new ones taken on 2 November 2026 for 0.12, which show the **Captions** button with a caption on screen, the **Transcript** block, *Where this item is used* with activities and **Convert to copies**, the *items nobody links to* report and the **Manage filters** switch. They were taken on a Moodle 5.3 test site with invented content ([scripts/screenshots/README.md](../scripts/screenshots/README.md)). A text alternative cannot be photographed: say in the listing that a picture's alt text comes from the bank. Look at them once before you upload, because they are the first thing an administrator sees.
 4. **Who is the contact and where is support.** The GitHub issue tracker ([SUPPORT.md](SUPPORT.md)). Say so in the listing.
@@ -101,10 +101,10 @@ The current release is **v0.12.4** (3 November 2026): content type 0.12.4, tools
 
 | Field | Address |
 |---|---|
-| Source code | https://github.com/billsensei/moodle-repository_mediabank |
-| Issue tracker | https://github.com/billsensei/moodle-repository_mediabank/issues |
-| Documentation | https://github.com/billsensei/moodle-repository_mediabank/blob/main/docs/GETTING-STARTED.md |
-| Release notes | https://github.com/billsensei/moodle-repository_mediabank/blob/main/contenttype_mediabank/CHANGES.md |
+| Source code | https://github.com/billsensei/moodle-contenttype_media-bank |
+| Issue tracker | https://github.com/billsensei/moodle-contenttype_media-bank/issues |
+| Documentation | https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/docs/GETTING-STARTED.md |
+| Release notes | https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/contenttype_mediabank/CHANGES.md |
 
 **Release notes for this version:** copy the section for the version from [`contenttype_mediabank/CHANGES.md`](../contenttype_mediabank/CHANGES.md).
 
@@ -163,10 +163,10 @@ For the tools (Entry 2):
 
 | Field | Address |
 |---|---|
-| Source code | https://github.com/billsensei/moodle-repository_mediabank |
-| Issue tracker | https://github.com/billsensei/moodle-repository_mediabank/issues |
-| Documentation | https://github.com/billsensei/moodle-repository_mediabank/blob/main/docs/ADMIN-GUIDE.md |
-| Release notes | https://github.com/billsensei/moodle-repository_mediabank/blob/main/local_mediabank/CHANGES.md |
+| Source code | https://github.com/billsensei/moodle-contenttype_media-bank |
+| Issue tracker | https://github.com/billsensei/moodle-contenttype_media-bank/issues |
+| Documentation | https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/docs/ADMIN-GUIDE.md |
+| Release notes | https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/local_mediabank/CHANGES.md |
 
 **Screenshots:** `admin-1-unlinked-report.png` (section 6, number 10), and optionally `teacher-1-content-bank.png`.
 
@@ -207,10 +207,10 @@ For the tools (Entry 2):
 
 | Field | Address |
 |---|---|
-| Source code | https://github.com/billsensei/moodle-repository_mediabank |
-| Issue tracker | https://github.com/billsensei/moodle-repository_mediabank/issues |
-| Documentation | https://github.com/billsensei/moodle-repository_mediabank/blob/main/docs/CAPTIONS-DESIGN.md |
-| Release notes | https://github.com/billsensei/moodle-repository_mediabank/blob/main/filter_mediabank/CHANGES.md |
+| Source code | https://github.com/billsensei/moodle-contenttype_media-bank |
+| Issue tracker | https://github.com/billsensei/moodle-contenttype_media-bank/issues |
+| Documentation | https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/docs/CAPTIONS-DESIGN.md |
+| Release notes | https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/filter_mediabank/CHANGES.md |
 
 **Screenshots:** `teacher-8-captions-in-course.png`, `teacher-9-transcript-in-course.png` and `admin-2-manage-filters.png` (section 6, numbers 7 to 9).
 
