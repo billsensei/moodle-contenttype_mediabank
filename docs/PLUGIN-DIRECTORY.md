@@ -82,7 +82,7 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 > * Three read-only web service functions to list items, get one item, and see which courses use it.
 > * A privacy provider: when a user is erased their items, versions, captions and transcripts are erased, and courses that linked to them keep the file as a copy.
 >
-> **Beta.** Released for testing. Try it on a copy of your site first. It is tested on Moodle 5.0 to 5.3 with PHP 8.3 and 8.4, on PostgreSQL and MariaDB. It does not support the Moodle mobile app.
+> **Beta.** Released for testing. Try it on a copy of your site first. It is tested on Moodle 5.0 to 5.3 with PHP 8.2 (Moodle 5.0 and 5.1 only), 8.3 and 8.4, on PostgreSQL and MariaDB. It does not support the Moodle mobile app.
 >
 > Install the content type first. Two optional plugins build on it: "Media bank tools" (`local_mediabank`), for backup of linked files, a report of unused items and command-line tools, and "Media bank text alternatives" (`filter_mediabank`, Alpha), which carries an item's text alternative, captions and transcript into the courses that link to it.
 
