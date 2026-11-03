@@ -145,3 +145,84 @@ jobs:
       - name: Mark cancelled jobs as failed.
         if: ${{ cancelled() }}
         run: exit 1
+
+  # Builds the zips the way a release does and runs Moodle's own installer validation on each one, on every supported
+  # Moodle version. The validator needs a site where the plugin is not installed, so the site is made with a throwaway
+  # plugin (local_cidummy) in place of the real ones. See docs/RELEASING.md, section 4.
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: 'postgres'
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        moodle-branch: ['MOODLE_500_STABLE', 'MOODLE_501_STABLE', 'MOODLE_502_STABLE', 'MOODLE_503_STABLE']
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          path: repo
+          persist-credentials: false
+
+      - name: Build the zips twice and check they are identical
+        run: |
+          python3 repo/scripts/build_release.py --out dist-a
+          python3 repo/scripts/build_release.py --out dist-b
+          (cd dist-a && sha256sum *.zip) > a.sum
+          (cd dist-b && sha256sum *.zip) > b.sum
+          cat a.sum
+          diff a.sum b.sum
+          test "$(ls dist-a/*.zip | wc -l)" -eq 4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.3'
+          ini-values: max_input_vars=5000
+          coverage: none
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo $(cd ci/bin; pwd) >> $GITHUB_PATH
+          echo $(cd ci/vendor/bin; pwd) >> $GITHUB_PATH
+          echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
+
+      - name: Install Moodle with a throwaway plugin
+        run: |
+          mkdir -p dummy/local_cidummy/lang/en
+          {
+            echo "<?php"
+            echo "defined('MOODLE_INTERNAL') || die();"
+            echo "\$plugin->component = 'local_cidummy';"
+            echo "\$plugin->version = 2026010100;"
+            echo "\$plugin->requires = 2025041400;"
+          } > dummy/local_cidummy/version.php
+          {
+            echo "<?php"
+            echo "defined('MOODLE_INTERNAL') || die();"
+            echo "\$string['pluginname'] = 'CI dummy';"
+          } > dummy/local_cidummy/lang/en/local_cidummy.php
+          moodle-plugin-ci install --plugin ./dummy/local_cidummy --db-host=127.0.0.1
+        env:
+          DB: pgsql
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+
+      - name: Validate each plugin zip with Moodle's installer checks
+        run: |
+          for component in contenttype_mediabank local_mediabank filter_mediabank; do
+            zip=$(ls dist-a/${component}_*.zip)
+            echo "== $zip"
+            php repo/scripts/validate_plugin_zip.php --moodle="$PWD/moodle" --zip="$zip" --component="$component"
+          done
