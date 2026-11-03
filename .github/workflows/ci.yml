@@ -222,7 +222,7 @@ jobs:
       - name: Validate each plugin zip with Moodle's installer checks
         run: |
           for component in contenttype_mediabank local_mediabank filter_mediabank; do
-            zip=$(ls dist-a/${component}_*.zip)
+            zip=$(realpath dist-a/${component}_*.zip)
             echo "== $zip"
             php repo/scripts/validate_plugin_zip.php --moodle="$PWD/moodle" --zip="$zip" --component="$component"
           done
