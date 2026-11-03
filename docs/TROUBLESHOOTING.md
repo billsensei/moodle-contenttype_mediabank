@@ -151,5 +151,5 @@ To see which courses use an item: its page shows **Where this item is used**, an
    With **Site administration → Development → Debugging** set to *Developer*, Moodle shows more detail; switch it back afterwards.
 
 Then open an issue on GitHub with the bug report form, as described in
-[CONTRIBUTING.md](https://github.com/billsensei/moodle-repository_mediabank/blob/main/CONTRIBUTING.md). **Do not use a public issue for a
-security problem**; follow [SECURITY.md](https://github.com/billsensei/moodle-repository_mediabank/blob/main/SECURITY.md).
+[CONTRIBUTING.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/CONTRIBUTING.md). **Do not use a public issue for a
+security problem**; follow [SECURITY.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/SECURITY.md).

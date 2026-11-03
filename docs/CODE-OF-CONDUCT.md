@@ -1,6 +1,6 @@
 # Media bank: Code of conduct
 
-The Media bank is a small, free, open-source project used by teachers, administrators and developers, many of them new to Moodle or to GitHub. This page is the short, plain-language version. The full text, which is the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html) version 2.1, is in [CODE_OF_CONDUCT.md](https://github.com/billsensei/moodle-repository_mediabank/blob/main/CODE_OF_CONDUCT.md). If the two ever differ, the full text applies.
+The Media bank is a small, free, open-source project used by teachers, administrators and developers, many of them new to Moodle or to GitHub. This page is the short, plain-language version. The full text, which is the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html) version 2.1, is in [CODE_OF_CONDUCT.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/CODE_OF_CONDUCT.md). If the two ever differ, the full text applies.
 
 ## In short
 
@@ -35,13 +35,13 @@ Bug reports often include screenshots, logs or files. Before you post one, remov
 1. **Something is said to you that breaks these rules.** You do not have to answer it. You can report it.
 2. **To report it,** open an issue in the repository that says you have a conduct report. Put no details and no names in it, and ask how to send it privately. The maintainer will reply with a private way.
 3. **If the report is about the maintainer,** say so in the issue, and report it to GitHub through [its reporting tools](https://docs.github.com/en/communities/maintaining-your-safety-on-github/reporting-abuse-or-spam).
-4. **A security problem is not a conduct problem.** Do not use a public issue for it. See [SECURITY.md](https://github.com/billsensei/moodle-repository_mediabank/blob/main/SECURITY.md).
+4. **A security problem is not a conduct problem.** Do not use a public issue for it. See [SECURITY.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/SECURITY.md).
 
 Reports are read promptly, looked into fairly, and kept private. The person who reported will not be exposed to the person reported.
 
 ## What can happen
 
-The maintainer can remove or edit comments, issues and contributions that break these rules, and will say why when it is sensible to do so. Repeated or serious problems lead to, in turn: a private warning, a warning with conditions, a temporary ban, and a permanent ban. The full ladder is in the [full text](https://github.com/billsensei/moodle-repository_mediabank/blob/main/CODE_OF_CONDUCT.md).
+The maintainer can remove or edit comments, issues and contributions that break these rules, and will say why when it is sensible to do so. Repeated or serious problems lead to, in turn: a private warning, a warning with conditions, a temporary ban, and a permanent ban. The full ladder is in the [full text](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/CODE_OF_CONDUCT.md).
 
 ## Credit
 

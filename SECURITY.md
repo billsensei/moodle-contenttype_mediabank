@@ -21,7 +21,7 @@ Report it privately through GitHub:
 
 1. Open the repository's **Security** tab.
 2. Choose **Report a vulnerability**, or go straight to
-   <https://github.com/billsensei/moodle-repository_mediabank/security/advisories/new>.
+   <https://github.com/billsensei/moodle-contenttype_media-bank/security/advisories/new>.
 
 Please include:
 

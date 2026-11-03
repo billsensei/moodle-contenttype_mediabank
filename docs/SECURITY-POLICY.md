@@ -6,7 +6,7 @@
 
 **Do not open a public issue, pull request or discussion for a security problem.** Report it privately:
 
-1. Open the repository's **Security** tab and choose **Report a vulnerability**, or go to <https://github.com/billsensei/moodle-repository_mediabank/security/advisories/new>.
+1. Open the repository's **Security** tab and choose **Report a vulnerability**, or go to <https://github.com/billsensei/moodle-contenttype_media-bank/security/advisories/new>.
 2. Say which plugin and version, the Moodle and PHP versions and the database, what a person can do with the problem, what access they need, and how to reproduce it.
 
 If you are not sure whether something is a security problem, report it privately anyway. It is easy to move a report into the open, and not possible to take one back.
@@ -70,7 +70,7 @@ Be told plainly:
 - Keep the list of allowed kinds and the size limit to what your teachers use.
 - Give the Content bank upload permission only to people who need it.
 - Turn on Moodle's antivirus scanning if your site takes uploads from many people.
-- Check **Site administration → Plugins → Plugins overview** now and then for the plugin versions, and watch the [releases page](https://github.com/billsensei/moodle-repository_mediabank/releases) (use **Watch → Custom → Releases**).
+- Check **Site administration → Plugins → Plugins overview** now and then for the plugin versions, and watch the [releases page](https://github.com/billsensei/moodle-contenttype_media-bank/releases) (use **Watch → Custom → Releases**).
 
 ## 7. If you think your site has been affected
 

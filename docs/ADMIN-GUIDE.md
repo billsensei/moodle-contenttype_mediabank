@@ -97,7 +97,7 @@ A third plugin, `filter_mediabank` (**Alpha**), carries the text kept with an it
 - A **copy** is an independent file and gets nothing.
 - Captions and transcripts are offered in activity descriptions, and in File, Page, Book and Folder content, and in course and section summaries. Not in forum posts, assignments, quizzes or blocks, because there who may see a file depends on the record. A hidden book chapter keeps its captions from people who may not see it.
 - The captions are read through a route in the course (`/pluginfile.php/<context>/contenttype_mediabank/linkcaptions/<link id>/captions.vtt`) that checks the viewer against the activity or course the link is in. It is refused, with the same answer as a missing file, to anyone who could not open the page. Students never need access to the Content bank.
-- Not covered: a plain link to a file (only a player the editor inserted, or a File resource shown on its own page), the Moodle mobile app, and more than one caption file per item. Details and the security reasoning are in [CAPTIONS-DESIGN.md](https://github.com/billsensei/moodle-repository_mediabank/blob/main/docs/CAPTIONS-DESIGN.md).
+- Not covered: a plain link to a file (only a player the editor inserted, or a File resource shown on its own page), the Moodle mobile app, and more than one caption file per item. Details and the security reasoning are in [CAPTIONS-DESIGN.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/docs/CAPTIONS-DESIGN.md).
 
 ## 3. Who can do what
 

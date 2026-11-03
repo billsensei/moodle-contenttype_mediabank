@@ -11,7 +11,7 @@
     ],
     "type": "project",
     "license": "GPL-3.0-or-later",
-    "homepage": "https://github.com/billsensei/moodle-repository_mediabank",
+    "homepage": "https://github.com/billsensei/moodle-contenttype_media-bank",
     "authors": [
         {
             "name": "SenseiMoodle",
@@ -19,9 +19,9 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/billsensei/moodle-repository_mediabank/issues",
-        "source": "https://github.com/billsensei/moodle-repository_mediabank",
-        "docs": "https://github.com/billsensei/moodle-repository_mediabank/tree/main/docs"
+        "issues": "https://github.com/billsensei/moodle-contenttype_media-bank/issues",
+        "source": "https://github.com/billsensei/moodle-contenttype_media-bank",
+        "docs": "https://github.com/billsensei/moodle-contenttype_media-bank/tree/main/docs"
     },
     "require": {
         "php": ">=8.2"

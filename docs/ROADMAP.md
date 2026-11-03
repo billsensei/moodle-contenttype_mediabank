@@ -12,7 +12,7 @@ These are the gaps the guides already admit to. Closing them is what would justi
 
 | Gap | What would close it |
 |---|---|
-| Little use on real sites | Trials on real Moodle sites, and their bug reports. Open an [issue](https://github.com/billsensei/moodle-repository_mediabank/issues) with what you found. |
+| Little use on real sites | Trials on real Moodle sites, and their bug reports. Open an [issue](https://github.com/billsensei/moodle-contenttype_media-bank/issues) with what you found. |
 | The SVG check has had no manual security review | A review by a person who knows SVG and Moodle's file serving. Until then SVG stays **off by default**. |
 | Only the **File** resource was tried for Link or Copy | Try the choice in other activities that use the standard file picker (for example Folder or Assignment attachments) and fix what differs. |
 | The browser scenarios do not cover video or SVG | The 6 scenarios were re-run for 0.11.1 and pass in CI on all four Moodle versions. Add scenarios for video upload and for SVG. |

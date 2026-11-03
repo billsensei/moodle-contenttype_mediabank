@@ -1,6 +1,6 @@
 # Media bank: Development guide
 
-How to set up, change, test and release the two plugins. [CONTRIBUTING.md](https://github.com/billsensei/moodle-repository_mediabank/blob/main/CONTRIBUTING.md)
+How to set up, change, test and release the two plugins. [CONTRIBUTING.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/CONTRIBUTING.md)
 says what a pull request needs. [ARCHITECTURE.md](ARCHITECTURE.md) says how the code is built and why. This file is the practical
 part: commands, procedures, and the traps that cost time. [COMMANDS.md](COMMANDS.md) is a dated record of the commands actually run,
 with their results.
@@ -208,7 +208,7 @@ This project takes the plugin's file handling seriously, because it reads files 
   uses `send_file_not_found()`, because returning `false` makes core serve the file as a download.
 - A backup or an upload is not trusted: check hashes and paths, and resolve the real path before using it.
 - Never put a personal email address or a secret in the repository. Security reports go through
-  [SECURITY.md](https://github.com/billsensei/moodle-repository_mediabank/blob/main/SECURITY.md).
+  [SECURITY.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/SECURITY.md).
 
 ## 11. When something goes wrong
 

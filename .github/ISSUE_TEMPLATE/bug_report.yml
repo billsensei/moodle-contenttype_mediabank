@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Thank you for reporting this. **Do not use this form for a security problem.** Report those privately through
-        [SECURITY.md](https://github.com/billsensei/moodle-repository_mediabank/blob/main/SECURITY.md).
+        [SECURITY.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/SECURITY.md).
   - type: dropdown
     id: plugin
     attributes:

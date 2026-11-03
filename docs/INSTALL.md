@@ -26,10 +26,10 @@ Do **not** use these, because Moodle cannot install them:
 
 | Not this | Why |
 |---|---|
-| **Code → Download ZIP**, or **Source code (zip)** (named like `moodle-repository_mediabank-main.zip`) | It is the whole project. The plugins are folders inside it, and Moodle reads only a zip that is one plugin. |
+| **Code → Download ZIP**, or **Source code (zip)** (named like `moodle-contenttype_media-bank-main.zip`) | It is the whole project. The plugins are folders inside it, and Moodle reads only a zip that is one plugin. |
 | `mediabank-<version>-bundle.zip` | It holds the two plugin zips and the guides. Unzip it on your computer first, then upload the two plugin zips from inside it. |
 
-The name `moodle-repository_mediabank` is only the name of the project on GitHub. It is not a plugin and nothing needs to be renamed.
+The name `moodle-contenttype_media-bank` is only the name of the project on GitHub. It is not a plugin and nothing needs to be renamed.
 
 **Before you start:** make a backup of your site (database and `moodledata`). That is good practice for any plugin, and it is the only way to go back to an earlier version of this one (see "Removing the plugin" in the Admin guide).
 
