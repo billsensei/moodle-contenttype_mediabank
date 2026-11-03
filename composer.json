@@ -1,5 +1,5 @@
 {
-    "name": "billsensei/moodle-repository_mediabank",
+    "name": "billsensei/moodle-contenttype_media-bank",
     "description": "Media bank for Moodle 5.0 to 5.3: upload a video, audio file, PDF or picture to the Content bank once and use it in many courses, as a link or a copy.",
     "keywords": [
         "moodle",
