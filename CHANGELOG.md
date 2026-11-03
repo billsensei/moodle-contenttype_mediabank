@@ -8,6 +8,9 @@ and the bundle zip attached.
 
 ## Unreleased
 
+- CI: PHP 8.2 jobs on Moodle 5.0 and 5.1 (the Moodle versions that still run on 8.2), which makes 60 jobs. The requirement stays PHP 8.3 until they pass.
+- CI: the three actions are pinned to a commit, with the tag in a comment.
+
 ## 0.12.4 (2026-11-03): content type 0.12.4, tools 0.4.2 (filter 0.1.2 unchanged)
 
 - Content type: each "Convert to copies" link on an item page has an accessible name that includes the course, so a screen reader can tell them apart.

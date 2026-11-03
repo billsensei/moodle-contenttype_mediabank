@@ -19,7 +19,7 @@ MariaDB on `127.0.0.1:3307`, and `export LOCPATH=~/.local/locale` in a fresh she
 | Behat `@local_mediabank` | 2 scenarios, 16 steps |
 | Core privacy and event checks | pass on 5.0 to 5.3 |
 | phpcs, `--warning-severity=1`, whole repository | clean (locally with the Moodle standard; CI runs it on all four versions) |
-| GitHub Actions | 48 jobs: 3 plugins x PHP 8.3, 8.4 x Moodle 5.0 to 5.3 x PostgreSQL, MariaDB. Run 41372737393 on `3c56c08`: 48 of 48 green |
+| GitHub Actions | 60 jobs: 3 plugins x PHP 8.3, 8.4 (and 8.2 on Moodle 5.0, 5.1) x Moodle 5.0 to 5.3 x PostgreSQL, MariaDB. Run 41372737393 on `3c56c08` (when it was 48 jobs): 48 of 48 green |
 
 Sections below that give a smaller number (4, 5, 44, 53, 61, 72, 79, 88, 104 to 109 tests) were right on the day and are kept as
 history. The Behat run for the SVG change (0.11.0) was not repeated, because no browser step changed.

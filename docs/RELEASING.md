@@ -77,7 +77,7 @@ Do a real install once on a clean site (content type first, then the tools plugi
     gh run list --branch release-<version> --limit 1
     gh run view <id> --log-failed
 
-- [ ] All 48 jobs are green. Read a failure with `--log-failed` once the whole run has finished; logs are not available while it runs.
+- [ ] All 60 jobs are green. Read a failure with `--log-failed` once the whole run has finished; logs are not available while it runs.
 - [ ] If a fix is needed, make it on the branch, rebuild the zips and start from section 4 again.
 
 ## 6. Merge and tag
@@ -91,7 +91,7 @@ Merge first, then wait, then tag. The tag is the last thing made, not the first.
     gh run view <id>
 
 - [ ] `main` fast-forwarded, so it is the commit CI tested.
-- [ ] CI on `main` is **completed and successful, 48 of 48**, for the commit you are about to tag. Check `headSha` matches `git rev-parse HEAD`. Do not tag while any job is queued or running, and do not tag on the strength of the branch run alone.
+- [ ] CI on `main` is **completed and successful, 60 of 60**, for the commit you are about to tag. Check `headSha` matches `git rev-parse HEAD`. Do not tag while any job is queued or running, and do not tag on the strength of the branch run alone.
 - [ ] Rebuild the zips from `main` if the branch commit was not the same one, and check they match what you validated.
 
 Only then:

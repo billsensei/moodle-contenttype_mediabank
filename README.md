@@ -83,7 +83,7 @@ Full steps, including installing by hand, are in [docs/INSTALL.md](docs/INSTALL.
 ## Tested
 
 - Moodle 5.0, 5.1, 5.2 and 5.3, on PHP 8.3 and 8.4, with PostgreSQL and MariaDB, by the GitHub Actions workflow in
-  `.github/workflows/ci.yml` (48 jobs: code style, PHPDoc, PHPUnit and Behat for the three plugins).
+  `.github/workflows/ci.yml` (60 jobs: code style, PHPDoc, PHPUnit and Behat for the three plugins).
 - Moodle's own privacy and event checks.
 
 ## Known limits
