@@ -1,6 +1,7 @@
 # Media bank: Funding
 
-The Media bank is free software, released under the GNU General Public License version 3 or later ([LICENSE](../LICENSE)). It costs nothing to use, and no feature is held back for payment.
+The Media bank is free software, released under the GNU General Public License version 3 or later ([LICENSE](../LICENSE)). It costs nothing to use, and no feature is held back for payment. 
+**Initial Funding was a R&D grant from the Moodle Association of Japan)** 
 
 ## Where things stand
 
