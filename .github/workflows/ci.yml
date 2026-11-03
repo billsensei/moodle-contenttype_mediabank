@@ -219,6 +219,10 @@ jobs:
           DB: pgsql
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
 
+      - name: Install the Moodle database
+        # moodle-plugin-ci only prepares the test tables; the installer checks read the real ones.
+        run: php moodle/admin/cli/install_database.php --agree-license --adminpass='Passw0rd!ci' --adminemail=ci@example.com --fullname=CI --shortname=CI
+
       - name: Validate each plugin zip with Moodle's installer checks
         run: |
           for component in contenttype_mediabank local_mediabank filter_mediabank; do
