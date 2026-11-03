@@ -8,7 +8,8 @@ and the bundle zip attached.
 
 ## Unreleased
 
-- CI: PHP 8.2 jobs on Moodle 5.0 and 5.1 (the Moodle versions that still run on 8.2), which makes 60 jobs. The requirement stays PHP 8.3 until they pass.
+- CI: PHP 8.2 jobs on Moodle 5.0 and 5.1 (the Moodle versions that still run on 8.2), which makes 60 jobs. All 12 pass.
+- The PHP requirement in `composer.json` and the docs is now 8.2 or later (was 8.3). Moodle 5.2 and 5.3 still need 8.3 or later, which Moodle enforces.
 - CI: the three actions are pinned to a commit, with the tag in a comment.
 
 ## 0.12.4 (2026-11-03): content type 0.12.4, tools 0.4.2 (filter 0.1.2 unchanged)

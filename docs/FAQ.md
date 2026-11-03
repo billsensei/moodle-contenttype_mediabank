@@ -13,7 +13,7 @@ once and used in many courses. In a course, a teacher picks the file with Moodle
 or to take a **copy**.
 
 ### Which Moodle versions does it work with?
-Moodle **5.0, 5.1, 5.2 and 5.3**, tested on PHP 8.3 and 8.4 with PostgreSQL and MariaDB. Moodle 4.5 and earlier are not supported.
+Moodle **5.0, 5.1, 5.2 and 5.3**, tested on PHP 8.2 (Moodle 5.0 and 5.1 only), 8.3 and 8.4 with PostgreSQL and MariaDB. Moodle 4.5 and earlier are not supported.
 The mobile app is not supported: the plugin has no mobile support.
 
 ### Is it ready for production?

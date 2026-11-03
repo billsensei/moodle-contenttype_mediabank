@@ -22,7 +22,7 @@ Nothing here means the project or its authors endorse the Media bank. Names belo
 | [Grunt](https://gruntjs.com) | Building and checking the JavaScript and Mustache templates. |
 | [FFmpeg](https://ffmpeg.org) | Making a real test video in CI. It is only used in the tests: the plugins do not need it on your server. |
 | [PostgreSQL](https://www.postgresql.org) and [MariaDB](https://mariadb.org) | The two databases every change is tested on. |
-| [PHP](https://www.php.net) | The language, tested on 8.3 and 8.4. |
+| [PHP](https://www.php.net) | The language, tested on 8.2, 8.3 and 8.4. |
 
 ## Documents and screenshots
 

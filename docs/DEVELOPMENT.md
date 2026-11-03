@@ -10,7 +10,7 @@ Moodle 5.0 and `<moodle>/public` on 5.1 and later.
 
 ## 1. Set up
 
-You need PHP 8.3 or 8.4 (the versions CI uses), MariaDB or PostgreSQL, Git, and a checkout of Moodle 5.0 to 5.3 with its PHPUnit and
+You need PHP 8.2 (Moodle 5.0 and 5.1 only), 8.3 or 8.4 (the versions CI uses), MariaDB or PostgreSQL, Git, and a checkout of Moodle 5.0 to 5.3 with its PHPUnit and
 Behat environments set up as described in [Moodle's developer documentation](https://moodledev.io/general/development/tools/phpunit).
 
 1. Put the plugins in the Moodle tree. A symbolic link is fine for tests:

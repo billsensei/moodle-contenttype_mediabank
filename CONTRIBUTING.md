@@ -30,7 +30,7 @@ Keep a change to one purpose. A pull request that fixes a bug should not also re
 
 ## Setting up
 
-You need a Moodle 5.0 to 5.3 site with its PHPUnit and Behat environments (see Moodle's developer documentation), PHP 8.3 or 8.4,
+You need a Moodle 5.0 to 5.3 site with its PHPUnit and Behat environments (see Moodle's developer documentation), PHP 8.2 (Moodle 5.0 and 5.1 only), 8.3 or 8.4,
 and either MariaDB or PostgreSQL. Put the plugins in the Moodle tree. Moodle 5.1 and later use a `public/` folder:
 
 | | Moodle 5.0 | Moodle 5.1 and later |
@@ -92,7 +92,7 @@ on all four.
 
 - Branch from `main` and keep your branch up to date with it.
 - Describe what changed and why, and say which Moodle versions you tested on. The pull request template asks for this and repeats the checklist above.
-- Pushing to the repository starts the GitHub Actions workflow (`.github/workflows/ci.yml`). It runs both plugins on PHP 8.3 and
+- Pushing to the repository starts the GitHub Actions workflow (`.github/workflows/ci.yml`). It runs both plugins on PHP 8.2 (Moodle 5.0 and 5.1 only), 8.3 and
   8.4, Moodle 5.0 to 5.3, and PostgreSQL and MariaDB: code style, PHPDoc, validation, PHPUnit and Behat. A pull request needs
   all of it green.
 - Do not change release files in a pull request. Releases are built from a tagged commit with `python3 scripts/build_release.py`.

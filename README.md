@@ -82,7 +82,7 @@ Full steps, including installing by hand, are in [docs/INSTALL.md](docs/INSTALL.
 
 ## Tested
 
-- Moodle 5.0, 5.1, 5.2 and 5.3, on PHP 8.3 and 8.4, with PostgreSQL and MariaDB, by the GitHub Actions workflow in
+- Moodle 5.0, 5.1, 5.2 and 5.3, on PHP 8.2 (Moodle 5.0 and 5.1 only), 8.3 and 8.4, with PostgreSQL and MariaDB, by the GitHub Actions workflow in
   `.github/workflows/ci.yml` (60 jobs: code style, PHPDoc, PHPUnit and Behat for the three plugins).
 - Moodle's own privacy and event checks.
 
@@ -101,8 +101,8 @@ Full steps, including installing by hand, are in [docs/INSTALL.md](docs/INSTALL.
 ## Building the release files
 
 `composer.json` describes the project and gives shortcuts (`composer build`, `composer validate-zip`). It is not an installable
-Composer package: install the plugins from the zip files, content type first. It has no dependencies other than PHP 8.3 or later,
-which is what the plugins were tested on.
+Composer package: install the plugins from the zip files, content type first. It has no dependencies other than PHP 8.2 or later
+(8.2 on Moodle 5.0 and 5.1, 8.3 or later on Moodle 5.2 and 5.3), which is what the plugins were tested on.
 
     python3 scripts/build_release.py --out dist
     php scripts/validate_plugin_zip.php --moodle=/path/to/moodle --zip=dist/<plugin zip> --component=contenttype_mediabank
