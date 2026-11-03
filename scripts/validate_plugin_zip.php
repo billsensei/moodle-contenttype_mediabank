@@ -56,6 +56,15 @@ if (empty($contents)) {
 
 $validator = \core\update\validator::instance($tmp, $contents);
 $validator->assert_plugin_type($plugintype);
+// A site made only for tests (as moodle-plugin-ci makes in CI) has no installed version in its config, so read the
+// version from the Moodle code instead. On an installed site the two are the same.
+if (empty($CFG->version) || empty($CFG->release)) {
+    $version = null;
+    $release = null;
+    require($CFG->dirroot . '/version.php');
+    $CFG->version = $version;
+    $CFG->release = $release;
+}
 $validator->assert_moodle_version($CFG->version);
 $ok = $validator->execute();
 foreach ($validator->get_messages() as $message) {
