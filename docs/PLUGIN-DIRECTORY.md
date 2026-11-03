@@ -32,6 +32,8 @@ Submit the content type first either way, because the other two name it as a dep
 
 Upload the **plugin zips from the GitHub release**, not the bundle and not GitHub's source zip. The folder inside each is called `mediabank`, as Moodle expects.
 
+The current release is **v0.12.4** (3 November 2026): content type 0.12.4, tools 0.4.2 and filter 0.1.2. Check `version.php` in each plugin before you submit, because the numbers move with each release.
+
 ## 3. Things to settle before submitting
 
 1. **The repository name.** Moodle's guidance prefers one plugin per repository, named `moodle-{plugintype}_{pluginname}`, with the plugin at the root. This repository holds three plugins in subfolders and is called `moodle-repository_mediabank` (the name comes from an early plan, and there is no `repository_mediabank` plugin). A reviewer may ask about it. The options are to explain it (the three plugins are released together and the zips are built by `scripts/build_release.py`), or to split the repository into three. Splitting would also let the Marketplace's release workflow publish new versions by itself, because the workflow's documentation does not describe packaging a repository with several plugins, so assume it cannot. It is a large change, so do not do it unless asked.
@@ -79,7 +81,8 @@ Upload the **plugin zips from the GitHub release**, not the bundle and not GitHu
 > * Accessibility fields: a required text alternative for images, and a transcript and WebVTT captions for video and audio.
 > * MP4 videos are prepared in the background so playback can start before the whole file has downloaded. Nothing is re-encoded, and no extra software is needed on the server.
 > * SVG images are supported only if an administrator turns them on. They are off by default, checked against a list of what they may contain, shown as pictures and only sent as downloads.
-> * Three read-only web service functions to list items, get one item, and see which courses use it.
+> * Three read-only web service functions to list items, get one item, and see which courses use it. A list leaves out transcripts unless the caller asks for them.
+> * Built with accessibility in mind: each **Convert to copies** link names its course for screen readers, and the tests run Moodle's axe accessibility checks.
 > * A privacy provider: when a user is erased their items, versions, captions and transcripts are erased, and courses that linked to them keep the file as a copy.
 >
 > **Beta.** Released for testing. Try it on a copy of your site first. It is tested on Moodle 5.0 to 5.3 with PHP 8.2 (Moodle 5.0 and 5.1 only), 8.3 and 8.4, on PostgreSQL and MariaDB. It does not support the Moodle mobile app.
@@ -147,7 +150,7 @@ For the tools (Entry 2):
 > This plugin needs the **Media bank content type** (`contenttype_mediabank`), which must be installed first. The content type works without it.
 >
 > * **Backup and restore of linked files.** With the content type's setting **Include linked files in course backups** switched on (it is off by default), manual course backups carry the files behind Media bank links, so restoring on a different site does not leave them out. Where a link cannot be kept on restore, the file becomes an ordinary copy. Restore does not trust the backup file: hashes and paths are checked.
-> * **A report of items nobody links to,** under Site administration > Reports, for administrators: the largest 500 items that no course uses, with size and upload date, and an optional minimum age. It only reads. The same list is available as a command that can also write CSV.
+> * **A report of items nobody links to,** under Site administration > Reports, for administrators: the largest 500 items that no course uses, with size and upload date, and an optional minimum age. It only reads, and its table has a caption for screen readers. The same list is available as a command that can also write CSV.
 > * **Command-line tools.** `local/mediabank/cli/item.php` shows one item, the courses that link to it and its earlier versions, and can turn its links into copies or restore a version. `local/mediabank/cli/optimize_videos.php` queues videos uploaded before streaming preparation existed (with `--dry-run` to only count them). `local/mediabank/cli/unlinked.php` lists unused items.
 >
 > It has no database tables of its own and stores no personal data. **Beta**: try it on a copy of your site first.
@@ -185,7 +188,7 @@ For the tools (Entry 2):
 >
 > When a course **links** to a Media bank item, it normally gets the bare file. This filter carries the text kept with the item into the course:
 >
-> * A picture with no text alternative, an empty one, or only its file name gets the item's text alternative. One a teacher wrote, and a picture marked as decorative, are left alone.
+> * A picture with no text alternative, an empty one, or only its file name gets the item's text alternative, when its link is in one of the places listed below. One a teacher wrote, and a picture marked as decorative, are left alone.
 > * A video or audio player gets the item's captions, as a **Captions** button that is off until the viewer turns it on, and its transcript in a **Transcript** block under the player. A player that already has a captions track of its own is left alone.
 >
 > Correct a caption or an alt text once in the bank and every linked course shows the correction. A copy of the file is independent and gets nothing.
