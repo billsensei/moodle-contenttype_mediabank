@@ -22,7 +22,7 @@ Most questions are already answered. Look in this order:
 | Your question | Ask |
 |---|---|
 | "How do I use it?" or "What does this setting do?" | Your own **Moodle administrator** first. They know your site, and the Administrator guide is written for them. |
-| A bug, or something the guides do not explain | Open a [GitHub issue](https://github.com/billsensei/moodle-contenttype_media-bank/issues/new/choose) and pick the **bug report** form. |
+| A bug, or something the guides do not explain | Open a [GitHub issue](https://github.com/billsensei/moodle-contenttype_mediabank/issues/new/choose) and pick the **bug report** form. |
 | An idea | Open an issue and pick the **feature request** form. Say what you are trying to do. |
 | A security problem | **Do not** open a public issue. Report it privately; see [SECURITY.md](../SECURITY.md). |
 | A problem in Moodle itself, not in the Media bank | Moodle's own channels. Security problems in Moodle go to <https://moodle.org/security/>. |
@@ -49,9 +49,9 @@ Never post passwords, tokens or web service keys in an issue.
 
 ## Before you report a bug
 
-1. Make sure you have the newest release: <https://github.com/billsensei/moodle-contenttype_media-bank/releases>.
+1. Make sure you have the newest release: <https://github.com/billsensei/moodle-contenttype_mediabank/releases>.
 2. Purge all caches (**Site administration → Development → Purge caches**) and try again.
-3. Search the existing [issues](https://github.com/billsensei/moodle-contenttype_media-bank/issues), including closed ones.
+3. Search the existing [issues](https://github.com/billsensei/moodle-contenttype_mediabank/issues), including closed ones.
 4. Try it on a copy of your site, with other add-on plugins switched off, if you can.
 
 ## Want to help?

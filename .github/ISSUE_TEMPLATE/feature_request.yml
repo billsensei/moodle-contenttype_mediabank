@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Ideas are welcome. For a larger change, agreeing the idea here first saves you from writing code that cannot be merged.
-        See [CONTRIBUTING.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/CONTRIBUTING.md).
+        See [CONTRIBUTING.md](https://github.com/billsensei/moodle-contenttype_mediabank/blob/main/CONTRIBUTING.md).
   - type: textarea
     id: problem
     attributes:

@@ -2,7 +2,7 @@
 
 How the two plugins are built and why. This is for developers and for administrators who want to know what the plugin does inside
 Moodle. For using it, see the [Teacher guide](TEACHER-GUIDE.md) and the [Administrator guide](ADMIN-GUIDE.md). For working on it,
-see [CONTRIBUTING.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/CONTRIBUTING.md).
+see [CONTRIBUTING.md](https://github.com/billsensei/moodle-contenttype_mediabank/blob/main/CONTRIBUTING.md).
 
 ## 1. The idea, and what it builds on
 

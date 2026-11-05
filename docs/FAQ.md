@@ -167,7 +167,7 @@ Install the new zip the same way (content type first). Moodle offers to upgrade.
 items. A site that already had the plugin keeps its saved settings.
 
 ### Where do I find the release notes?
-[CHANGELOG.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/CHANGELOG.md) lists the project's releases. Each plugin also has a more detailed `CHANGES.md`.
+[CHANGELOG.md](https://github.com/billsensei/moodle-contenttype_mediabank/blob/main/CHANGELOG.md) lists the project's releases. Each plugin also has a more detailed `CHANGES.md`.
 
 ## Getting help
 
@@ -175,7 +175,7 @@ items. A site that already had the plugin keeps its saved settings.
 See [TROUBLESHOOTING.md](TROUBLESHOOTING.md): it is organised by what you see, with the cause and the fix.
 
 ### I found a bug, or I have an idea.
-See [SUPPORT.md](SUPPORT.md) for where to ask and what to include. Open an issue on GitHub and pick the bug report or feature request form. See [CONTRIBUTING.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/CONTRIBUTING.md).
+See [SUPPORT.md](SUPPORT.md) for where to ask and what to include. Open an issue on GitHub and pick the bug report or feature request form. See [CONTRIBUTING.md](https://github.com/billsensei/moodle-contenttype_mediabank/blob/main/CONTRIBUTING.md).
 
 ### I found a security problem.
-Please do **not** use a public issue. Report it privately; see [SECURITY.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/SECURITY.md).
+Please do **not** use a public issue. Report it privately; see [SECURITY.md](https://github.com/billsensei/moodle-contenttype_mediabank/blob/main/SECURITY.md).

@@ -1,6 +1,6 @@
 # Media bank for Moodle
 
-![Moodle Plugin CI](https://github.com/billsensei/moodle-contenttype_media-bank/actions/workflows/ci.yml/badge.svg)
+![Moodle Plugin CI](https://github.com/billsensei/moodle-contenttype_mediabank/actions/workflows/ci.yml/badge.svg)
 
 Upload a video, audio file, PDF or picture to Moodle's **Content bank** once, and use it in as many courses as you like.
 In a course, a teacher picks the file with Moodle's own file picker and chooses:
@@ -20,7 +20,7 @@ Status: **Beta**. Released for testing, so try it on a copy of your site first. 
 | Media bank tools (`local_mediabank`) | `local_mediabank/` | 0.4.2 | the content type |
 | Media bank text alternatives (`filter_mediabank`), optional, **Alpha** | `filter_mediabank/` | 0.1.2 | the content type |
 
-**This is one repository with three separate plugins.** Moodle installs each one from its own zip, so do not use GitHub's **Code → Download ZIP**. Download the plugin zips from the [releases page](https://github.com/billsensei/moodle-contenttype_media-bank/releases) instead (see "Install" below).
+**This is one repository with three separate plugins.** Moodle installs each one from its own zip, so do not use GitHub's **Code → Download ZIP**. Download the plugin zips from the [releases page](https://github.com/billsensei/moodle-contenttype_mediabank/releases) instead (see "Install" below).
 
 Install the content type first. Each plugin has its own README and `CHANGES.md`; [CHANGELOG.md](CHANGELOG.md) lists the project's releases.
 
@@ -43,7 +43,7 @@ If a person's account is erased, courses that linked to their media keep the fil
 ## Install
 
 1. Download `contenttype_mediabank_<version>.zip` and `local_mediabank_<version>.zip` from the
-   [releases page](https://github.com/billsensei/moodle-contenttype_media-bank/releases).
+   [releases page](https://github.com/billsensei/moodle-contenttype_mediabank/releases).
    The release page also has `mediabank-<release>-bundle.zip`, which holds both plugins and the guides. Unzip it on your computer first: Moodle cannot install the bundle itself.
 2. In Moodle, go to **Site administration → Plugins → Install plugins** and install the content type, then the tools.
 3. Settings are under **Site administration → Plugins → Content bank → Media bank**.

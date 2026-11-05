@@ -63,7 +63,7 @@ If the Content bank looks the same after the upgrade, or a new string shows as `
 
 ## What changed in each version
 
-Short notes on what matters to someone upgrading. The full lists are in [CHANGELOG.md](https://github.com/billsensei/moodle-contenttype_media-bank/blob/main/CHANGELOG.md) and in each plugin's
+Short notes on what matters to someone upgrading. The full lists are in [CHANGELOG.md](https://github.com/billsensei/moodle-contenttype_mediabank/blob/main/CHANGELOG.md) and in each plugin's
 `CHANGES.md`.
 
 | From | To | What you notice | What to do |

@@ -26,7 +26,7 @@ The two `CHANGES.md` files go inside the plugin zips, so they travel with the pl
 
 - Newest first, with an **Unreleased** section at the top for changes that are on `main` but not in a release.
 - A release heading looks like `## [0.11.0] - 2026-10-29`, followed by one line naming both plugin versions: `` `contenttype_mediabank` 0.11.0 (2026102910), `local_mediabank` 0.3.0 (2026102904). ``
-- At the bottom, a link for each version: `[0.11.0]: https://github.com/billsensei/moodle-contenttype_media-bank/releases/tag/v0.11.0`.
+- At the bottom, a link for each version: `[0.11.0]: https://github.com/billsensei/moodle-contenttype_mediabank/releases/tag/v0.11.0`.
 - Group entries under these headings, and leave out any that are empty:
 
 | Heading | Use it for |
