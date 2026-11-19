@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.3 (2026-11-20)
+Version 2026112001. Packaging only: each plugin zip now has a copy of the GPL v3 `LICENSE` in its root, as the Moodle Marketplace review requires. No change to how it behaves. No setting, no table. Moodle offers the upgrade.
+
 ## 0.4.2 (2026-11-03)
 Version 2026110202. Accessibility only. No setting, no table. Moodle offers the upgrade.
 

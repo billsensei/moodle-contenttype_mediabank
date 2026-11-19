@@ -4,7 +4,7 @@ Where the project stands and where it could go. **This is a list of ideas, not p
 
 ## Where it stands
 
-The content type and the tools are **Beta** (released for testing): `contenttype_mediabank` 0.12.0 and `local_mediabank` 0.4.0, for Moodle 5.0 to 5.3. A third plugin, `filter_mediabank` 0.1.0, is optional and **Alpha**. The features work and are well tested, but the plugins have not had long use on real sites. What has and has not been tested is listed in the Administrator guide, section 12. 0.12.0 is a feature release: the first three teacher ideas below and the report of items nobody links to are in it (see [CHANGELOG.md](../CHANGELOG.md)).
+The content type and the tools are **Beta** (released for testing): `contenttype_mediabank` 0.12.5 and `local_mediabank` 0.4.3, for Moodle 5.0 to 5.3. A third plugin, `filter_mediabank` 0.1.3, is optional and **Alpha**. The features work and are well tested, but the plugins have not had long use on real sites. What has and has not been tested is listed in the Administrator guide, section 12. 0.12.0 is a feature release: the first three teacher ideas below and the report of items nobody links to are in it (see [CHANGELOG.md](../CHANGELOG.md)).
 
 ## 1. Towards a stable release
 

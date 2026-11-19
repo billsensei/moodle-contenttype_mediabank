@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.3 (2026-11-20)
+Version 2026112001. Packaging only: each plugin zip now has a copy of the GPL v3 `LICENSE` in its root, as the Moodle Marketplace review requires. No change to how it behaves. No setting, no table. Moodle offers the upgrade. Needs contenttype_mediabank 0.12.0, as before.
+
 ## 0.1.2 (2026-11-02)
 Version 2026110202. Hardening. No new setting and no table. Moodle offers the upgrade; nothing else is needed. Needs contenttype_mediabank 0.12.0, as before.
 

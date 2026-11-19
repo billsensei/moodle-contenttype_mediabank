@@ -9,7 +9,7 @@ Writes, into DIR (default: ./dist):
   filter_mediabank_<version>.zip        installable the same way (install the content type first; optional, Alpha)
   mediabank-<release>-bundle.zip        the three zips, the guides and a READ-ME-FIRST.txt, for sending to a client; NOT installable itself
 
-Each plugin zip has one top folder called "mediabank", which is what Moodle's installer expects. The zips are
+Each plugin zip has one top folder called "mediabank", which is what Moodle's installer expects, and a copy of the repository's LICENSE in it. The zips are
 reproducible: file order and timestamps come from the files and the last commit, not from the time of the build.
 Run scripts/validate_plugin_zip.php against a Moodle tree to check a zip the way the installer does.
 """
@@ -67,6 +67,9 @@ def build_plugin(plugin: str, out: Path, timestamp: tuple) -> Path:
                 add(zf, name + '/', b'', timestamp, 0o40755)
             else:
                 add(zf, name, path.read_bytes(), timestamp, 0o100644)
+        if not (REPO / plugin / 'LICENSE').exists():
+            # The Moodle Marketplace wants a license file in the plugin root. The one copy lives at the repository root.
+            add(zf, 'mediabank/LICENSE', (REPO / 'LICENSE').read_bytes(), timestamp, 0o100644)
     return target
 
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.5 (2026-11-20)
+Version 2026112001. Packaging only: each plugin zip now has a copy of the GPL v3 `LICENSE` in its root, as the Moodle Marketplace review requires. No change to how it behaves. No setting, no table. Moodle offers the upgrade. Tools 0.4.3 and filter 0.1.3 go with it.
+
+- `scripts/build_release.py` adds `LICENSE` to the zips.
+
 ## 0.12.4 (2026-11-03)
 Version 2026110204. Accessibility only. No setting, no table. Moodle offers the upgrade. Tools 0.4.2 goes with it.
 

@@ -6,8 +6,9 @@ All notable changes to the project. Each plugin also keeps its own, more detaile
 The content type and the tools are **Beta**; the filter is **Alpha**. A release of the project is a tag on GitHub, `v<content type version>`, with the three plugin zips
 and the bundle zip attached.
 
-## Unreleased
+## 0.12.5 (2026-11-20): content type 0.12.5, tools 0.4.3, filter 0.1.3
 
+- Each plugin zip now has a copy of the GPL v3 `LICENSE` in its root (the Moodle Marketplace review asked for it). Packaging only: no change in behaviour, no setting, no table.
 - The GitHub repository was recreated as `moodle-contenttype_mediabank` (it was `moodle-contenttype_media-bank`); all links in the docs, issue templates and `composer.json` follow. The old address no longer works.
 - CI: PHP 8.2 jobs on Moodle 5.0 and 5.1 (the Moodle versions that still run on 8.2), which makes 60 jobs. All 12 pass.
 - The PHP requirement in `composer.json` and the docs is now 8.2 or later (was 8.3). Moodle 5.2 and 5.3 still need 8.3 or later, which Moodle enforces.
@@ -141,6 +142,7 @@ Repository and documentation only, no change to the plugins:
 - Both plugins are Beta. Language strings are in alphabetical order and the privacy test is in `tests/privacy/`, as Moodle's
   current coding standard requires (found by the first GitHub Actions run).
 
+[0.12.5]: https://github.com/billsensei/moodle-contenttype_mediabank/releases/tag/v0.12.5
 [0.12.0]: https://github.com/billsensei/moodle-contenttype_mediabank/releases/tag/v0.12.0
 [0.11.1]: https://github.com/billsensei/moodle-contenttype_mediabank/releases/tag/v0.11.1
 [0.11.0]: https://github.com/billsensei/moodle-contenttype_mediabank/releases/tag/v0.11.0
