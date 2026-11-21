@@ -12,17 +12,17 @@ Status: **Beta**. Released for testing, so try it on a copy of your site first. 
 
 ![An item page for a PDF, with a preview and the courses that link to it.](docs/images/teacher-2-item-page.png)
 
-## What is in this repository
+## The Media bank plugins
 
-| Plugin | Folder | Version | Needs |
-|---|---|---|---|
-| Media bank content type (`contenttype_mediabank`) | `contenttype_mediabank/` | 0.12.5 | Moodle 5.0 to 5.3 |
-| Media bank tools (`local_mediabank`) | `local_mediabank/` | 0.4.3 | the content type |
-| Media bank text alternatives (`filter_mediabank`), optional, **Alpha** | `filter_mediabank/` | 0.1.3 | the content type |
+The Media bank is three Moodle plugins, each in its own repository and installed from its own zip. **Install the content type first.**
 
-**This is one repository with three separate plugins.** Moodle installs each one from its own zip, so do not use GitHub's **Code → Download ZIP**. Download the plugin zips from the [releases page](https://github.com/billsensei/moodle-contenttype_mediabank/releases) instead (see "Install" below).
+| Plugin | Repository | Needs |
+|---|---|---|
+| Media bank content type (`contenttype_mediabank`), **this repository** | [moodle-contenttype_mediabank](https://github.com/billsensei/moodle-contenttype_mediabank) | Moodle 5.0 to 5.3 |
+| Media bank tools (`local_mediabank`): backup and restore of links, command-line tools, reports | [moodle-local_mediabank](https://github.com/billsensei/moodle-local_mediabank) | the content type |
+| Media bank text alternatives (`filter_mediabank`), optional, **Alpha** | [moodle-filter_mediabank](https://github.com/billsensei/moodle-filter_mediabank) | the content type |
 
-Install the content type first. Each plugin has its own README and `CHANGES.md`; [CHANGELOG.md](CHANGELOG.md) lists the project's releases.
+Moodle installs a plugin from its own zip, so do not use GitHub's **Code → Download ZIP**. Download the plugin zip from the [releases page](https://github.com/billsensei/moodle-contenttype_mediabank/releases) of each repository instead (see "Install" below). The guides in `docs/` cover all three plugins.
 
 ## What it does
 
@@ -83,7 +83,7 @@ Full steps, including installing by hand, are in [docs/INSTALL.md](docs/INSTALL.
 ## Tested
 
 - Moodle 5.0, 5.1, 5.2 and 5.3, on PHP 8.2 (Moodle 5.0 and 5.1 only), 8.3 and 8.4, with PostgreSQL and MariaDB, by the GitHub Actions workflow in
-  `.github/workflows/ci.yml` (64 jobs: code style, PHPDoc, PHPUnit and Behat for the three plugins, and a build-and-validate check of the release zips).
+  `.github/workflows/ci.yml` (24 jobs: code style, PHPDoc, PHPUnit and Behat, and a build-and-validate check of the release zip). The tools and the filter have their own workflows in their own repositories.
 - Moodle's own privacy and event checks.
 
 ## Known limits
@@ -100,7 +100,7 @@ Full steps, including installing by hand, are in [docs/INSTALL.md](docs/INSTALL.
 
 ## Building the release files
 
-`composer.json` describes the project and gives shortcuts (`composer build`, `composer validate-zip`). It is not an installable
+`composer.json` describes the plugin and gives shortcuts (`composer build`, `composer validate-zip`). It is not an installable
 Composer package: install the plugins from the zip files, content type first. It has no dependencies other than PHP 8.2 or later
 (8.2 on Moodle 5.0 and 5.1, 8.3 or later on Moodle 5.2 and 5.3), which is what the plugins were tested on.
 

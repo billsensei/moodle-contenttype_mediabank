@@ -1,13 +1,10 @@
 # Contributing
 
-Thank you for helping with the Media bank. This project is two Moodle plugins in one repository:
-
-- `contenttype_mediabank/`: the content type (the main plugin)
-- `local_mediabank/`: backup and restore of links, and command-line tools. It needs the content type.
+Thank you for helping with the Media bank. This repository is the content type, `contenttype_mediabank`, the main plugin. The two plugins that need it have their own repositories: [moodle-local_mediabank](https://github.com/billsensei/moodle-local_mediabank) (backup and restore of links, and command-line tools) and [moodle-filter_mediabank](https://github.com/billsensei/moodle-filter_mediabank) (text alternatives, captions and transcripts, optional). Send a change to the repository of the plugin it is about. The guides for all three are in `docs/` here.
 
 Everyone taking part is expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md). If you write or edit a guide, see the [Style guide](docs/STYLE-GUIDE.md).
 
-Both are **Beta**, for Moodle 5.0 to 5.3. By contributing you agree that your work is released under the
+The content type is **Beta**, for Moodle 5.0 to 5.3. By contributing you agree that your work is released under the
 [GNU GPL v3 or later](LICENSE), the same as the rest of the project.
 
 ## Reporting a problem

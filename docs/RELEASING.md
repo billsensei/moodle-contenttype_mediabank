@@ -35,9 +35,9 @@ A change to the guides alone is not a release. Push it to `main`, and, if the gu
 
 Update, on that branch:
 
-- [ ] `version.php` in each plugin that changed (`version` and `release`). `filter_mediabank/CHANGES.md` is the third changelog.
+- [ ] `version.php` in each plugin that changed (`version` and `release`). `moodle-filter_mediabank/CHANGES.md` is the third changelog.
 - [ ] Each plugin's `$plugin->dependencies` names the lowest content type version that has what it calls (the filter calls `link_captions`; the tools use `usage::find_unlinked()`).
-- [ ] `contenttype_mediabank/CHANGES.md` and `local_mediabank/CHANGES.md`: rename "Unreleased" to the new version and date.
+- [ ] `CHANGES.md` and `moodle-local_mediabank/CHANGES.md`: rename "Unreleased" to the new version and date.
 - [ ] Root `CHANGELOG.md` (see [CHANGELOG-POLICY.md](CHANGELOG-POLICY.md)): a new dated section with both plugin versions, and a `[x.y.z]: https://github.com/billsensei/moodle-contenttype_mediabank/releases/tag/vx.y.z` link at the bottom.
 - [ ] [UPGRADING.md](UPGRADING.md): a row in the per-version table if an administrator sees any difference.
 - [ ] [SECURITY.md](../SECURITY.md): the supported-version table (for example `0.11.x`).
@@ -50,7 +50,7 @@ Update, on that branch:
 
 Run these on Moodle 5.0, 5.1, 5.2 and 5.3. The commands are in [DEVELOPMENT.md](DEVELOPMENT.md).
 
-- [ ] PHPUnit for all three plugins, with no warnings.
+- [ ] PHPUnit, with no warnings.
 - [ ] Behat for the plugins that have scenarios.
 - [ ] `phpcs` with the Moodle standard, run inside a Moodle tree, as CI does it (section 3 of the Development guide). Check every file, including `lang/`: CI checks the order of language strings and fails on a warning (`--max-warnings 0`). Leave out nothing when you run it by hand.
 - [ ] If the change touched uploading, serving files, SVG, video preparation, backup or privacy, run a security review of the changed files, and the privacy provider tests.
@@ -59,15 +59,12 @@ Run these on Moodle 5.0, 5.1, 5.2 and 5.3. The commands are in [DEVELOPMENT.md](
 
     python3 scripts/build_release.py --out dist
 
-This writes `contenttype_mediabank_<version>.zip`, `local_mediabank_<version>.zip`, `filter_mediabank_<version>.zip` and `mediabank-<release>-bundle.zip`. Then, for each zip, on each Moodle version, on a site where the plugin is not installed:
+This writes `contenttype_mediabank_<version>.zip`. Then, for each zip, on each Moodle version, on a site where the plugin is not installed:
 
     php scripts/validate_plugin_zip.php --moodle=<moodle> --zip=dist/<zip> --component=contenttype_mediabank
-    php scripts/validate_plugin_zip.php --moodle=<moodle> --zip=dist/<zip> --component=local_mediabank
-    php scripts/validate_plugin_zip.php --moodle=<moodle> --zip=dist/<zip> --component=filter_mediabank
 
 - [ ] Every check passes. The only warning expected is the Beta one. CI runs the build and these checks on every push (the `package` job, on Moodle 5.0 to 5.3), so a failure there means fix it before you go on; the manual run is still needed for the zips you upload.
-- [ ] The bundle is **not** a plugin: do not run the validator on it, and do not upload it to Moodle.
-- [ ] Spot-check the bundle: it holds both plugin zips, the guides in `GUIDES` in `scripts/build_release.py`, the two PDFs and the `images/` folder, and one `CHANGES-*.md` file for each of the three plugins.
+- [ ] Spot-check the zip: `LICENSE`, `README.md`, `CHANGES.md` and `version.php` are in it, and `docs/`, `scripts/` and `.github/` are not.
 
 Do a real install once on a clean site (content type first, then the tools plugin and the filter), or, for an upgrade, over the previous release. Follow [INSTALL.md](INSTALL.md) exactly as a user would.
 
@@ -105,9 +102,7 @@ Only then:
 
     gh release create v<release> --prerelease --title "Media bank <release> (Beta)" \
         --notes-file <notes.md> \
-        dist/contenttype_mediabank_<version>.zip \
-        dist/local_mediabank_<version>.zip \
-        dist/mediabank-<release>-bundle.zip
+        dist/contenttype_mediabank_<version>.zip
 
 The notes should say, in plain words:
 

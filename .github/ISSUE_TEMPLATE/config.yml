@@ -6,3 +6,6 @@ contact_links:
   - name: Problem in Moodle itself
     url: https://moodle.org/security/
     about: Security problems in Moodle core go to Moodle, not to this project.
+  - name: Problem with the media bank tools or filter
+    url: https://github.com/billsensei/moodle-local_mediabank/issues
+    about: Backup and restore, the unlinked-items report and the command-line tools are in local_mediabank. The text alternatives and captions filter is in filter_mediabank (https://github.com/billsensei/moodle-filter_mediabank/issues).

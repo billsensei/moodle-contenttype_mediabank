@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.12.6 (2026-11-21)
+Version 2026112101. Packaging and links only: the plugin moved to its own repository, `moodle-contenttype_mediabank`, with the plugin files at the repository root, and the tools and the filter moved to `moodle-local_mediabank` and `moodle-filter_mediabank`. No change in behaviour, no setting, no table. Moodle offers the upgrade.
+
 ## 0.12.5 (2026-11-20)
 Version 2026112001. Packaging only: each plugin zip now has a copy of the GPL v3 `LICENSE` in its root, as the Moodle Marketplace review requires. No change to how it behaves. No setting, no table. Moodle offers the upgrade. Tools 0.4.3 and filter 0.1.3 go with it.
 

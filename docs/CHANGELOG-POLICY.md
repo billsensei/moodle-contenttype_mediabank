@@ -7,8 +7,8 @@ The project keeps three changelogs, and they have different readers. This page s
 | File | Reader | What it holds |
 |---|---|---|
 | [`CHANGELOG.md`](../CHANGELOG.md) (root) | An administrator deciding whether to upgrade | One section per project release: what is new, changed, fixed or secured, in plain words. Also notes on documents and the repository. |
-| [`contenttype_mediabank/CHANGES.md`](../contenttype_mediabank/CHANGES.md) | A developer or careful administrator | The detail for that plugin: what changed, why, and what was found by which review. |
-| [`local_mediabank/CHANGES.md`](../local_mediabank/CHANGES.md) | The same | The same, for the tools plugin. |
+| [`CHANGES.md`](../CHANGES.md) | A developer or careful administrator | The detail for that plugin: what changed, why, and what was found by which review. |
+| [`moodle-local_mediabank/CHANGES.md`](https://github.com/billsensei/moodle-local_mediabank/blob/main/CHANGES.md) | The same | The same, for the tools plugin. |
 
 The two `CHANGES.md` files go inside the plugin zips, so they travel with the plugin. The root `CHANGELOG.md` does not.
 
@@ -56,7 +56,7 @@ In the root changelog:
     - A video uploaded with its index at the end now starts playing sooner. Run
       `php local/mediabank/cli/optimize_videos.php` once to prepare videos uploaded before this version.
 
-In `contenttype_mediabank/CHANGES.md`:
+In `CHANGES.md`:
 
     - Fixed: the streaming task did not queue a video whose `moov` box was after a very large `mdat`. The limit on the box size is now checked before the file is read, not after.
 

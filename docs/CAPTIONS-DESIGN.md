@@ -49,7 +49,7 @@ Course page text (a <video> whose <source src> is a pluginfile URL)
    (on Moodle 5.0 to 5.2, whose cleaner strips <details>, a plain labelled block instead; see section 10)
         |  then Moodle's cleaner (untrusted text) and, later, the player
         v
-Viewer's browser asks for  /pluginfile.php/<ALIAS CONTEXT>/contenttype_mediabank/linkcaptions/<ALIAS FILE ID>/captions.vtt
+Viewer's browser asks for  /pluginfile.php/<ALIAS CONTEXT>/linkcaptions/<ALIAS FILE ID>/captions.vtt
         |  contenttype_mediabank_pluginfile()  (new branch)
         v
 checks access to the alias file (section 5) -> streams the ITEM's caption file
@@ -73,7 +73,7 @@ No new table. No new capability. No scheduled task.
 ```html
 <video controls>
   <source src="https://site/pluginfile.php/123/mod_resource/content/1/talk.mp4" type="video/mp4">
-  <track kind="captions" label="Captions" src="https://site/pluginfile.php/123/contenttype_mediabank/linkcaptions/987/captions.vtt" default>
+  <track kind="captions" label="Captions" src="https://site/pluginfile.php/123/linkcaptions/987/captions.vtt" default>
 </video>
 ```
 
@@ -155,10 +155,10 @@ The rule must be **no weaker than "may play the video"**, and it must not reveal
 
 | Where | What |
 |---|---|
-| `contenttype_mediabank/classes/link_captions.php` | `url_for()`, `item_of()`, `is_place_allowed()` (the list), `viewer_may_read()` (login, enrolment or guest rules, activity visibility and availability, the activity's `view` capability, section visibility) and `find_file()` (the route's whole decision; every refusal is `null`) |
-| `contenttype_mediabank/lib.php` | New file area `linkcaptions` in `contenttype_mediabank_pluginfile()`: login for the activity or course, `find_file()`, then `text/vtt` with `nosniff`, private cache, session closed |
-| `filter_mediabank/classes/media_tracks.php` | Adds `<track kind="captions" label="Captions" src="...">` before `</video>` or `</audio>` and the transcript after it |
-| `filter_mediabank/classes/link_lookup.php`, `html_tag.php` | Shared by the alt text and track steps: URL to link, and the tag tokenizer |
+| `classes/link_captions.php` | `url_for()`, `item_of()`, `is_place_allowed()` (the list), `viewer_may_read()` (login, enrolment or guest rules, activity visibility and availability, the activity's `view` capability, section visibility) and `find_file()` (the route's whole decision; every refusal is `null`) |
+| `lib.php` | New file area `linkcaptions` in `contenttype_mediabank_pluginfile()`: login for the activity or course, `find_file()`, then `text/vtt` with `nosniff`, private cache, session closed |
+| `moodle-filter_mediabank/classes/media_tracks.php` | Adds `<track kind="captions" label="Captions" src="...">` before `</video>` or `</audio>` and the transcript after it |
+| `moodle-filter_mediabank/classes/link_lookup.php`, `html_tag.php` | Shared by the alt text and track steps: URL to link, and the tag tokenizer |
 
 **Where the build differs from the proposal:**
 
@@ -168,7 +168,7 @@ The rule must be **no weaker than "may play the video"**, and it must not reveal
 4. **No `default`** and no `srclang` (the item has no language).
 5. **The dependency.** `filter_mediabank` calls `link_captions`, which is new in `contenttype_mediabank`. The filter does nothing if the class is missing. At release the filter's dependency in `version.php` must be raised to the content type version that has the class.
 
-**Tests:** `contenttype_mediabank/tests/link_captions_test.php` (5 tests, 37 assertions: a student through a File resource; an outsider, a hidden activity, a wrong context and bad arguments; only the listed places, with a forum post, attachment and block refused; a replaced or removed caption and a converted copy; guests follow the course's guest access) and `filter_mediabank/tests/media_tracks_test.php` (7 tests, 30 assertions: track and transcript, audio with `src`, players left alone, no captions, other contexts and places, hostile text through the cleaner, other stages do nothing). With the place check switched off, one test in each file fails. The contenttype suite is 127 tests and the filter suite 20, all passing on 5.3.
+**Tests:** `tests/link_captions_test.php` (5 tests, 37 assertions: a student through a File resource; an outsider, a hidden activity, a wrong context and bad arguments; only the listed places, with a forum post, attachment and block refused; a replaced or removed caption and a converted copy; guests follow the course's guest access) and `moodle-filter_mediabank/tests/media_tracks_test.php` (7 tests, 30 assertions: track and transcript, audio with `src`, players left alone, no captions, other contexts and places, hostile text through the cleaner, other stages do nothing). With the place check switched off, one test in each file fails. The contenttype suite is 127 tests and the filter suite 20, all passing on 5.3.
 
 **Not done or not tested:** a Behat scenario (the steps cannot create a link without the file picker); a real browser showing the captions button; other Moodle versions; the Moodle mobile app.
 

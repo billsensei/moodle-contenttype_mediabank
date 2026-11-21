@@ -32,7 +32,6 @@ body:
       label: Which plugin would it belong in?
       options:
         - contenttype_mediabank (the content type)
-        - local_mediabank (backup, restore and command-line tools)
         - Not sure
     validations:
       required: true

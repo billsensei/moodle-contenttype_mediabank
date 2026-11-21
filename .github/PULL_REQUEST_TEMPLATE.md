@@ -5,7 +5,6 @@
 ## Which plugin?
 
 - [ ] `contenttype_mediabank`
-- [ ] `local_mediabank`
 - [ ] Documentation, workflow or repository files only
 
 ## Tested on

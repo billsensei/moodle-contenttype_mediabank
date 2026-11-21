@@ -86,7 +86,7 @@ need an installed Moodle. [COMMANDS.md](COMMANDS.md) shows how they were run her
 
 ## 4. How the tests are written
 
-The helpers are in `contenttype_mediabank/tests/classes/`: `link_helper` (create an item, create a link the way the file picker
+The helpers are in `tests/classes/`: `link_helper` (create an item, create a link the way the file picker
 does), `media_samples` (a few bytes that pass a content sniff for each kind of file) and `mp4_builder` (a small hand-made MP4 whose
 chunk offsets point at known bytes).
 

@@ -8,8 +8,8 @@ The guides in `docs/` are English only. Translating them is welcome, but is a se
 
 | Plugin | File | Strings |
 |---|---|---|
-| `contenttype_mediabank` | `contenttype_mediabank/lang/en/contenttype_mediabank.php` | 68 |
-| `local_mediabank` | `local_mediabank/lang/en/local_mediabank.php` | 2 |
+| `contenttype_mediabank` | `lang/en/contenttype_mediabank.php` | 68 |
+| `local_mediabank` | `moodle-local_mediabank/lang/en/local_mediabank.php` | 2 |
 
 Almost all of the work is the first file. The plugins have no JavaScript strings. The preview template uses the same file.
 
@@ -53,17 +53,17 @@ The language pack for your language must be installed first (**Site administrati
 1. Find your language's code. Moodle uses a short code such as `fr`, `de`, `es`, `pt_br`, `nl`.
 2. Copy the English file to a new folder named for your language. For the content type:
 
-       contenttype_mediabank/lang/<code>/contenttype_mediabank.php
+       lang/<code>/contenttype_mediabank.php
 
    and, for the tools plugin:
 
-       local_mediabank/lang/<code>/local_mediabank.php
+       moodle-local_mediabank/lang/<code>/local_mediabank.php
 
 3. Keep the licence and the `defined('MOODLE_INTERNAL') || die();` lines at the top of the file. Translate the text of each `$string[...]` line.
 4. Keep the strings in the same (alphabetical) order as the English file. The coding standard checks this.
 5. Check the file has no syntax error:
 
-       php -l contenttype_mediabank/lang/<code>/contenttype_mediabank.php
+       php -l lang/<code>/contenttype_mediabank.php
 
 6. Install the plugin on a test site (or copy the folder into one), switch your user's language to yours, and look at each screen: the Content bank list, an item's page, the Edit page, the file picker's choice, the settings page and the error messages. Look for text that is cut off, placeholders that did not fill in, and strings still in English.
 7. Open a pull request. Say which language it is and who checked it. See [CONTRIBUTING.md](../CONTRIBUTING.md) and add yourself to [CONTRIBUTORS.md](CONTRIBUTORS.md).

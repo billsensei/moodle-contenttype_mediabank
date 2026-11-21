@@ -13,7 +13,7 @@ MariaDB on `127.0.0.1:3307`, and `export LOCPATH=~/.local/locale` in a fresh she
 | Check | Result |
 |---|---|
 | `contenttype_mediabank_testsuite` | 129 tests, 581 assertions, on Moodle 5.0, 5.1, 5.2 and 5.3 (locally on 5.3; CI on all four) |
-| `local_mediabank/tests/backup_restore_test.php` | 7 tests, 27 assertions |
+| `moodle-local_mediabank/tests/backup_restore_test.php` | 7 tests, 27 assertions |
 | `filter_mediabank_testsuite` | 21 tests, 84 assertions (locally on 5.2 and 5.3; CI on all four) |
 | Behat `@contenttype_mediabank` | 9 scenarios, 175 steps (about 7 minutes) |
 | Behat `@local_mediabank` | 2 scenarios, 16 steps |
@@ -76,7 +76,7 @@ Expected: `OK, but there were issues! Tests: 4, Assertions: 20, PHPUnit Deprecat
 Common errors: `Required locale 'en_AU.UTF-8' is not installed` (set LOCPATH); `Could not open input file: admin/tool/...` (use `public/`).
 
 ## Behat acceptance test (2026-10-27)
-Feature: `contenttype_mediabank/tests/behat/upload_and_link.feature` (tag `@contenttype_mediabank`). Fixtures: `tests/fixtures/sample.png`, `sample.pdf`.
+Feature: `tests/behat/upload_and_link.feature` (tag `@contenttype_mediabank`). Fixtures: `tests/fixtures/sample.png`, `sample.pdf`.
 Fixture paths in the feature are relative to `$CFG->dirroot`, which is `moodle53/public`.
 
     export LOCPATH=~/.local/locale
@@ -157,7 +157,7 @@ validate also needs `-m /home/bill/test2/moodle53` when run on a copy outside Mo
 
 ## Phase 5: backup and restore of links (2026-10-29)
 After adding the backup/restore classes or the setting: bump both `version.php` files (the local plugin depends on the content type's version),
-`php admin/cli/upgrade.php --non-interactive` (expected: `New setting: contenttype_mediabank/embedinbackups`), `php public/admin/tool/phpunit/cli/init.php`.
+`php admin/cli/upgrade.php --non-interactive` (expected: `New setting: embedinbackups`), `php public/admin/tool/phpunit/cli/init.php`.
 
     export LOCPATH=~/.local/locale; cd /home/bill/test2/moodle53
     vendor/bin/phpunit public/local/mediabank/tests/backup_restore_test.php
@@ -259,7 +259,7 @@ Check a zip the way Moodle's installer does, without installing it. Run it again
 Expected: `[OK]` lines for plugin name, version, required Moodle version, component and release; one `[Warning] Declared maturity level MATURITY_BETA`; then `PASS: contenttype_mediabank against Moodle 5.2.4+ ...`. Checked on 5.0, 5.1 and 5.2 for both zips.
 
 Prove a zip is complete (done 2026-10-29): unzip both into a Moodle tree as real folders (not symlinks), run `php public/admin/tool/phpunit/cli/init.php`, then the contenttype suite and `public/local/mediabank/tests/backup_restore_test.php` from the extracted copies, then delete the folders. Result on 5.2.4: 88 tests, 315 assertions and 7 tests, 27 assertions, the same as from the source tree.
-Rollback: `contenttype_mediabank/tests/uninstall_test.php` calls the content type's `uninstall_cleanup()` (what the uninstall runs) and checks that every item is gone and each course kept its file as an ordinary copy, for a form-saved link and a link nobody had opened (`OK (1 test, 17 assertions)`). With link conversion switched off the test fails.
+Rollback: `tests/uninstall_test.php` calls the content type's `uninstall_cleanup()` (what the uninstall runs) and checks that every item is gone and each course kept its file as an ordinary copy, for a form-saved link and a link nobody had opened (`OK (1 test, 17 assertions)`). With link conversion switched off the test fails.
 
 ## GitHub Actions run, and why phpcs must be run inside a Moodle tree (2026-10-29)
 First run of `.github/workflows/ci.yml` on branch `ci-beta-0.9.1` (run 40808550604, 32 jobs: 2 plugins x PHP 8.3 and 8.4 x Moodle 5.0 to 5.3 x PostgreSQL and MariaDB).
@@ -282,7 +282,7 @@ Requested: "optimize the video for web streaming". Chosen with Bill: fast-start 
 Design change from the question as asked: the index is moved in **plain PHP** (`classes/faststart.php`, the same algorithm as qt-faststart) instead of calling ffmpeg. Reasons: nothing to install on
 the server, no untrusted upload handed to an external program, no command-line quoting or timeouts. The cost is that the byte shuffling is ours, so it is checked hard: the output must be the same size, with
 `moov` before `mdat` and the same `moov` length; chunk offsets are rewritten (stco and co64); anything unusual (fragmented, compressed index, no index, malformed boxes, 32-bit offset overflow) is left alone.
-Pieces: `classes/video_optimizer.php` (queue, optimize, find_unprepared, queue_all), `classes/task/optimize_video.php` (ad hoc), setting `optimizevideo` (default on), `local_mediabank/cli/optimize_videos.php [--dry-run]`.
+Pieces: `classes/video_optimizer.php` (queue, optimize, find_unprepared, queue_all), `classes/task/optimize_video.php` (ad hoc), setting `optimizevideo` (default on), `moodle-local_mediabank/cli/optimize_videos.php [--dry-run]`.
 
 Tests (5.3): `tests/faststart_test.php` (8 tests; offsets still point at the same bytes; a control showing uncorrected offsets would miss; extra boxes keep their place; co64; files left alone; damaged table refused;
 and, with ffmpeg present, a real encoded video gives identical `framemd5` before and after) and `tests/video_optimizer_test.php` (7 tests: queue, task, links follow, version kept, last editor kept, setting, queue_all).
@@ -313,11 +313,11 @@ Test traps met:
 - PHPUnit cannot force a regular expression to fail through the cached patterns, so the fail-closed helper `svg_validator::found()` is tested directly.
 - A control was used for each rule: with the rule removed, the test for it fails.
 Real files: 67 SVG files that declare `ASCII` as their encoding were refused by the first encoding rule, so the list of accepted encodings was widened; about 97% of ordinary editor-made SVG files now pass.
-Four automated security reviews each found real problems, all fixed before release and listed in `contenttype_mediabank/CHANGES.md` (0.11.0). The last was a regular expression that gave up and was read as "nothing found"; every refusing search now treats failure as a match. The check has had **no manual review**.
+Four automated security reviews each found real problems, all fixed before release and listed in `CHANGES.md` (0.11.0). The last was a regular expression that gave up and was read as "nothing found"; every refusing search now treats failure as a match. The check has had **no manual review**.
 
 ## Report of items nobody links to (2026-11-01, unreleased)
-Roadmap item "a report of items nobody links to". Built as `usage::find_unlinked(int $minage)` in contenttype_mediabank and `local_mediabank/cli/unlinked.php [--days=N] [--csv]`. Read-only; one `search_references_count` per item, so it is slow on very large banks (same cost class as `find_unprepared`). A copy is independent and does not count as a link; a draft link does not count either.
-Test: `usage_test::test_unlinked_items_are_found` (6 tests, 28 assertions in usage_test on 5.3). Not yet run on 4.5-5.2 or through the CLI against a real site. Admin page added the same day: `local_mediabank/unlinked.php` + `settings.php` (Reports), `tests/behat/unlinked_report.feature` (2 scenarios pass on 5.3). Behat trap: with the plugin symlinked into the Moodle tree, `__DIR__` is the real path and `require __DIR__.'/../../config.php'` fails; copy the plugin into the tree for the run. CLI CSV hardened against formula injection after a security review.
+Roadmap item "a report of items nobody links to". Built as `usage::find_unlinked(int $minage)` in contenttype_mediabank and `moodle-local_mediabank/cli/unlinked.php [--days=N] [--csv]`. Read-only; one `search_references_count` per item, so it is slow on very large banks (same cost class as `find_unprepared`). A copy is independent and does not count as a link; a draft link does not count either.
+Test: `usage_test::test_unlinked_items_are_found` (6 tests, 28 assertions in usage_test on 5.3). Not yet run on 4.5-5.2 or through the CLI against a real site. Admin page added the same day: `moodle-local_mediabank/unlinked.php` + `settings.php` (Reports), `tests/behat/unlinked_report.feature` (2 scenarios pass on 5.3). Behat trap: with the plugin symlinked into the Moodle tree, `__DIR__` is the real path and `require __DIR__.'/../../config.php'` fails; copy the plugin into the tree for the run. CLI CSV hardened against formula injection after a security review.
 
 ## Convert one course's links (2026-11-02, unreleased)
 Teacher feature 1 of the roadmap. `usage::detach_in_course()` (shares `convert()` with `detach_all()`), `convert.php` (confirm page, POST + sesskey, `moodle/course:manageactivities` in the course), button in `contenttype::render_usage()`. Event `links_converted` gained `other['courseid']`.
@@ -344,7 +344,7 @@ filter_mediabank second security review (2026-11-02, still before any push): fou
 Tests: 13 tests, 46 assertions on 5.3 (vertical tab; stray quote; only `pre_clean` changes text; untrusted text through `format_text` has no `onerror` and both pictures get their alt). phpcs clean.
 
 ## Captions and transcripts through links (2026-11-02, unreleased)
-Option B of docs/CAPTIONS-DESIGN.md, chosen by Bill with captions off by default. Route `/pluginfile.php/<alias context>/contenttype_mediabank/linkcaptions/<alias file id>/captions.vtt`, decided by `link_captions::find_file()`; filter step `media_tracks`. Details, deviations (unlisted does not hide captions; the filter only acts when the link is in the text's own context; the viewer is checked in the route, not the filter) and test counts are in section 10 of that document. Suites on 5.3: contenttype 127 tests / 570 assertions (`--fail-on-warning`), filter 20 / 76. phpcs clean. Mutation check: with `is_place_allowed()` forced to true, one test in each new file fails.
+Option B of docs/CAPTIONS-DESIGN.md, chosen by Bill with captions off by default. Route `/pluginfile.php/<alias context>/linkcaptions/<alias file id>/captions.vtt`, decided by `link_captions::find_file()`; filter step `media_tracks`. Details, deviations (unlisted does not hide captions; the filter only acts when the link is in the text's own context; the viewer is checked in the route, not the filter) and test counts are in section 10 of that document. Suites on 5.3: contenttype 127 tests / 570 assertions (`--fail-on-warning`), filter 20 / 76. phpcs clean. Mutation check: with `is_place_allowed()` forced to true, one test in each new file fails.
 NOT done: Behat, a browser, other Moodle versions, the mobile app. Done afterwards: the filter's dependency is now `contenttype_mediabank` 2026110200, and the filter is in `scripts/build_release.py` (see the next section).
 Trap: a PHPUnit test class may not define a method called `run()` (final).
 
@@ -355,7 +355,7 @@ Trap: a plugin zip was built before, with new code, under an unchanged version n
 ## Screenshots, and the first real-browser check (2026-11-02)
 Five new pictures (`docs/images/teacher-8-captions-in-course.png`, `teacher-9-transcript-in-course.png`, `teacher-10-where-used-and-convert.png`, `admin-1-unlinked-report.png`, `admin-2-manage-filters.png`) and the scripts to retake them in `scripts/screenshots/` (README there). Taken on the Behat site of the Moodle 5.3 tree (:8010, Chromium 155 headless through chromedriver), seeded by a throwaway Behat step that lives only in a copy of the plugin inside the tree.
 What the browser run showed, as `student1`, `teacher1` and `admin`:
-- A Page and a File resource (embedded) with a bank video and picture: the video.js player has a **Captions** menu with "captions off" selected; choosing Captions shows the caption text on the video (the track is fetched through `.../contenttype_mediabank/linkcaptions/<id>/captions.vtt` as a student, who has no Content bank access); the **Transcript** is a collapsed `<details>` on 5.3 and shows the four lines when opened; the picture gets the bank's alt text; a Label (course 2) also gets it.
+- A Page and a File resource (embedded) with a bank video and picture: the video.js player has a **Captions** menu with "captions off" selected; choosing Captions shows the caption text on the video (the track is fetched through `.../linkcaptions/<id>/captions.vtt` as a student, who has no Content bank access); the **Transcript** is a collapsed `<details>` on 5.3 and shows the four lines when opened; the picture gets the bank's alt text; a Label (course 2) also gets it.
 - The teacher's item page lists courses and activities with links and a **Convert to copies** button per course. Clicking it shows the confirm page; a GET with `confirm=1` still asks; the button (POST + session key) converts: "1 link(s) converted to copies", the course's picture still loads but no longer gets the bank's alt text, and the item's *Where used* drops that course while the other keeps its link. This is the path Behat cannot reach.
 - The admin report lists the three unused items by size. The Manage filters page shows the filter with an On/Off/Disabled switch.
 No fault was found. Cosmetic, not fixed (a code change would need a new release): the report page shows its title twice, in the page header and as a heading in the page.

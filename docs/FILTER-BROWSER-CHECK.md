@@ -33,7 +33,7 @@ As the **student in Biology 101**, open each page from section 1.
 - [ ] Turn them off again. They go away.
 - [ ] Keyboard only (Tab, Enter, Space): reach the Captions button, switch it on and off. The focus is visible.
 - [ ] Screen reader (NVDA or VoiceOver): the Captions control has a sensible name.
-- [ ] Reload the page. No error in the browser console (F12) and no failed request for `captions.vtt`. Look at the Network tab: the caption request goes to the **course** address (`/pluginfile.php/<context>/contenttype_mediabank/linkcaptions/...`), status 200, type `text/vtt`.
+- [ ] Reload the page. No error in the browser console (F12) and no failed request for `captions.vtt`. Look at the Network tab: the caption request goes to the **course** address (`/pluginfile.php/<context>/linkcaptions/...`), status 200, type `text/vtt`.
 - [ ] A player that already has a captions track the teacher added is left alone (no second Captions entry).
 - [ ] A **copy** of the file (use Make a copy) shows no bank captions. That is correct.
 
@@ -83,7 +83,7 @@ The caption address has to be no weaker than "may play the video".
 
 All of sections 1 to 6 pass on 5.3 and 5.0, and nothing in 7 is worse than a documented limit:
 
-1. In `filter_mediabank/version.php` change `MATURITY_ALPHA` to `MATURITY_BETA` and raise the `version`.
+1. In `moodle-filter_mediabank/version.php` change `MATURITY_ALPHA` to `MATURITY_BETA` and raise the `version`.
 2. Change "Alpha" to "Beta" in the filter's README, `CHANGES.md`, the project README, `docs/PLUGIN-DIRECTORY.md`, `docs/FAQ.md` and `CHANGELOG.md`.
 3. Remove "not yet seen in a browser" from the listing text, and say which browsers and Moodle versions you checked.
 4. Release it ([RELEASING.md](RELEASING.md)), then submit it (Entry 3 in [PLUGIN-DIRECTORY.md](PLUGIN-DIRECTORY.md)).

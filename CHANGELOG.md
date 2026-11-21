@@ -1,10 +1,17 @@
 # Changelog
 
 All notable changes to the project. Each plugin also keeps its own, more detailed list:
-[`contenttype_mediabank/CHANGES.md`](contenttype_mediabank/CHANGES.md), [`local_mediabank/CHANGES.md`](local_mediabank/CHANGES.md) and [`filter_mediabank/CHANGES.md`](filter_mediabank/CHANGES.md).
+[`CHANGES.md`](CHANGES.md), [`moodle-local_mediabank/CHANGES.md`](https://github.com/billsensei/moodle-local_mediabank/blob/main/CHANGES.md) and [`moodle-filter_mediabank/CHANGES.md`](https://github.com/billsensei/moodle-filter_mediabank/blob/main/CHANGES.md).
 
 The content type and the tools are **Beta**; the filter is **Alpha**. A release of the project is a tag on GitHub, `v<content type version>`, with the three plugin zips
 and the bundle zip attached.
+
+## 0.12.6 (2026-11-21): content type 0.12.6
+
+The project is now three repositories, as the Moodle Marketplace prefers: this one is the content type only; the tools are [moodle-local_mediabank](https://github.com/billsensei/moodle-local_mediabank) (0.4.4) and the filter is [moodle-filter_mediabank](https://github.com/billsensei/moodle-filter_mediabank) (0.1.4). The history of each plugin went with it. This file keeps the history of the whole project up to 0.12.5; from 0.12.6 each repository keeps the changes of its own plugin. The GitHub releases of the old project, v0.9.2 to v0.12.5, stay here.
+
+- The plugin files are at the repository root. The release zip has the same files as before. There is no bundle zip any more: each plugin is released on its own.
+- CI is 24 jobs for this plugin (it was 64 for all three).
 
 ## 0.12.5 (2026-11-20): content type 0.12.5, tools 0.4.3, filter 0.1.3
 

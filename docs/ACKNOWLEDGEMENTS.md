@@ -50,7 +50,7 @@ Nothing here means the project or its authors endorse the Media bank. Names belo
 ## Security
 
 - The people who review Moodle plugins for security, and who published the checklists this project's reviews follow.
-- The **automated security reviews** that looked at the code before releases and found real problems, which were fixed first. They are recorded in `contenttype_mediabank/CHANGES.md`.
+- The **automated security reviews** that looked at the code before releases and found real problems, which were fixed first. They are recorded in `CHANGES.md`.
 
 ## An AI assistant
 
