@@ -1,7 +1,6 @@
-# Runs on every push and pull request: 3 plugins x PostgreSQL and MariaDB x Moodle 5.0 to 5.3 x PHP 8.3 and 8.4, plus PHP 8.2 on
-# Moodle 5.0 and 5.1 only = 60 jobs, plus 4 package jobs (one per Moodle version) that build and validate the zips = 64.
+# Runs on every push and pull request: PostgreSQL and MariaDB x Moodle 5.0 to 5.3 x PHP 8.3 and 8.4, plus PHP 8.2 on Moodle 5.0
+# and 5.1 only = 20 jobs, plus 4 package jobs (one per Moodle version) that build and validate the zip = 24.
 # The actions are pinned to a commit; the tag is in the comment.
-# See docs/DEVELOPMENT.md, section 8.
 name: Moodle Plugin CI
 
 on: [push, pull_request]
@@ -42,7 +41,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        plugin: [contenttype_mediabank, local_mediabank, filter_mediabank]
         php: ['8.2', '8.3', '8.4']
         moodle-branch: ['MOODLE_500_STABLE', 'MOODLE_501_STABLE', 'MOODLE_502_STABLE', 'MOODLE_503_STABLE']
         database: [pgsql, mariadb]
@@ -82,15 +80,10 @@ jobs:
 
       - name: Install moodle-plugin-ci
         run: |
-          # local_mediabank and filter_mediabank depend on contenttype_mediabank, so it is installed as an extra plugin.
-          mkdir -p extra && cp -r ./repo/contenttype_mediabank extra/
-          moodle-plugin-ci install --plugin ./repo/${{ matrix.plugin }} --db-host=127.0.0.1 \
-            ${{ matrix.plugin != 'contenttype_mediabank' && '--extra-plugins=./extra' || '' }}
+          moodle-plugin-ci install --plugin ./repo --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
-          # Uncomment this to run Behat tests using the Moodle App.
-          # MOODLE_APP: 'true'
 
       - name: PHP Lint
         if: ${{ !cancelled() }}
@@ -184,7 +177,7 @@ jobs:
           (cd dist-b && sha256sum *.zip) > b.sum
           cat a.sum
           diff a.sum b.sum
-          test "$(ls dist-a/*.zip | wc -l)" -eq 4
+          test "$(ls dist-a/*.zip | wc -l)" -eq 1
 
       - name: Setup PHP 8.3
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
@@ -224,10 +217,8 @@ jobs:
         # moodle-plugin-ci only prepares the test tables; the installer checks read the real ones.
         run: php moodle/admin/cli/install_database.php --agree-license --adminpass='Passw0rd!ci' --adminemail=ci@example.com --fullname=CI --shortname=CI
 
-      - name: Validate each plugin zip with Moodle's installer checks
+      - name: Validate the plugin zip with Moodle's installer checks
         run: |
-          for component in contenttype_mediabank local_mediabank filter_mediabank; do
-            zip=$(realpath dist-a/${component}_*.zip)
-            echo "== $zip"
-            php repo/scripts/validate_plugin_zip.php --moodle="$PWD/moodle" --zip="$zip" --component="$component"
-          done
+          zip=$(realpath dist-a/contenttype_mediabank_*.zip)
+          echo "== $zip"
+          php repo/scripts/validate_plugin_zip.php --moodle="$PWD/moodle" --zip="$zip" --component="contenttype_mediabank"

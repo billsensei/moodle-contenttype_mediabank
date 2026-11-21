@@ -1,37 +1,38 @@
 #!/usr/bin/env python3
-"""Build the installable zips and the delivery bundle for the media bank plugins.
+"""Build the installable zip for this Moodle plugin.
 
     python3 scripts/build_release.py [--out DIR]
 
-Writes, into DIR (default: ./dist):
-  contenttype_mediabank_<version>.zip   installable with Site administration > Plugins > Install plugins
-  local_mediabank_<version>.zip         installable the same way (install the content type first)
-  filter_mediabank_<version>.zip        installable the same way (install the content type first; optional, Alpha)
-  mediabank-<release>-bundle.zip        the three zips, the guides and a READ-ME-FIRST.txt, for sending to a client; NOT installable itself
+Writes <component>_<version>.zip into DIR (default: ./dist), for example contenttype_mediabank_2026112101.zip. The zip can be
+installed with Site administration > Plugins > Install plugins.
 
-Each plugin zip has one top folder called "mediabank", which is what Moodle's installer expects, and a copy of the repository's LICENSE in it. The zips are
-reproducible: file order and timestamps come from the files and the last commit, not from the time of the build.
+The repository root is the plugin. The zip has one top folder called "mediabank", which is what Moodle's installer expects for
+this plugin, and holds the plugin files, including LICENSE. Files that are about the project and not the plugin (docs, scripts,
+the contributor files, CI configuration, composer.json) are left out. The zip is reproducible: file order and timestamps come from
+the files and the last commit, not from the time of the build.
+
 Run scripts/validate_plugin_zip.php against a Moodle tree to check a zip the way the installer does.
 """
 import argparse
 import re
 import subprocess
 import sys
+import time
 import zipfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-PLUGINS = ['contenttype_mediabank', 'local_mediabank', 'filter_mediabank']
-SKIP_DIR_NAMES = {'node_modules', 'vendor', '__pycache__'}
-GUIDES = ['GETTING-STARTED.md', 'INSTALL.md', 'ADMIN-GUIDE.md', 'TEACHER-GUIDE.md', 'FAQ.md', 'GLOSSARY.md', 'TROUBLESHOOTING.md', 'UPGRADING.md',
-          'Install-Walk-Thru.pdf', 'Use-Walk-Thru.pdf']
+SKIP_DIR_NAMES = {'node_modules', 'vendor', '__pycache__', 'docs', 'scripts', 'dist'}
+SKIP_FILE_NAMES = {'composer.json', 'composer.lock', 'CONTRIBUTING.md', 'CODE_OF_CONDUCT.md', 'SECURITY.md', 'CHANGELOG.md'}
 
 
-def read_version(plugin: str) -> tuple[str, str]:
-    text = (REPO / plugin / 'version.php').read_text()
+def read_plugin() -> tuple[str, str, str]:
+    """Return (component, version, release) from version.php."""
+    text = (REPO / 'version.php').read_text()
+    component = re.search(r"\$plugin->component\s*=\s*'([^']+)'", text).group(1)
     version = re.search(r"\$plugin->version\s*=\s*(\d+)", text).group(1)
     release = re.search(r"\$plugin->release\s*=\s*'([^']+)'", text).group(1)
-    return version, release
+    return component, version, release
 
 
 def commit_time() -> int:
@@ -39,11 +40,13 @@ def commit_time() -> int:
     return int(out.stdout.strip()) if out.returncode == 0 and out.stdout.strip() else 315532800
 
 
-def included(plugin_dir: Path):
-    for path in sorted(plugin_dir.rglob('*')):
-        relative = path.relative_to(plugin_dir)
+def included():
+    for path in sorted(REPO.rglob('*')):
+        relative = path.relative_to(REPO)
         parts = relative.parts
         if any(part.startswith('.') or part in SKIP_DIR_NAMES for part in parts):
+            continue
+        if len(parts) == 1 and parts[0] in SKIP_FILE_NAMES:
             continue
         if path.suffix == '.zip':
             continue
@@ -57,81 +60,29 @@ def add(zf: zipfile.ZipFile, name: str, data: bytes, timestamp: tuple, mode: int
     zf.writestr(info, data)
 
 
-def build_plugin(plugin: str, out: Path, timestamp: tuple) -> Path:
-    version, _ = read_version(plugin)
-    target = out / f'{plugin}_{version}.zip'
+def build(out: Path, timestamp: tuple) -> Path:
+    component, version, _ = read_plugin()
+    target = out / f'{component}_{version}.zip'
     with zipfile.ZipFile(target, 'w') as zf:
-        for path, relative in included(REPO / plugin):
+        for path, relative in included():
             name = 'mediabank/' + relative.as_posix()
             if path.is_dir():
                 add(zf, name + '/', b'', timestamp, 0o40755)
             else:
                 add(zf, name, path.read_bytes(), timestamp, 0o100644)
-        if not (REPO / plugin / 'LICENSE').exists():
-            # The Moodle Marketplace wants a license file in the plugin root. The one copy lives at the repository root.
-            add(zf, 'mediabank/LICENSE', (REPO / 'LICENSE').read_bytes(), timestamp, 0o100644)
-    return target
-
-
-READ_ME_FIRST = """DO NOT UPLOAD THIS BUNDLE TO MOODLE.
-
-This file came from {bundle}. That zip is a package, not a plugin,
-so Moodle cannot install it and will ask you to "choose a plugin type".
-
-What to do:
-
-  1. Unzip the bundle on your computer (you have probably done this already).
-  2. In Moodle, go to Site administration > Plugins > Install plugins.
-  3. Upload {first} first.
-  4. Then upload {second}.
-  5. Optional: upload {third} to carry a picture's text alternative, and a video's
-     captions and transcript, into the courses that link to an item. It is an Alpha
-     plugin and does nothing until you switch it on under Site administration >
-     Plugins > Filters > Manage filters. It must be installed after {first}.
-     Upload each zip as it is. Do not unzip them.
-
-Leave "Plugin type" alone. Moodle detects it by itself for these files.
-
-The guides are in this folder. Start with INSTALL.md, or Install-Walk-Thru.pdf if
-you would like pictures. If something goes wrong, see TROUBLESHOOTING.md.
-"""
-
-
-def build_bundle(zips: list, out: Path, timestamp: tuple) -> Path:
-    _, release = read_version('contenttype_mediabank')
-    target = out / f'mediabank-{release}-bundle.zip'
-    root = f'mediabank-{release}-bundle/'
-    with zipfile.ZipFile(target, 'w') as zf:
-        note = READ_ME_FIRST.format(bundle=target.name, first=zips[0].name, second=zips[1].name, third=zips[2].name)
-        add(zf, root + 'READ-ME-FIRST.txt', note.encode(), timestamp, 0o100644)
-        for z in zips:
-            add(zf, root + z.name, z.read_bytes(), timestamp, 0o100644)
-        for guide in GUIDES:
-            source = REPO / 'docs' / guide
-            if source.exists():
-                add(zf, root + guide, source.read_bytes(), timestamp, 0o100644)
-            else:
-                print(f'WARNING: docs/{guide} is missing, not in the bundle', file=sys.stderr)
-        for image in sorted((REPO / 'docs' / 'images').glob('*.png')):
-            add(zf, root + 'images/' + image.name, image.read_bytes(), timestamp, 0o100644)
-        for plugin, label in (('contenttype_mediabank', 'contenttype'), ('local_mediabank', 'local'), ('filter_mediabank', 'filter')):
-            source = REPO / plugin / 'CHANGES.md'
-            add(zf, root + f'CHANGES-{label}_mediabank.md', source.read_bytes(), timestamp, 0o100644)
     return target
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--out', default=str(REPO / 'dist'), help='folder for the zips (default: ./dist)')
+    parser.add_argument('--out', default=str(REPO / 'dist'), help='folder for the zip (default: ./dist)')
     args = parser.parse_args()
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    when = __import__('time').gmtime(commit_time())
+    when = time.gmtime(commit_time())
     timestamp = (max(when.tm_year, 1980), when.tm_mon, when.tm_mday, when.tm_hour, when.tm_min, when.tm_sec)
-    zips = [build_plugin(plugin, out, timestamp) for plugin in PLUGINS]
-    bundle = build_bundle(zips, out, timestamp)
-    for z in zips + [bundle]:
-        print(f'{z}  ({z.stat().st_size} bytes)')
+    target = build(out, timestamp)
+    print(f'{target}  ({target.stat().st_size} bytes)')
     return 0
 
 
