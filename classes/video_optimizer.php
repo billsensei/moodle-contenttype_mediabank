@@ -102,9 +102,12 @@ class video_optimizer {
             $unchanged = $record->configdata === null
                 ? 'configdata IS NULL'
                 : $DB->sql_compare_text('configdata', 255) . ' = ' . $DB->sql_compare_text(':old', 255);
-            $DB->execute(
-                "UPDATE {contentbank_content} SET configdata = :new WHERE id = :id AND $unchanged",
-                ['new' => $metadata, 'id' => $contentid] + ($record->configdata === null ? [] : ['old' => $record->configdata])
+            $DB->set_field_select(
+                'contentbank_content',
+                'configdata',
+                $metadata,
+                "id = :id AND $unchanged",
+                ['id' => $contentid] + ($record->configdata === null ? [] : ['old' => $record->configdata])
             );
             if ($DB->get_field('contentbank_content', 'configdata', ['id' => $contentid]) === $metadata) {
                 return;

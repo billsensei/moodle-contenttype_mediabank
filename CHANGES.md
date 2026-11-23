@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.7 (2026-11-23)
+Version 2026112301. Code tidy-up from the Moodle Marketplace review (issue #3). No change in behaviour, no setting, no table. Moodle offers the upgrade.
+
+- Marking a video that could not be prepared for streaming now uses `$DB->set_field_select()` instead of a hand-written `$DB->execute()` UPDATE. It is the same write, still made only if nobody changed the item's metadata since it was read.
+
 ## 0.12.6 (2026-11-21)
 Version 2026112101. Packaging and links only: the plugin moved to its own repository, `moodle-contenttype_mediabank`, with the plugin files at the repository root, and the tools and the filter moved to `moodle-local_mediabank` and `moodle-filter_mediabank`. No change in behaviour, no setting, no table. Moodle offers the upgrade.
 
