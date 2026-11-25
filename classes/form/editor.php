@@ -117,6 +117,7 @@ class editor extends \core_contentbank\form\edit_content {
             $mform->addElement('static', 'detachwarning', '', get_string('detachwarning', 'contenttype_mediabank'));
         }
 
+        parent::definition();
         $this->add_action_buttons();
         $this->set_data($this->get_initial_data());
     }
@@ -203,8 +204,11 @@ class editor extends \core_contentbank\form\edit_content {
                 captions::delete($content);
             }
         }
+        // This also saves the item.
         $content->merge_metadata($values);
-        $content->update_content();
+        $cfdata = fullclone($data);
+        $cfdata->id = $content->get_id();
+        \core_contentbank\customfield\content_handler::create()->instance_form_save($cfdata);
         return $content->get_id();
     }
 }

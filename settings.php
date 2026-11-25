@@ -70,12 +70,15 @@ if ($ADMIN->fulltree) {
         1
     ));
 
-    $settings->add(new admin_setting_configcheckbox(
-        'contenttype_mediabank/embedinbackups',
-        get_string('embedinbackups', 'contenttype_mediabank'),
-        get_string('embedinbackups_desc', 'contenttype_mediabank'),
-        0
-    ));
+    // The backup and restore code is in local_mediabank, so the setting means nothing without it.
+    if (core_component::get_component_directory('local_mediabank')) {
+        $settings->add(new admin_setting_configcheckbox(
+            'contenttype_mediabank/embedinbackups',
+            get_string('embedinbackups', 'contenttype_mediabank'),
+            get_string('embedinbackups_desc', 'contenttype_mediabank'),
+            0
+        ));
+    }
 
     $settings->add(new admin_setting_configtext(
         'contenttype_mediabank/versionretentiondays',

@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'contenttype_mediabank';
-$plugin->version   = 2026112301;
+$plugin->version   = 2026112501;
 $plugin->requires  = 2025041400; // Moodle 5.0.
 $plugin->supported = [500, 503];
 $plugin->maturity  = MATURITY_BETA;
-$plugin->release   = '0.12.7';
+$plugin->release   = '0.12.8';

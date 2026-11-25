@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.8 (2026-11-25)
+Version 2026112501. Four small fixes from the MDL Shield review. No table, no new setting. Moodle offers the upgrade.
+
+- The edit form now shows and saves content bank custom fields, as core's own editors do. Before, media bank items could not have values for them.
+- Saving the edit form logs one update event, not two.
+- Marking a video that could not be prepared for streaming also checks the item's modified time, so on SQL Server an edit made meanwhile is not overwritten (that database compares only the first 255 characters of text).
+- If the upload rules no longer allow a video when its streaming task runs (for example the size limit was lowered), the file is left as it is and marked, instead of the task failing and being retried 12 times.
+- The setting "Include linked files in course backups" is shown only when `local_mediabank`, which does the work, is installed, and its description says so.
+
 ## 0.12.7 (2026-11-23)
 Version 2026112301. Code tidy-up from the Moodle Marketplace review (issue #3). No change in behaviour, no setting, no table. Moodle offers the upgrade.
 

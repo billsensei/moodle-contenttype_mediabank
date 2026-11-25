@@ -99,15 +99,17 @@ class video_optimizer {
             }
             $metadata = json_encode(array_merge($content->get_metadata(), [self::FAILED_KEY => $hash]));
             // Write only if nobody changed the metadata since it was read here.
-            $unchanged = $record->configdata === null
+            // SQL Server compares only 255 characters of text, so the modified time is checked as well. Every edit changes it.
+            $unchanged = 'timemodified = :oldtime AND ' . ($record->configdata === null
                 ? 'configdata IS NULL'
-                : $DB->sql_compare_text('configdata', 255) . ' = ' . $DB->sql_compare_text(':old', 255);
+                : $DB->sql_compare_text('configdata', 255) . ' = ' . $DB->sql_compare_text(':old', 255));
             $DB->set_field_select(
                 'contentbank_content',
                 'configdata',
                 $metadata,
                 "id = :id AND $unchanged",
-                ['id' => $contentid] + ($record->configdata === null ? [] : ['old' => $record->configdata])
+                ['id' => $contentid, 'oldtime' => $record->timemodified]
+                    + ($record->configdata === null ? [] : ['old' => $record->configdata])
             );
             if ($DB->get_field('contentbank_content', 'configdata', ['id' => $contentid]) === $metadata) {
                 return;
@@ -230,7 +232,14 @@ class video_optimizer {
                 return self::GONE;
             }
             $modifier = $record->usermodified;
-            $content = $content->get_content_type_instance()->replace_content($work, $content);
+            try {
+                $content = $content->get_content_type_instance()->replace_content($work, $content);
+            } catch (\moodle_exception $e) {
+                // The upload rules changed after the task was queued. Trying again would fail the same way.
+                mtrace('Media bank item ' . $contentid . ' was left as it is: ' . $e->getMessage());
+                self::mark_failed($contentid, $hash);
+                return self::FAILED;
+            }
             // The change is not an edit by anyone. Keep the name of the person who last changed the item.
             $DB->set_field('contentbank_content', 'usermodified', $modifier, ['id' => $contentid]);
             usage::sync_links($content);

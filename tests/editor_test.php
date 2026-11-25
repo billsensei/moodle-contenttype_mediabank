@@ -208,6 +208,52 @@ final class editor_test extends \advanced_testcase {
     }
 
     /**
+     * Content bank custom fields are on the form, and their values are loaded and saved with the item.
+     */
+    public function test_custom_fields_are_shown_and_saved(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $generator = $this->getDataGenerator();
+        $category = $generator->create_custom_field_category([
+            'name' => 'Media',
+            'component' => 'core_contentbank',
+            'area' => 'content',
+            'itemid' => 0,
+        ]);
+        $generator->create_custom_field(['categoryid' => $category->get('id'), 'type' => 'text', 'shortname' => 'source', 'name' => 'Source']);
+        $item = link_helper::create_item('pic.png', media_samples::get('png'));
+
+        $form = $this->form($item);
+        $mform = new \ReflectionProperty(\moodleform::class, '_form');
+        $this->assertTrue($mform->getValue($form)->elementExists('customfield_source'));
+
+        $form->save_content((object) ['alt' => 'A red dot', 'customfield_source' => 'Own work']);
+
+        $handler = \core_contentbank\customfield\content_handler::create();
+        $this->assertSame('Own work', $handler->export_instance_data_object($item->get_id())->source);
+        // The other values are saved as before, and the item is saved once.
+        $this->assertSame('A red dot', $this->reload($item->get_id())->get_alt());
+    }
+
+    /**
+     * Saving the form changes the item once, so one update event is logged.
+     */
+    public function test_save_logs_one_update_event(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $item = link_helper::create_item('pic.png', media_samples::get('png'));
+        $sink = $this->redirectEvents();
+
+        $this->form($item)->save_content((object) ['alt' => 'A red dot']);
+
+        $updated = array_filter(
+            $sink->get_events(),
+            fn($event) => $event instanceof \core\event\contentbank_content_updated
+        );
+        $this->assertCount(1, $updated);
+    }
+
+    /**
      * Captions and earlier versions move with the item and go with it when it is deleted.
      */
     public function test_captions_follow_delete_and_move(): void {

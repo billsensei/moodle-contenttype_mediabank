@@ -227,11 +227,45 @@ final class video_optimizer_test extends \advanced_testcase {
         $metadata = (new content($stored))->get_metadata();
         $this->assertSame('Written while the task ran.', $metadata['transcript']);
         $this->assertSame($hash, $metadata['streamfailed']);
+        // The guard relies on the modified time, so marking a failure must not change it.
+        $this->assertSame((int) $fresh->get_content()->timemodified, (int) $stored->timemodified);
 
         // A hash that is no longer the item's file changes nothing.
         $before = $DB->get_field('contentbank_content', 'configdata', ['id' => $item->get_id()]);
         $mark->invoke(null, $item->get_id(), sha1('some other file'));
         $this->assertSame($before, $DB->get_field('contentbank_content', 'configdata', ['id' => $item->get_id()]));
+    }
+
+    /**
+     * If the upload rules no longer allow the file when the task runs, the file is left as it is and not tried again, instead of
+     * the task failing and being retried.
+     */
+    public function test_rule_rejection_marks_failed_instead_of_throwing(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $original = mp4_builder::build();
+        $item = link_helper::create_item('rules.mp4', $original);
+        $this->assertSame(1, $this->queued($item->get_id()));
+        // An admin lowers the limit after the task was queued.
+        set_config('maxbytes_video', 1, 'contenttype_mediabank');
+        $this->expectOutputRegex('/was left as it is/');
+
+        $this->assertSame(video_optimizer::FAILED, video_optimizer::optimize($item->get_id()));
+
+        $item = new content($DB->get_record('contentbank_content', ['id' => $item->get_id()], '*', MUST_EXIST));
+        $this->assertSame($original, $item->get_file()->get_content());
+        $this->assertCount(0, versions::get_versions($item));
+        $this->assertArrayHasKey('streamfailed', $item->get_metadata());
+        // The work copy is cleaned up.
+        $this->assertCount(0, get_file_storage()->get_area_files(
+            $item->get_contextid(),
+            'contenttype_mediabank',
+            'optimizing',
+            $item->get_id()
+        ));
+        set_config('maxbytes_video', 1000000000, 'contenttype_mediabank');
+        $this->assertFalse(video_optimizer::queue($item), 'the same file is not queued again');
     }
 
     /**

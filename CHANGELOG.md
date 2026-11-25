@@ -6,6 +6,14 @@ All notable changes to the project. Each plugin also keeps its own, more detaile
 The content type and the tools are **Beta**; the filter is **Alpha**. A release of the project is a tag on GitHub, `v<content type version>`, with the three plugin zips
 and the bundle zip attached.
 
+## 0.12.8 (2026-11-25): content type 0.12.8
+
+- Four small fixes from the MDL Shield review: custom fields on the edit form, one update event per save, a safer failure marker on SQL Server, and no retry loop when the upload rules change under a queued video task. The backup setting is shown only when `local_mediabank` is installed. See [`CHANGES.md`](CHANGES.md).
+
+## 0.12.8 (2026-11-25): content type 0.12.8
+
+- Four small fixes from the MDL Shield review: custom fields on the edit form, one update event per save, a safer failure marker on SQL Server, and no retry loop when the upload rules change under a queued video task. The backup setting is shown only when `local_mediabank` is installed. See [`CHANGES.md`](CHANGES.md).
+
 ## 0.12.7 (2026-11-23): content type 0.12.7
 
 - Code tidy-up from the Moodle Marketplace review ([issue #3](https://github.com/billsensei/moodle-contenttype_mediabank/issues/3)): one `$DB->execute()` became `$DB->set_field_select()`. No change in behaviour.
