@@ -213,8 +213,8 @@ final class editor_test extends \advanced_testcase {
     public function test_custom_fields_are_shown_and_saved(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        // The handler keeps its fields in a static cache that the test reset does not clear.
-        \core_customfield\handler::reset_caches();
+        // The content bank handler is a singleton that keeps its fields, and the test reset does not clear it.
+        \core_contentbank\customfield\content_handler::reset_caches();
         $generator = $this->getDataGenerator();
         $category = $generator->create_custom_field_category([
             'name' => 'Media',
@@ -240,7 +240,7 @@ final class editor_test extends \advanced_testcase {
         $this->assertSame('Own work', $handler->export_instance_data_object($item->get_id())->source);
         // The other values are saved as before, and the item is saved once.
         $this->assertSame('A red dot', $this->reload($item->get_id())->get_alt());
-        \core_customfield\handler::reset_caches();
+        \core_contentbank\customfield\content_handler::reset_caches();
     }
 
     /**
