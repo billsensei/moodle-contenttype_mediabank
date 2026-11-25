@@ -50,7 +50,7 @@ You can also reach this page from **Site administration → Plugins → Plugins 
 | **Maximum image size** | 20 MB | |
 | **Keep replaced files for (days)** | 30 | When an item is replaced, the old file is kept this long so the replacement can be undone. **0 keeps nothing.** |
 | **Prepare MP4 videos for streaming** | On | After an MP4 is uploaded or replaced, cron moves the file's index to the front so playback can start before the whole file has downloaded. See "Streaming" below. |
-| **Include linked files in course backups** | Off | See section 6. |
+| **Include linked files in course backups** | Off | See section 6. Shown only when `local_mediabank` is installed. |
 
 **Streaming.** Most cameras, phones and editors write an MP4 with its index (the "moov" box) at the *end*. A browser then has to download the whole file, or ask for its end first, before it can start playing; on a slow connection the student sees a long wait. With this setting on, each new or replaced MP4 gets an ad hoc task ("Prepare a media bank video for streaming") that moves the index to the front.
 

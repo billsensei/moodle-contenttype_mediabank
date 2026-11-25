@@ -34,7 +34,7 @@ Plain-language meanings of the words used in the Media bank and its guides, in a
 
 ## E
 
-**Embed in backups.** The setting **Include linked files in course backups** (`embedinbackups`). Off by default. When on, manual course backups carry the linked files, which are restored as ordinary *copies* where a *link* cannot be kept. Backups get bigger.
+**Embed in backups.** The setting **Include linked files in course backups** (`embedinbackups`). Off by default, and shown only when `local_mediabank` is installed. When on, manual course backups carry the linked files, which are restored as ordinary *copies* where a *link* cannot be kept. Backups get bigger.
 
 **Erasure.** Removing a person's data when they ask (GDPR). Their *items*, earlier *versions*, *captions*, *text alternatives* and *transcripts* are erased. Courses that linked to their media keep the file as a *copy*.
 

@@ -110,7 +110,7 @@ To see which courses use an item: its page shows **Where this item is used**, an
 
 | What you see | Cause and fix |
 |---|---|
-| After restoring a course on a **different site**, the file is missing | Moodle backs a link up as a reference only. Switch on **Include linked files in course backups** and take the backup again; restoring it then makes an ordinary copy. A backup made before the setting was on cannot be repaired. |
+| After restoring a course on a **different site**, the file is missing | Moodle backs a link up as a reference only. Install `local_mediabank` if you have not (the setting is shown only then), switch on **Include linked files in course backups** and take the backup again; restoring it then makes an ordinary copy. A backup made before the setting was on cannot be repaired. |
 | The same setting is on but a link is still missing | Only **manual** course backups with files included carry the files. Import, course copy and automated backups are unchanged. Links in blocks and in section summaries are not carried. |
 | Backups became large | By design: the linked files are in the backup. A course that links three 500 MB videos adds about 1.5 GB. Switch the setting off if that is too much. |
 | Restored on the same site and the link became a copy | With the setting on: the item was deleted, or its file was gone, by restore time. (With the setting off, the file is dropped and a warning is logged.) |

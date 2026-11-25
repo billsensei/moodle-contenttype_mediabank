@@ -35,7 +35,7 @@ Moodle installs a plugin from its own zip, so do not use GitHub's **Code → Dow
   file has downloaded. Nothing is re-encoded and nothing extra needs installing on the server.
 - **Access control.** Files are served only to people who may see the item, and an item can be made unlisted.
 - **Backup and restore** (`local_mediabank`). Optionally, course backups carry the linked files, which a restore on another site
-  turns into ordinary copies.
+  turns into ordinary copies. The setting for it appears only when `local_mediabank` is installed.
 - **Web services** (read only), **privacy (GDPR)** support, **events**, and command-line tools for administrators.
 
 If a person's account is erased, courses that linked to their media keep the file as an ordinary copy.

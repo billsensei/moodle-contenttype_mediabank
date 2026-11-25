@@ -68,6 +68,7 @@ Short notes on what matters to someone upgrading. The full lists are in [CHANGEL
 
 | From | To | What you notice | What to do |
 |---|---|---|---|
+| 0.12.7 | 0.12.8 (tools and filter unchanged) | The edit form now shows content bank custom fields, if your site has any. The setting **Include linked files in course backups** is shown only when `local_mediabank` is installed. | Upgrade the content type. No database change, no new setting. |
 | 0.12.4 | 0.12.5 (with tools 0.4.3 and filter 0.1.3) | Nothing you see. Each zip now carries a copy of the GPL `LICENSE`. | Upgrade the content type, then the tools, then the filter if installed. No database change, no new setting. |
 | 0.12.3 | 0.12.4 (with tools 0.4.2; filter unchanged) | Screen readers hear which course each "Convert to copies" link is for, and the unlinked-items report table has a caption. | Upgrade the content type, then the tools. No database change, no new setting. |
 | 0.12.2 | 0.12.3 (with filter 0.1.2; tools unchanged) | Nothing you see. If you use the filter, a picture only gets an item's text alternative when the link is in a place where captions and transcripts are already allowed (activity descriptions, File, Page, Book and Folder content, course and section summaries). | Upgrade the content type, then the filter. No database change, no new setting. |
