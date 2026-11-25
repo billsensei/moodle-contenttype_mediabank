@@ -220,7 +220,12 @@ final class editor_test extends \advanced_testcase {
             'area' => 'content',
             'itemid' => 0,
         ]);
-        $generator->create_custom_field(['categoryid' => $category->get('id'), 'type' => 'text', 'shortname' => 'source', 'name' => 'Source']);
+        $generator->create_custom_field([
+            'categoryid' => $category->get('id'),
+            'type' => 'text',
+            'shortname' => 'source',
+            'name' => 'Source',
+        ]);
         $item = link_helper::create_item('pic.png', media_samples::get('png'));
 
         $form = $this->form($item);
